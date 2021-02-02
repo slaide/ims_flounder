@@ -1,0 +1,12 @@
+{
+    "name": "IMS Flounder",
+    "version": "0.1.0",
+    "description": "Flounder LIMS",
+    "main": "server.js",
+    "dependencies": {
+        "mysql": "^2.18.1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "none"
+}
