@@ -73,7 +73,7 @@ const request_handler={
                     }else{
                         console.log(e)
                     }
-                    
+
                     if(!e.fatal){
                         end_connection(connection)
                     }
@@ -101,6 +101,12 @@ const request_handler={
                 }
             }
         )
+    },
+    "/backup_database":function(req,res){
+        throw("backup the current contents of the database")
+    },
+    "/restore_database":function(req,res){
+        throw("rebuild the database from the two files describing the structure and contents of the database")
     },
     "/shutdown":function(req,res){
         res.end()

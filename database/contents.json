@@ -1,0 +1,11 @@
+{
+    "Users":[
+        {"id":0,"username":"Olivia","email":"olivia@email.com","password":"90asdg73npbv","admin":false}
+    ],
+    "Rooms":[
+        {"id":0,"name":"lab 3.14","size":4}
+    ],
+    "Machines":[
+        {"id":0,"num_seats":2,"security_level":"B"}
+    ],
+}
