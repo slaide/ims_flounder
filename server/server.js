@@ -10,10 +10,6 @@ function read_homepage(){
 }
 
 var num_connection=0
-function create_connection(database=null){
-
-    return connection
-}
 function end_connection(connection){
     connection.end(
         function(err){
@@ -25,20 +21,42 @@ function end_connection(connection){
         }
     )
 }
-function connect_mysql(){
 
+function send_static_data(req,res){
+    const html_folder=fs.readdirSync("../html");
+    if(html_folder.includes(req.url.substr(1))){
+        res.writeHeader(200,content.from_filename(req.url))
+        res.write(fs.readFileSync("../html"+req.url))
+        res.end()
+        return true
+    }
+
+    return false
 }
 
 const content={
     html:{"Content-Type":"text/html"},
+    css:{"Content-Type":"text/css"},
+    js:{"Content-Type":"text/javascript"},
     json:{"Content-Type":"application/json"},
+    from_filename:function(n){
+        if(n.endsWith(".css")){
+            return content.css
+        }else if(n.endsWith(".js")){
+            return content.js
+        }else if(n.endsWith(".html")){
+            return content.html
+        }else if(n.endsWith(".json")){
+            return content.json
+        }
+    }
 }
 const encoding={
     utf8:{encoding:"utf8"},
     base64:{encoding:"base64"},
 }
 const request_handler={
-    "127.0.0.1:8080/":function(req,res){
+    "/":function(req,res){
         res.writeHeader(200,content.html)
         const file=read_homepage()
         res.write(file)
@@ -121,9 +139,13 @@ const server=http.createServer((req,res)=>{
         handler=request_handler[req.url]
         if(handler){
             handler(req,res)
+            return
         }else{
-            res.writeHeader(404,content.html)
-            res.end(read_404_page())
+            if(!send_static_data(req,res)){
+                res.writeHeader(404,content.html)
+                res.end(read_404_page())
+            }
+            return
         }
     }catch(e){
         if(!e.force_shutdown){
