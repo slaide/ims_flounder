@@ -38,7 +38,7 @@ const encoding={
     base64:{encoding:"base64"},
 }
 const request_handler={
-    "/":function(req,res){
+    "127.0.0.1:8080/":function(req,res){
         res.writeHeader(200,content.html)
         const file=read_homepage()
         res.write(file)
@@ -78,27 +78,28 @@ const request_handler={
                         end_connection(connection)
                     }
                     abort_login()
-                }else{
-                    console.log("connected successfully")
-                    
-                    connection.query("select * from users where username=? and password=?;",[login_data.username,login_data.password],function(err,results,fields){
-                        if(err){
-                            console.log(e)
-
-                            if(!e.fatal){
-                                end_connection(connection)
-                            }
-                            abort_login()
-                        }else{
-                            
-
-                            
-                            login_successful()
-    
-                            end_connection(connection)  
-                        }
-                    })
+                    return
                 }
+
+                console.log("connected successfully")
+                
+                connection.query("select * from users where username=? and password=?;",[login_data.username,login_data.password],function(err,results,fields){
+                    if(err){
+                        console.log(e)
+
+                        if(!e.fatal){
+                            end_connection(connection)
+                        }
+                        abort_login()
+                        return
+                    }
+                        
+                    //to the important work here
+                    
+                    login_successful()
+
+                    end_connection(connection)  
+                })
             }
         )
     },
