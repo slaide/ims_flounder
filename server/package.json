@@ -1,5 +1,5 @@
 {
-    "name": "IMS Flounder",
+    "name": "IMSFlounder",
     "version": "0.1.0",
     "description": "Flounder LIMS",
     "main": "server.js",
