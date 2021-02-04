@@ -1,27 +1,25 @@
-<!doctype html>
-<html>
-    <head>
-        <title>Flounder LIMS</title>
-        <meta charset="utf8">
-        <style>
-            body{
-                background-color: lightblue;
-            }
-        </style>
-        <script>
-            console.log("hello world!")
-            function alert_window(){
-                window.alert("this is a window alert! my name is $$NAME$$")
-            }
-        </script>
-    </head>
-    <body>
-        <div>Hello world!</div>
-        <button onclick="alert_window()">Click me!</button>
-        <form action="/test" method="get">
-            <input type="text" name="name" placeholder="Name"><br>
-            <input type="number" name="age" placeholder="Age"><br>
-            <input type="submit"><br>
-        </form>
-    </body>
+<!DOCTYPE html>
+<html lang="eng">
+   <head>
+      <title>Flounder - Log In</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="./reset.css">
+      <link rel="stylesheet" type="text/css" href="./flounder.css">
+   </head>
+
+   <body>
+      <main id="login_container">
+         <p> <!--Thought the logo could be nice here-->
+            <img src="./Flounder_logo-removebg-preview.png" width="321" height="254">
+         </p>
+         <form action="/login" method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <p>
+               <input type="submit" value="Log in">
+            </p>
+         </form>
+      </main>
+
+   </body>
 </html>
