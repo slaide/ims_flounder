@@ -2,7 +2,11 @@ function check_login_data(req,res){
     //parse login data from req
     utility.parse_data(req,(user_data)=>{
         console.log(user_data)
+        //write
+        //user_data.password
+        //user_data.username
         var connection=database.connect()
+
         var user_database_Stuff=connection.query("select * from users where username...")
         if(user_database_Stuff.num_rows==1){
             ...
