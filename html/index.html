@@ -11,12 +11,17 @@
         <script>
             console.log("hello world!")
             function alert_window(){
-                window.alert("this is a window alert!")
+                window.alert("this is a window alert! my name is $$NAME$$")
             }
         </script>
     </head>
     <body>
         <div>Hello world!</div>
         <button onclick="alert_window()">Click me!</button>
+        <form action="/test" method="get">
+            <input type="text" name="name" placeholder="Name"><br>
+            <input type="number" name="age" placeholder="Age"><br>
+            <input type="submit"><br>
+        </form>
     </body>
 </html>

@@ -14,3 +14,4 @@ to be able to run this whole software you need:
 - go to "127.0.0.1:8080" in your browser to open the website
     - "127.0.0.1:8080/shutdown" - if you visit this link, the server will shutdown (this is the currently official way to just close the server when you are done. it takes some seconds and will print a message once the server actually shuts down)
     - 127.0.0.1:8080/login - this should currently show an error with "doesnotexist" as unknown database, which is expected, but shows that the node.js server is working with mysql, and a msql server is running as well. contact patrick and/or make sure mysql is running otherwise)
+- hello people
