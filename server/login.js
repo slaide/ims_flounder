@@ -5,7 +5,7 @@ function check_login_data(req,res){
         var connection=database.connect()
         var user_database_Stuff=connection.query("select * from users where username...")
         if(user_database_Stuff.num_rows==1){
-            ...
+            
         }
         //do work with userdata here
         //check if exists in database
