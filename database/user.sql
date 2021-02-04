@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: 127.0.0.1:3306
--- Tid vid skapande: 03 feb 2021 kl 07:33
+-- Tid vid skapande: 04 feb 2021 kl 08:25
 -- Serverversion: 8.0.21
 -- PHP-version: 7.3.21
 
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `Phone_number` int NOT NULL,
   `Email` varchar(40) NOT NULL DEFAULT 'NOT NULL',
   `Special_Rights` varchar(40) NOT NULL,
+  `Immunocompromised` varchar(40) NOT NULL,
   PRIMARY KEY (`SSN`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -44,10 +45,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumpning av Data i tabell `user`
 --
 
-INSERT INTO `user` (`SSN`, `First_name`, `Last_name`, `Password`, `Admin`, `Phone_number`, `Email`, `Special_Rights`) VALUES
-(762324167, 'Ariel', 'Fin', 45678, 'No', 703052249, 'ariel.fin@gmail.com', 'B'),
-(882767577, 'Sebastian', 'Carbb', 65789, 'No', 762940501, 'seb.crabb@gmail.com', 'C'),
-(1450238774, 'Eric', 'Princ ', 123456, 'Yes', 709483940, 'eric.princ@gmail.com', 'A');
+INSERT INTO `user` (`SSN`, `First_name`, `Last_name`, `Password`, `Admin`, `Phone_number`, `Email`, `Special_Rights`, `Immunocompromised`) VALUES
+(1450238774, 'Eric', 'Princ ', 123456, 'Yes', 709483940, 'eric.princ@gmail.com', 'A', 'No'),
+(762324167, 'Ariel', 'Fin', 45678, 'No', 703052249, 'ariel.fin@gmail.com', 'B', 'Yes'),
+(882767577, 'Sebastian', 'Carbb', 65789, 'No', 762940501, 'seb.crabb@gmail.com', 'C', 'No');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
