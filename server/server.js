@@ -5,8 +5,6 @@ const utility=require("./utility.js")
 const database=require("./database")
 const login=require("./login.js")
 
-var num_connection=0
-
 const request_handler={
     "/":function(req,res){
         req.url="/index.html"
@@ -92,7 +90,10 @@ const server=http.createServer((req,res)=>{
         //every other throw is fatal
         }else{
             console.log("closing web server.")
-            server.close()
+            server.close(()=>{
+                console.log("server closed.")
+            })
+            return
         }
     }
 })
@@ -104,5 +105,7 @@ function start_server(){
 }
 
 database.connect_build_database((database_connection)=>{
+    database.disconnect(database_connection)
     start_server()
+    return
 })
