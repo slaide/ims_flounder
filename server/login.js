@@ -1,5 +1,6 @@
 function check_login_data(req,res){
     //parse login data from req
+    console.log("Check login function")
     utility.parse_data(req,(user_data)=>{
         console.log(user_data)   //user_data.password, user_data.email
         
@@ -11,6 +12,7 @@ function check_login_data(req,res){
         //email match 
         if(db_email.lenght==1){
             //check password match 
+            console.log("email match found")
             var db_password=connection.query("SELECT password FROM user WHERE email= 'user_data.email'")
             if(user_data.password.localeCompare(db_password)==0){
                 console.log("Password match")

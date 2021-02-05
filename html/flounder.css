@@ -38,8 +38,7 @@ body {
    text-decoration: none;
    display: inline-block;
    font-size: 16px;
-   /*added padding and margin here*/
-   padding: 10px 25px;
+   /*added margin here*/
    margin: 0.9rem;
 }
 
