@@ -1,18 +1,19 @@
 function check_login_data(req,res){
     //parse login data from req
     utility.parse_data(req,(user_data)=>{
-        console.log(user_data)   //user_data.password, user_data.username
+        console.log(user_data)   //user_data.password, user_data.email
         
-        var connection=database.connect()
+        var connection=database.connect_database()
         
         //result obj is array, cont each row as object
-        var db_email=connection.query("SELECT email FROM users WHERE email= 'user_data.username'")
+        var db_email=connection.query("SELECT email FROM users WHERE email= 'user_data.email'")
         console.log(db_email)
-        //username match 
+        //email match 
         if(db_email.lenght==1){
             //check password match 
-            var db_password=connection.query("SELECT password FROM user WHER email= 'user_data.username'")
+            var db_password=connection.query("SELECT password FROM user WHERE email= 'user_data.email'")
             if(user_data.password.localeCompare(db_password)==0){
+                console.log("Password match")
                 //password match
                 //send some answer to the client
                 //not yet decided if answer should be a file or some other data
@@ -23,10 +24,12 @@ function check_login_data(req,res){
             }
             
         }
-        //no username match 
+        //no email match 
         else{
-           console.log("No username match") 
+           console.log("No email match")
+           //What send back here?   
         }
+        //database disconnnect
         
     })
 }
