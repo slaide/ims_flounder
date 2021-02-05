@@ -33,8 +33,6 @@ module.exports.connect_database=connect_database
 function disconnect(connection,end_function=(err)=>{
     if(err){
         throw err;
-    }else{
-        console.log("disconnected successfully")
     }
 }){
     connection.end(end_function)
@@ -71,15 +69,13 @@ function connect_build_database(then){
                                 if(err){
                                     if(!err.code=="ER_EMPTY_QUERY"){
                                         console.log("failed database filling query.",err)
-                                        if(!err.fatal){
-                                            disconnect(conn)
-                                        }
                                     }
                                     return
                                 }
                                 if(!done){
                                     done=true;
                                     then(conn)
+                                    return
                                 }
                             })
                         }
