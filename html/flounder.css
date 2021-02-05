@@ -1,14 +1,16 @@
 body {
    background-image: url("bg.png");
    text-align: center;
-   font-family: 'Arial';
+   /*Just one more font, incase arial doesn't work (also declare "sans-serif")*/
+   font-family: Arial, Helvetica, sans-serif;
    background-size:cover;
 }
 
+/*Removed title in index
 #title{
    font-size:20px;
    padding: 20px;
-}
+}*/
 
 .container{
    height:100vh;
@@ -18,8 +20,8 @@ body {
 }
 
 #login_container {
-   width: 400px;
-   height: 500px;
+   width: 400px; /*Could be changed to % e.g. width: 30%;*/
+   height: 500px; /*Same as above*/
    border: 3px #ffffff;
    border-radius: 25px;
    background: #ffffff;
@@ -36,14 +38,25 @@ body {
    text-decoration: none;
    display: inline-block;
    font-size: 16px;
+   /*added padding and margin here*/
+   padding: 10px 25px;
+   margin: 0.9rem;
 }
 
-.padding{
-   padding: 10px;
+/*Add something for when hovering over log in button*/
+.button:hover{
+   background-color: #262223;
+}
+
+/*The image margin*/
+p img {
+   margin: 2rem;
 }
 
 input {
-   padding: 5px;
+   padding: 5px; /*Use rem or em*/
    border-radius: 4px;
    border: 1px solid gray;
+   /*Added margin*/
+   margin: 0.5rem;
 }

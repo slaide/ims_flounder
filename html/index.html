@@ -8,22 +8,20 @@
    </head>
 
    <body>
+      <!--Unneccesary to have two elements for container-->
       <div class="container">
          <main id="login_container">
             <p> <!--Thought the logo could be nice here-->
-               <img class="padding" src="./Flounder_logo-removebg-preview.png" width="321" height="254">
+               <img src="./Flounder_logo-removebg-preview.png" width="321" height="254">
             </p>
-            <h1 id="title">LOG IN</h1>
+            <!--<h1 id="title">LOG IN</h1>-->
+            <!--The class for padding is unneccesary and also all the div tags-->
             <form action="/login" method="POST">
-               <div class="padding">
                   <input type="email" name="email" placeholder="Email" required><br>
-               </div>
-               <div class="padding">
                   <input type="password" name="password" placeholder="Password" required>
-               </div>
-               <p class="padding">
+               <p>
                   <input class="button" type="submit" value="Log in">
-               </p>
+               </p> 
             </form>
       </main>
    </div>
