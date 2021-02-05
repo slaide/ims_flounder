@@ -1,5 +1,5 @@
 const fs=require("fs")
-const url = require("url")
+const url=require("url")
 
 function send_static_data(req,res){
     const html_folder=fs.readdirSync("../html");

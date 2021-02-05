@@ -6,7 +6,6 @@
     "dependencies": {
         "mysql": "^2.18.1"
     },
-    "keywords": [],
     "author": "",
     "license": "none"
 }

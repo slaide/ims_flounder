@@ -1,6 +1,5 @@
 const http=require("http")
 const fs=require("fs")
-const url = require("url")
 const utility=require("./utility.js")
 const database=require("./database")
 const login=require("./login.js")
