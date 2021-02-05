@@ -1,3 +1,43 @@
 body {
-   background-color: #ffffff;
+   background-image: url("bg.png");
+   text-align: center;
+   font-family: 'Futura';
+   background-size:cover;
+}
+
+#title{
+   font-size:20px;
+   padding: 20px;
+}
+
+.container{
+   height:100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+#login_container {
+   width: 400px;
+   height: 500px;
+   border: 3px #ffffff;
+   border-radius: 25px;
+   background: #ffffff;
+   padding: 20px;
+}
+
+.button{
+   background-color: #007ec7; /* Green */
+   border-radius: 25px;
+   border: 1px #3874ce;
+   color: white;
+   padding: 15px 32px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 16px;
+}
+
+.padding{
+   padding: 10px;
 }
