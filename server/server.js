@@ -13,52 +13,6 @@ const request_handler={
         }
     },
     "/login":login.check_login_data,
-    /*function(req,res){
-        function abort_login(){
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({loginAttempt:"unsuccessful"}))
-        }
-        function login_successful(){
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({loginAttempt:"successful"}))
-        }
-    
-        database.connect((connection,err)=>{
-            if(err){
-                console.log("failed to connect to database. did you turn off the database server?")//,err)
-                if(!err.fatal){
-                    database.disconnect(connection)
-                }
-                abort_login()
-                return
-            }
-
-            console.log("connected successfully")
-            
-            var login_data={username:null,password:null}
-            connection.query("select * from users where username=? and password=?;",[login_data.username,login_data.password],function(err,results,fields){
-                if(err){
-                    if(err.code=="ER_NO_SUCH_TABLE"){
-                        console.log("table 'users' does not exist.")
-                    }else{
-                        console.log("error on login data check: ",err)
-                    }
-
-                    if(!err.fatal){
-                        database.disconnect(connection)
-                    }
-                    abort_login()
-                    return
-                }
-                    
-                //to the important work here
-                
-                login_successful()
-
-                database.disconnect(connection)
-            })
-        })
-    },*/
     "/shutdown":function(req,res){
         res.end()
         throw({force_shutdown:true})
@@ -68,8 +22,7 @@ const request_handler={
 const server=http.createServer((req,res)=>{
     try{
         //check if url is known to server
-        handler=request_handler[req.url]
-        console.log(req.url,handler)
+        const handler=request_handler[req.url]
         if(handler){
             handler(req,res)
             return

@@ -4,17 +4,18 @@ function send_static_data(req,res){
     const html_folder=fs.readdirSync("../html");
     if(html_folder.includes(req.url.substr(1))){
         var header=content.from_filename(req.url)
+
         const e=encoding.from_filename(req.url)
-        const data_string=fs.readFileSync("../html"+req.url,e)
+        var data=fs.readFileSync("../html"+req.url,e)
+
         if(e==encoding.base64){
-            var buffer=Buffer.from(data_string.split(","),"base64")
-            header["Content-Length"]=buffer.length
-            res.writeHeader(200,header)
-            res.end(buffer)
-        }else{
-            res.writeHeader(200,header)
-            res.end(data_string)
+            data=Buffer.from(data,"base64")
+            header["Content-Length"]=data.length
         }
+
+        res.writeHeader(200,header)
+        res.end(data)
+
         console.log(req.url, "was sent.")
         return true
     }
