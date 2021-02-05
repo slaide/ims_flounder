@@ -1,7 +1,7 @@
 body {
    background-image: url("bg.png");
    text-align: center;
-   font-family: 'Futura';
+   font-family: 'Arial';
    background-size:cover;
 }
 
@@ -40,4 +40,10 @@ body {
 
 .padding{
    padding: 10px;
+}
+
+input {
+   padding: 5px;
+   border-radius: 4px;
+   border: 1px solid gray;
 }
