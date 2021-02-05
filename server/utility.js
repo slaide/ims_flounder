@@ -3,9 +3,18 @@ const fs=require("fs")
 function send_static_data(req,res){
     const html_folder=fs.readdirSync("../html");
     if(html_folder.includes(req.url.substr(1))){
-        res.writeHeader(200,content.from_filename(req.url))
-        res.write(fs.readFileSync("../html"+req.url,encoding.utf8))
-        res.end()
+        var header=content.from_filename(req.url)
+        const e=encoding.from_filename(req.url)
+        const data_string=fs.readFileSync("../html"+req.url,e)
+        if(e==encoding.base64){
+            var buffer=Buffer.from(data_string.split(","),"base64")
+            header["Content-Length"]=buffer.length
+            res.writeHeader(200,header)
+            res.end(buffer)
+        }else{
+            res.writeHeader(200,header)
+            res.end(data_string)
+        }
         console.log(req.url, "was sent.")
         return true
     }
@@ -19,6 +28,7 @@ const content={
     css:{"Content-Type":"text/css"},
     js:{"Content-Type":"text/javascript"},
     json:{"Content-Type":"application/json"},
+    png:{"Content-Type":"image/png"},
     from_filename:function(n){
         if(n.endsWith(".css")){
             return content.css
@@ -28,6 +38,8 @@ const content={
             return content.html
         }else if(n.endsWith(".json")){
             return content.json
+        }else if(n.endsWith(".png")){
+            return content.png
         }
     }
 }
@@ -36,6 +48,19 @@ module.exports.content=content
 const encoding={
     utf8:{encoding:"utf8"},
     base64:{encoding:"base64"},
+    from_filename:function(n){
+        if(n.endsWith(".css")){
+            return encoding.utf8
+        }else if(n.endsWith(".js")){
+            return encoding.utf8
+        }else if(n.endsWith(".html")){
+            return encoding.utf8
+        }else if(n.endsWith(".json")){
+            return encoding.utf8
+        }else if(n.endsWith(".png")){
+            return encoding.base64
+        }
+    }
 }
 module.exports.encoding=encoding
 

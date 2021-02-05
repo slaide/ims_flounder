@@ -69,6 +69,7 @@ const server=http.createServer((req,res)=>{
     try{
         //check if url is known to server
         handler=request_handler[req.url]
+        console.log(req.url,handler)
         if(handler){
             handler(req,res)
             return
