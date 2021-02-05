@@ -8,18 +8,25 @@
    </head>
 
    <body>
-      <main id="login_container">
-         <p> <!--Thought the logo could be nice here-->
-            <img src="./Flounder_logo-removebg-preview.png" width="321" height="254">
-         </p>
-         <form action="/login" method="POST">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <p>
-               <input type="submit" value="Log in">
+      <div class="container">
+         <main id="login_container">
+            <p> <!--Thought the logo could be nice here-->
+               <img class="padding" src="./Flounder_logo-removebg-preview.png" width="321" height="254">
             </p>
-         </form>
+            <h1 id="title">LOG IN</h1>
+            <form action="/login" method="POST">
+               <div class="padding">
+                  <input type="email" name="email" placeholder="Email" required><br>
+               </div>
+               <div class="padding">
+                  <input type="password" name="password" placeholder="Password" required>
+               </div>
+               <p class="padding">
+                  <input class="button" type="submit" value="Log in">
+               </p>
+            </form>
       </main>
+   </div>
 
    </body>
 </html>
