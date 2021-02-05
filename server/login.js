@@ -35,3 +35,4 @@ function check_login_data(req,res){
         
     })
 }
+module.exports.check_login_data=check_login_data
