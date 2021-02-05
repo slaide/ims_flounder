@@ -1,6 +1,10 @@
+const utility=require("./utility.js")
+const database=require("./database")
+const mysql=require("mysql")
+
 function check_login_data(req,res){
     //parse login data from req
-    console.log("Check login function")
+    console.log("Inside login function")
     utility.parse_data(req,(user_data)=>{
         console.log(user_data)   //user_data.password, user_data.email
         
