@@ -53,8 +53,8 @@ function connect_build_database(then){
             if(err){
                 if(!err.code=="ER_DB_DROP_EXISTS"){
                     console.log("error on drop:",err)
+                    return
                 }
-                return
             }
             conn.query("create database lims",(err,res,fields)=>{
                 //ignore any errors again
