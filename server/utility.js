@@ -31,6 +31,7 @@ const content={
     js:{"Content-Type":"text/javascript"},
     json:{"Content-Type":"application/json"},
     png:{"Content-Type":"image/png"},
+    ico:{"Content-Type":"image/vnd.microsoft.icon"},
     from_filename:function(n){
         if(n.endsWith(".css")){
             return content.css
@@ -42,6 +43,8 @@ const content={
             return content.json
         }else if(n.endsWith(".png")){
             return content.png
+        }else if(n.endsWith(".ico")){
+            return content.ico
         }
     }
 }

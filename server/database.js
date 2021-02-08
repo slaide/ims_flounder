@@ -125,9 +125,5 @@ function connect_build_database(then){
             })
         })
     })
-    //drop database (dont care if it does not exist actually)
-    //create database
-    //fill database with data from sql file
-    //create and return connection to database
 }
 module.exports.connect_build_database=connect_build_database
