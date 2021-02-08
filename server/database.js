@@ -44,6 +44,10 @@ module.exports.disconnect=disconnect
 function connect_build_database(then){
     //connect to server (not database!)
     connect_server((conn,err)=>{
+        if(err){
+            console.log("error on connect for rebuild:",err)
+            return
+        }
         conn.query("drop database lims",(err,res,fields)=>{
             //ignore any errors, assume they are related to the fact that the database did not exist
             if(err){
