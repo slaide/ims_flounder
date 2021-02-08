@@ -45,27 +45,39 @@ function connect_build_database(then){
     //connect to server (not database!)
     connect_server((conn,err)=>{
         if(err){
+            if(err.code=="ECONNREFUSED"){
+                console.log("error: connection refused. is the database running?")
+                return
+            }
             console.log("error on connect for rebuild:",err)
-            return
+            if(err.fatal){
+                return
+            }
         }
         conn.query("drop database lims",(err,res,fields)=>{
             //ignore any errors, assume they are related to the fact that the database did not exist
             if(err){
                 if(!err.code=="ER_DB_DROP_EXISTS"){
                     console.log("error on drop:",err)
-                    return
+                    if(err.fatal){
+                        return
+                    }
                 }
             }
             conn.query("create database lims",(err,res,fields)=>{
                 //ignore any errors again
                 if(err){
                     console.log("error on create:",err)
-                    return
+                    if(err.fatal){
+                        return
+                    }
                 }
                 disconnect(conn,(err)=>{
                     if(err){
                         console.log("disconnect after database creation failed.",err)
-                        return
+                        if(err.fatal){
+                            return
+                        }
                     }
                     connect_database((conn,err)=>{
                         if(err){
