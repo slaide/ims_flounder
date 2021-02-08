@@ -51,7 +51,9 @@ function connect_build_database(then){
         conn.query("drop database lims",(err,res,fields)=>{
             //ignore any errors, assume they are related to the fact that the database did not exist
             if(err){
-                console.log("error on drop:",err)
+                if(!err.code=="ER_DB_DROP_EXISTS"){
+                    console.log("error on drop:",err)
+                }
                 return
             }
             conn.query("create database lims",(err,res,fields)=>{
