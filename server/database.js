@@ -46,7 +46,7 @@ function connect_build_database(then){
     connect_server((conn,err)=>{
         if(err){
             if(err.code=="ECONNREFUSED"){
-                console.log("error: connection refused. is the database running?")
+                console.log("error: database connection refused. please start the database server.")
                 return
             }
             console.log("error on connect for rebuild:",err)
