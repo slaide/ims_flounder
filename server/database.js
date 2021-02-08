@@ -45,18 +45,20 @@ function connect_build_database(then){
     //connect to server (not database!)
     connect_server((conn,err)=>{
         if(err){
+            //print custom error message when database is not running
             if(err.code=="ECONNREFUSED"){
                 console.log("error: database connection refused. please start the database server.")
                 return
             }
             console.log("error on connect for rebuild:",err)
+            //generally, only quit on fatal errors
             if(err.fatal){
                 return
             }
         }
         conn.query("drop database lims",(err,res,fields)=>{
-            //ignore any errors, assume they are related to the fact that the database did not exist
             if(err){
+                //ignore the database not existing (e.g. after fresh server install. we delete all of the data here, so the data not existing prior doesnt matter)
                 if(!err.code=="ER_DB_DROP_EXISTS"){
                     console.log("error on drop:",err)
                     if(err.fatal){
@@ -65,7 +67,6 @@ function connect_build_database(then){
                 }
             }
             conn.query("create database lims",(err,res,fields)=>{
-                //ignore any errors again
                 if(err){
                     console.log("error on create:",err)
                     if(err.fatal){
@@ -87,23 +88,36 @@ function connect_build_database(then){
                             }
                             return
                         }
-                        const single_queries=fs.readFileSync("../database/user.sql",utility.encoding.utf8).split(";")
 
-                        var done=false;
-                        for(i in single_queries){
-                            conn.query(single_queries[i],(err,res,fields)=>{
-                                if(err){
-                                    if(!err.code=="ER_EMPTY_QUERY"){
-                                        console.log("failed database filling query.",err)
+                        //manual file insertion sequence to hopefully never break foreign key references
+                        const sql_files=[
+                            "../database/user.sql",
+                            "../database/room.sql",
+                            "../database/instrument.sql",
+                            "../database/booking.sql",
+                            "../database/ins_locates.sql",
+                            "../database/ins_maintenance.sql"
+                        ]
+
+                        for(file of sql_files){
+                            const single_queries=fs.readFileSync(file,utility.encoding.utf8).split(";")
+
+                            var done=false;
+                            for(i in single_queries){
+                                conn.query(single_queries[i],(err,res,fields)=>{
+                                    if(err){
+                                        if(!err.code=="ER_EMPTY_QUERY"){
+                                            console.log("failed database filling query.",err)
+                                        }
+                                        return
                                     }
-                                    return
-                                }
-                                if(!done){
-                                    done=true;
-                                    then(conn)
-                                    return
-                                }
-                            })
+                                    if(!done){
+                                        done=true;
+                                        then(conn)
+                                        return
+                                    }
+                                })
+                            }
                         }
                     })
                 })
