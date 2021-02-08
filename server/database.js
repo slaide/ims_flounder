@@ -46,8 +46,16 @@ function connect_build_database(then){
     connect_server((conn,err)=>{
         conn.query("drop database lims",(err,res,fields)=>{
             //ignore any errors, assume they are related to the fact that the database did not exist
+            if(err){
+                console.log("error on drop:",err)
+                return
+            }
             conn.query("create database lims",(err,res,fields)=>{
                 //ignore any errors again
+                if(err){
+                    console.log("error on create:",err)
+                    return
+                }
                 disconnect(conn,(err)=>{
                     if(err){
                         console.log("disconnect after database creation failed.",err)
