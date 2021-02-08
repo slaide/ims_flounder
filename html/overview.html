@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="eng">
+   <head>
+      <title>Room overview</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="./reset.css">
+      <link rel="stylesheet" type="text/css" href="./flounder.css">
+   </head>
+
+   <body>
+      <!--Navigation menu for users-->
+      <nav class="menu">
+         <ul>
+            <li><a href="#">Book an instrument</a></li>
+            <li><a href="#">My Schedule</a></li>
+            <li><a href="#">Administrator</a></li>
+            <li><a href="#">Maintenance</a></li>
+         </ul>
+      </nav>
+      
+      <main>
+
+         <!--html structure for the rooms, should perhaps be created using javascript-->
+         <!---->
+         <button type="button" onclick="getIns()">Room</button>
+         <div class="instruments"></div>
+
+         <script>
+            function getIns() {
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                  //document.getElementById("demo").innerHTML = this.responseText; 
+                  //Can we retrive responseText as something from server or database
+                  document.querySelector('.instruments').innerHTML = 'Centrifuge'
+                }
+              };
+              //Need to have a filename
+              xhttp.open("GET", "filename???", true);
+              xhttp.send();
+            }
+         </script>
+
+      </main>
+
+   </body>
+</html>
