@@ -21,30 +21,35 @@
       <main>
 
          <div id="room_overview"></div>
+         <!--Might not be necessary in the end, appendChild to room-buttons-->
          <div class="instruments"></div>
 
          <script>
 
-            //Change to show the "real" room data
             function getRooms() {
                var xhttp = new XMLHttpRequest();
+               xhttp.open("GET", "room.json", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
-                     let overview = document.querySelector('#room_overview');
-                     let room = document.createElement('button');
-                        room.setAttribute('type', 'button');
-                        room.setAttribute('onclick', "getIns()");
-                        room.setAttribute('class','room');
-                        room.innerHTML = 'Room';
-                     overview.appendChild(room); 
-                  }
+                     //Just some try I did for a "fake" json file
+                     //Should be an easier way to choose values of variables in json file?? than doing this loop
+                     for (let i = 14; i <= this.responseText.length; i = i+16) {
+                        let overview = document.querySelector('#room_overview');
+                        let room = document.createElement('button');
+                           room.setAttribute('type', 'button');
+                           room.setAttribute('onclick', 'getIns()');
+                           room.setAttribute('class','room');
+                           room.innerHTML = 'ROOM ' + this.responseText[i];
+                        overview.appendChild(room); 
+                     }
+                  }  
                };
-               xhttp.open("GET", "room", true);
                xhttp.send();
             }
 
             
             //Function for showing instruments when a room button is clicked
+            //Add input to function, perhaps room id, which would indicate the instruments to display
             function getIns() {
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function() {
