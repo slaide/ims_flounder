@@ -32,6 +32,7 @@ const content={
     json:{"Content-Type":"application/json"},
     png:{"Content-Type":"image/png"},
     ico:{"Content-Type":"image/vnd.microsoft.icon"},
+    jpg:{"Content-Type":"image/jpeg"},
     from_filename:function(n){
         if(n.endsWith(".css")){
             return content.css
@@ -45,6 +46,10 @@ const content={
             return content.png
         }else if(n.endsWith(".ico")){
             return content.ico
+        }else if(n.endsWith(".jpg")){
+            return content.jpg
+        }else if(n.endsWith(".jpeg")){
+            return content.jpg
         }
     }
 }
@@ -63,6 +68,12 @@ const encoding={
         }else if(n.endsWith(".json")){
             return encoding.utf8
         }else if(n.endsWith(".png")){
+            return encoding.base64
+        }else if(n.endsWith(".ico")){
+            return encoding.base64
+        }else if(n.endsWith(".jpg")){
+            return encoding.base64
+        }else if(n.endsWith(".jpeg")){
             return encoding.base64
         }
     }
