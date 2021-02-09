@@ -20,25 +20,46 @@
       
       <main>
 
-         <!--html structure for the rooms, should perhaps be created using javascript-->
-         <!---->
-         <button type="button" onclick="getIns()">Room</button>
+         <div id="room_overview"></div>
          <div class="instruments"></div>
 
          <script>
+
+            //Change to show the "real" room data
+            function getRooms() {
+               var xhttp = new XMLHttpRequest();
+               xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                     let overview = document.querySelector('#room_overview');
+                     let room = document.createElement('button');
+                        room.setAttribute('type', 'button');
+                        room.setAttribute('onclick', "getIns()");
+                        room.setAttribute('class','room');
+                        room.innerHTML = 'Room';
+                     overview.appendChild(room); 
+                  }
+               };
+               xhttp.open("GET", "room", true);
+               xhttp.send();
+            }
+
+            
+            //Function for showing instruments when a room button is clicked
             function getIns() {
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                   //document.getElementById("demo").innerHTML = this.responseText; 
                   //Can we retrive responseText as something from server or database
-                  document.querySelector('.instruments').innerHTML = 'Centrifuge'
+                  document.querySelector('.instruments').innerHTML = 'Centrifuge';
                 }
               };
               //Need to have a filename
-              xhttp.open("GET", "filename???", true);
+              xhttp.open("GET", "ins", true);
               xhttp.send();
             }
+
+            getRooms();
          </script>
 
       </main>
