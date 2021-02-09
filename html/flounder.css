@@ -31,15 +31,17 @@ body {
 .button{
    background-color: #007ec7; /* Green */
    border-radius: 25px;
-   border: 1px #3874ce;
+   border: 1px #3874ce; /*Why different colors for border and backgorund, could do 'border: none;'*/
    color: white;
    padding: 15px 32px;
    text-align: center;
    text-decoration: none;
    display: inline-block;
-   font-size: 16px;
+   font-size: 15px;
    /*added margin here*/
    margin: 0.9rem;
+   /*Perhaps uppercase letters?*/
+   text-transform: uppercase;
 }
 
 /*Add something for when hovering over log in button*/
@@ -49,7 +51,7 @@ body {
 
 /*The image margin*/
 p img {
-   margin: 2rem;
+   margin: 1.7rem;
 }
 
 input {
