@@ -1,6 +1,4 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,7 +23,6 @@ INSERT INTO `user` (`SSN`, `First_name`, `Last_name`, `Password`, `Admin`, `Phon
 (762324167, 'Ariel', 'Fin', 45678, 'No', 703052249, 'ariel.fin@gmail.com', 'B', 'Yes'),
 (882767577, 'Sebastian', 'Carbb', 65789, 'No', 762940501, 'seb.carbb@gmail.com', 'C', 'No'),
 (1450238774, 'Eric', 'Prince', 123456, 'Yes', 709483940, 'eric.prince@gmail.com', 'A', 'No');
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
