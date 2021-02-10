@@ -48,7 +48,8 @@ function check_login_data(req,res){
                 //No email match 
                 else{
                 console.log(">> No email match found")
-                //Back to login but with LOGINSUCCESS=true 
+                
+                //change $$LOGINSUCCESS$$= true 
                 res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8))
                 console.log('>> index.html file sent back to client')
 
