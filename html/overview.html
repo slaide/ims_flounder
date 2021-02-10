@@ -27,7 +27,7 @@
 
          <h1 class="overview_title">Book an instrument</h1>
          <div id="schedule">
-            <p>Select a room and instrument</p>
+            <p>Select a room and instrument under room overview</p>
          </div>
 
          <script>
@@ -44,13 +44,12 @@
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           //Change to room ID in getIns(${resObj.rooms[i].RoomID})
-                           room.setAttribute('onclick', `getIns(${resObj.rooms[i].RoomCode})`);
+                           room.setAttribute('onclick', `getIns('${resObj.rooms[i].RoomID}')`);
                            room.setAttribute('class','room');
                            room.innerHTML = 'Room ' + resObj.rooms[i].RoomCode;
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
-                           instruments.setAttribute('id', `ins_${resObj.rooms[i].RoomCode}`);
+                           instruments.setAttribute('id', `ins_${resObj.rooms[i].RoomID}`);
                         room_container.appendChild(instruments);
 
                      }
@@ -62,40 +61,42 @@
             
             //Function for showing instruments when a room button is clicked
             //instruments.json must contain insID and ins_description
-            function getIns(RoomCode) {
-            //$('').empty();
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("GET", "instruments.json", true);
-            xhttp.onreadystatechange = function() {
-               if (this.readyState == 4 && this.status == 200) {
-                  var resObj = JSON.parse(this.responseText);
-                  for (let i = 0; i < resObj.instruments.length; i++) {
-                     let instruments = document.querySelector(`#ins_${RoomCode}`);
-                     let ins = document.createElement('button');
-                        ins.setAttribute('type', 'button');
-                        ins.setAttribute('onclick',`getSched()`);
-                        ins.innerHTML = resObj.instruments[i].description;
-                     instruments.appendChild(ins);
+            function getIns(RoomID) {
+               $(`#ins_${RoomID}`).empty();
+               var xhttp = new XMLHttpRequest();
+               xhttp.open("GET", "instruments.json", true);
+               xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                     var resObj = JSON.parse(this.responseText);
+                     for (let i = 0; i < resObj.instruments.length; i++) {
+                        let instruments = document.querySelector(`#ins_${RoomID}`);
+                        let ins = document.createElement('button');
+                           ins.setAttribute('type', 'button');
+                           ins.setAttribute('onclick',`getSched('${resObj.instruments[i].description}')`);
+                           ins.innerHTML = resObj.instruments[i].description;
+                        instruments.appendChild(ins);
+                     }
                   }
-               }
-            };
-            xhttp.send(RoomCode);
-         }
+               };
+               xhttp.send(RoomID);
+            }
 
             //Function for displaying instrument booking options/instrument schedule
             //All booking information for one instrument that is choosen
             //Do we want a display of the weekly schedule, or many weeks
-            // TEMPORARY //
-            function getSched() {
+            function getSched(ins_desc) {
                $("#schedule").empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("GET", "ins_booking.json", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      let schedule = document.querySelector('#schedule');
+                     let ins_title = document.createElement('h2');
+                        ins_title.innerHTML = ins_desc;
+                        schedule.appendChild(ins_title);
                      let booking_form = document.createElement('form');
                         booking_form.setAttribute('id','booking_form');
-                        booking_form.setAttribute('action','/booking');
+                        booking_form.setAttribute('action','/booking'); //FOR SERVER
                         booking_form.setAttribute('method','POST');
                         schedule.appendChild(booking_form);
                      let label_date = document.createElement('label');
@@ -110,6 +111,7 @@
                }
                xhttp.send();
             }
+
 
             getRooms();              
 
