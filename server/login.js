@@ -3,7 +3,6 @@ const database=require("./database")
 const mysql=require("mysql")
 const path=require('path')
 const fs=require("fs")
-//var express = require('express')
 
 function check_login_data(req,res){
     //parse login data from req
@@ -37,24 +36,20 @@ function check_login_data(req,res){
                     }
                     else{
                         console.log(">> No password match")
+                        res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8).replace("$$LOGINSUCCESS$$", "true"))
+                        console.log('>> index.html file sent back to client with LOGINSUCCESS=true')
                         database.disconnect(connection)
-                        console.log('>> Database disconnected')  
-                        
-                        //Password don't match.  
-                        //display "wrong password" and then the user can try again
+                        console.log('>> Database disconnected')
                     }
-                
                 }
-                //No email match 
+ 
                 else{
-                console.log(">> No email match found")
+                    console.log(">> No email match found")
+                    res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8).replace("$$LOGINSUCCESS$$", "true"))
+                    console.log('>> index.html file sent back to client with LOGINSUCCESS=true')
+                    database.disconnect(connection)
+                    console.log('>> Database disconnected') 
                 
-                //change $$LOGINSUCCESS$$= true 
-                res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8))
-                console.log('>> index.html file sent back to client')
-
-                database.disconnect(connection)
-                console.log('>> Database disconnected')   
                 }
             })
         }) 
