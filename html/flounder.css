@@ -6,12 +6,6 @@ body {
    background-size:cover;
 }
 
-/*Removed title in index
-#title{
-   font-size:20px;
-   padding: 20px;
-}*/
-
 .container{
    height:100vh;
    display: flex;
@@ -20,8 +14,8 @@ body {
 }
 
 #login_container {
-   width: 400px; /*Could be changed to % e.g. width: 30%;*/
-   height: 500px; /*Same as above*/
+   width: 400px; 
+   height: 500px;
    border: 3px #ffffff;
    border-radius: 25px;
    background: #ffffff;
@@ -44,7 +38,7 @@ body {
    text-transform: uppercase;
 }
 
-/*Add something for when hovering over log in button*/
+/*Added something for when hovering over log in button*/
 .button:hover{
    background-color: #262223;
 }
