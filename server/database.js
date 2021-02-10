@@ -99,10 +99,14 @@ function connect_build_database(then){
                             "../database/ins_maintenance.sql"
                         ]
 
+                        console.log("about to insert data")
+
+                        var done=0
+                        var max_done=0
+
                         for(file of sql_files){
                             const single_queries=fs.readFileSync(file,utility.encoding.utf8).split(";")
 
-                            var done=false;
                             for(i in single_queries){
                                 conn.query(single_queries[i],(err,res,fields)=>{
                                     if(err){
@@ -112,8 +116,8 @@ function connect_build_database(then){
                                             return
                                         }
                                     }
-                                    if(!done){
-                                        done=true;
+                                    done+=1;
+                                    if(done==max_done){
                                         then(conn)
                                         return
                                     }
