@@ -99,8 +99,6 @@ function connect_build_database(then){
                             "../database/ins_maintenance.sql"
                         ]
 
-                        console.log("about to insert data")
-
                         var done=0
                         var max_done=0
 
