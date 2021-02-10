@@ -111,7 +111,8 @@ function connect_build_database(then){
                                     if(err){
                                         //ignore empty queries from weird split behaviour
                                         if(err.code!="ER_EMPTY_QUERY"){
-                                            console.log("error inserting data into rebuilt database:",err)
+                                            console.log("error inserting data into rebuilt database:")
+                                            throw err
                                         }
                                     }
                                     done+=1;
