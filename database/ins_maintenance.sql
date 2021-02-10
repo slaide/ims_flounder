@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `ins_maintenance` (
   `Inst_ID` varchar(40) NOT NULL,
   `SSN` int NOT NULL,
   PRIMARY KEY (`Inst_ID`,`SSN`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `ins_maintenance` (`Date`, `Time`, `Status`, `Notes`, `Inst_ID`, `SSN`) VALUES
 (20210129, 9, 'Working', 'fixed loose rotor ', 'ins1', 1450238774);

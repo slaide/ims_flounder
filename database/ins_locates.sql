@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `ins_locates` (
   `Room_ID` varchar(40) NOT NULL,
   `Ins_ID` varchar(40) NOT NULL,
   PRIMARY KEY (`Room_ID`,`Ins_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `ins_locates` (`Start_time/Date`, `End_time/Date`, `Room_ID`, `Ins_ID`) VALUES
 (20210116, 20210322, 'r1', 'ins4'),

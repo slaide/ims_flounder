@@ -13,7 +13,7 @@ CREATE TABLE instrument (
   Proc_date int NOT NULL,
   Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Room_ID varchar(40) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Note, Room_ID) VALUES
 ('ins1', 'Mass spec ', 6047, 20201214, 'Everything works just fine ', 'r2'),

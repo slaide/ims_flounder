@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `booking` (
   `Inst_ID` varchar(40) NOT NULL,
   PRIMARY KEY (`SSN`),
   UNIQUE KEY `Inst_ID` (`Inst_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `booking` (`Note`, `Time`, `Status`, `SSN`, `Inst_ID`) VALUES
 ('The instrument  will be used ', 9, 'Using ', 882767577, 'ins1');

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   `Capacity` int NOT NULL,
   `Class` varchar(40) NOT NULL,
   PRIMARY KEY (`Room_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `room` (`Room_ID`, `Room_code`, `Area`, `Building_code`, `Capacity`, `Class`) VALUES
 ('r1', 1, 1374, 201, 5, 'C'),
