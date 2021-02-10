@@ -104,6 +104,7 @@ function connect_build_database(then){
 
                         for(file of sql_files){
                             const single_queries=fs.readFileSync(file,utility.encoding.utf8).split(";")
+                            max_done+=single_queries.length
 
                             for(i in single_queries){
                                 conn.query(single_queries[i],(err,res,fields)=>{
