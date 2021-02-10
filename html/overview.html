@@ -21,8 +21,6 @@
       <main>
 
          <div id="room_overview"></div>
-         <!--Might not be necessary in the end, appendChild to room-buttons-->
-         <div class="instruments"></div>
 
          <script>
 
@@ -31,16 +29,23 @@
                xhttp.open("GET", "room.json", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
-                     //Just some try I did for a "fake" json file
-                     //Should be an easier way to choose values of variables in json file?? than doing this loop
-                     for (let i = 14; i <= this.responseText.length; i = i+16) {
-                        let overview = document.querySelector('#room_overview');
+                     var resObj = JSON.parse(this.responseText);
+                     let overview = document.querySelector('#room_overview');
+                     for (let i = 0; i < resObj.rooms.length; i++) {
+                        let room_container = document.createElement('div');
+                           overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', 'getIns()');
+                           //Change to room ID in getIns(...)
+                           room.setAttribute('onclick', `getIns(${resObj.rooms[i].RoomID})`);
                            room.setAttribute('class','room');
-                           room.innerHTML = 'ROOM ' + this.responseText[i];
-                        overview.appendChild(room); 
+                           room.innerHTML = 'ROOM ' + resObj.rooms[i].RoomCode;
+                        room_container.appendChild(room);
+                        //All instruments are displayed under one room button... not desirable
+                        let instruments = document.createElement('div');
+                           instruments.setAttribute('class', 'instruments');
+                        room_container.appendChild(instruments);
+
                      }
                   }  
                };
@@ -49,22 +54,25 @@
 
             
             //Function for showing instruments when a room button is clicked
-            //Add input to function, perhaps room id, which would indicate the instruments to display
-            function getIns() {
+            function getIns(roomID) {
               var xhttp = new XMLHttpRequest();
+              xhttp.open("GET", "instruments.json", true);
               xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                  //document.getElementById("demo").innerHTML = this.responseText; 
-                  //Can we retrive responseText as something from server or database
-                  document.querySelector('.instruments').innerHTML = 'Centrifuge';
-                }
-              };
-              //Need to have a filename
-              xhttp.open("GET", "ins", true);
-              xhttp.send();
+                  var resObj = JSON.parse(this.responseText);
+                  for (let i = 0; i < resObj.instruments.length; i++) {
+                     let instruments = document.querySelector('.instruments');
+                     let ins = document.createElement('p');
+                        ins.innerHTML = resObj.instruments[i].description;
+                     instruments.appendChild(ins);
+                     }
+                  }
+               };
+               xhttp.send(roomID);
             }
 
-            getRooms();
+            getRooms();            
+
          </script>
 
       </main>
