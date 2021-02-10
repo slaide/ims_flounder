@@ -1,6 +1,9 @@
 const utility=require("./utility.js")
 const database=require("./database")
 const mysql=require("mysql")
+const path=require('path')
+const fs=require("fs")
+//var express = require('express')
 
 function check_login_data(req,res){
     //parse login data from req
@@ -26,19 +29,18 @@ function check_login_data(req,res){
                     if(user_data.password.localeCompare(db_data[0].Password)==0){
                         console.log(">> Password match")
                         console.log('>> Login succesfull')
-                        //Login sucefully 
-                        //send back file overview.html
-                        //res.sendFile(path.join(__dirname, '../html', 'overview.html'))
-                        //console.log('>> overview.html file sent back to client')
-                        //database.disconnect(connection)
-                        //console.log('>> Database disconnected')
+
+                        res.end(fs.readFileSync("../html/overview.html",utility.encoding.utf8))
+                        console.log('>> overview.html file sent back to client')
+                        database.disconnect(connection)
+                        console.log('>> Database disconnected')
                     }
                     else{
                         console.log(">> No password match")
                         database.disconnect(connection)
                         console.log('>> Database disconnected')  
                         
-                        //Password don't match. What send back? 
+                        //Password don't match.  
                         //display "wrong password" and then the user can try again
                     }
                 
@@ -46,7 +48,10 @@ function check_login_data(req,res){
                 //No email match 
                 else{
                 console.log(">> No email match found")
-                //What send back here?
+                //Back to login but with LOGINSUCCESS=true 
+                res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8))
+                console.log('>> index.html file sent back to client')
+
                 database.disconnect(connection)
                 console.log('>> Database disconnected')   
                 }
