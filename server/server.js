@@ -1,8 +1,10 @@
 const http=require("http")
 const fs=require("fs")
 const utility=require("./utility.js")
-const database=require("./database")
+const database=require("./database.js")
 const login=require("./login.js")
+const rooms=require("./rooms.js")
+const machines=require("./machines.js")
 
 const request_handler={
     "/":function(req,res){
@@ -12,10 +14,12 @@ const request_handler={
         }
     },
     "/login":login.check_login_data,
-    //"/get_room_list":rooms.get_list,
-    //"/get_machines_in_room":rooms.get_machines,
-    //"/get_machine_schedule":machines.get_schedule,
-    //"/set_machine_schedule_slot":machines.set_schedule_slot,
+
+    "/get_room_list":rooms.get_list,
+    "/get_machines_in_room":rooms.get_machines,
+    "/get_machine_schedule":machines.get_schedule,
+    "/set_machine_schedule_slot":machines.set_schedule_slot,
+
     "/shutdown":function(req,res){
         res.end()
         throw({force_shutdown:true})

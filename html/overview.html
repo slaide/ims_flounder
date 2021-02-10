@@ -5,6 +5,7 @@
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
    </head>
 
    <body>
@@ -18,9 +19,16 @@
          </ul>
       </nav>
       
-      <main>
+      <main id="overview_cont">
 
+         <!--Display using grid or something like that, 2 columns, one for room_overview and one for schedule-->
+         <h1 class="overview_title">Room overview</h1>
          <div id="room_overview"></div>
+
+         <h1 class="overview_title">Book an instrument</h1>
+         <div id="schedule">
+            <p>Select a room and instrument</p>
+         </div>
 
          <script>
 
@@ -36,14 +44,13 @@
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           //Change to room ID in getIns(...)
-                           room.setAttribute('onclick', `getIns(${resObj.rooms[i].RoomID})`);
+                           //Change to room ID in getIns(${resObj.rooms[i].RoomID})
+                           room.setAttribute('onclick', `getIns(${resObj.rooms[i].RoomCode})`);
                            room.setAttribute('class','room');
-                           room.innerHTML = 'ROOM ' + resObj.rooms[i].RoomCode;
+                           room.innerHTML = 'Room ' + resObj.rooms[i].RoomCode;
                         room_container.appendChild(room);
-                        //All instruments are displayed under one room button... not desirable
                         let instruments = document.createElement('div');
-                           instruments.setAttribute('class', 'instruments');
+                           instruments.setAttribute('id', `ins_${resObj.rooms[i].RoomCode}`);
                         room_container.appendChild(instruments);
 
                      }
@@ -54,24 +61,57 @@
 
             
             //Function for showing instruments when a room button is clicked
-            function getIns(roomID) {
-              var xhttp = new XMLHttpRequest();
-              xhttp.open("GET", "instruments.json", true);
-              xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+            //instruments.json must contain insID and ins_description
+            function getIns(RoomCode) {
+            //$('').empty();
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "instruments.json", true);
+            xhttp.onreadystatechange = function() {
+               if (this.readyState == 4 && this.status == 200) {
                   var resObj = JSON.parse(this.responseText);
                   for (let i = 0; i < resObj.instruments.length; i++) {
-                     let instruments = document.querySelector('.instruments');
-                     let ins = document.createElement('p');
+                     let instruments = document.querySelector(`#ins_${RoomCode}`);
+                     let ins = document.createElement('button');
+                        ins.setAttribute('type', 'button');
+                        ins.setAttribute('onclick',`getSched()`);
                         ins.innerHTML = resObj.instruments[i].description;
                      instruments.appendChild(ins);
-                     }
                   }
-               };
-               xhttp.send(roomID);
+               }
+            };
+            xhttp.send(RoomCode);
+         }
+
+            //Function for displaying instrument booking options/instrument schedule
+            //All booking information for one instrument that is choosen
+            //Do we want a display of the weekly schedule, or many weeks
+            // TEMPORARY //
+            function getSched() {
+               $("#schedule").empty();
+               var xhttp = new XMLHttpRequest();
+               xhttp.open("GET", "ins_booking.json", true);
+               xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                     let schedule = document.querySelector('#schedule');
+                     let booking_form = document.createElement('form');
+                        booking_form.setAttribute('id','booking_form');
+                        booking_form.setAttribute('action','/booking');
+                        booking_form.setAttribute('method','POST');
+                        schedule.appendChild(booking_form);
+                     let label_date = document.createElement('label');
+                        label_date.setAttribute('for', 'date');
+                        booking_form.appendChild(label_date);
+                     let input_date = document.createElement('input');
+                        input_date.setAttribute('type','date');
+                        input_date.setAttribute('id','date');
+                        booking_form.appendChild(input_date);
+                     
+                  }
+               }
+               xhttp.send();
             }
 
-            getRooms();            
+            getRooms();              
 
          </script>
 
