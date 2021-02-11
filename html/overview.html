@@ -28,9 +28,17 @@
          <div class="grid">
             <h1 class="overview_title">Book an instrument</h1>
             <div id="schedule">
-               <p>Select a room and instrument under room overview</p>
+               <p id="info_text">Select a room and instrument under room overview</p>
+               <table id="ins_table">
+                  <thead id="date"></thead>
+                  <tbody id="timeSlots"></tbody>
+               </table>
+               <form id="booking_form">
+               </form>
             </div>
+
          </div>
+
 
          <script>
 
@@ -74,6 +82,7 @@
                         let instruments = document.querySelector(`#ins_${RoomID}`);
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
+                           //Perhaps add insID in getSched()
                            ins.setAttribute('onclick',`getSched('${resObj.instruments[i].description}')`);
                            ins.innerHTML = resObj.instruments[i].description;
                         instruments.appendChild(ins);
@@ -87,35 +96,60 @@
             //All booking information for one instrument that is choosen
             //Do we want a display of the weekly schedule, or many weeks
             function getSched(ins_desc) {
-               $("#schedule").empty();
+               $("#info_text").empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("GET", "ins_booking.json", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      let schedule = document.querySelector('#schedule');
+                     //Add title that corresponds to instrument description
                      let ins_title = document.createElement('h2');
                         ins_title.innerHTML = ins_desc;
                         schedule.appendChild(ins_title);
-                     let booking_form = document.createElement('form');
-                        booking_form.setAttribute('id','booking_form');
-                        booking_form.setAttribute('action','/booking'); //FOR SERVER
-                        booking_form.setAttribute('method','POST');
-                        schedule.appendChild(booking_form);
-                     let label_date = document.createElement('label');
-                        label_date.setAttribute('for', 'date');
-                        booking_form.appendChild(label_date);
-                     let input_date = document.createElement('input');
-                        input_date.setAttribute('type','date');
-                        input_date.setAttribute('id','date');
-                        booking_form.appendChild(input_date);
-                     
+                     //Choose tbody and thead elements by id
+                     let tbody = document.querySelector('#timeSlots');
+                     console.log(tbody);
+                     let thead = document.querySelector('#date');
+                     console.log(thead);
+                     //Array for the days of the week
+                     let date_arr = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+                     for (let j = 0; j < 12; j++) {
+                        let tr = document.createElement('tr');
+                     for (let i = 0; i < 5; i++) {
+                        if (j == 0) {
+                           let th = document.createElement('th');
+                              th.innerHTML = date_arr[i];
+                              thead.appendChild(th);
+                        }
+                        let td = document.createElement('td');
+                           tr.appendChild(td);
+                        let slotButton = document.createElement('button');
+                           slotButton.setAttribute('id', `slot${7+j}`)
+                           slotButton.setAttribute('onclick',`showForm(${7+j})`)
+                           td.appendChild(slotButton);
+                        let currentTime = 7+j;
+                           slotButton.innerHTML = currentTime + ':00' +'-'+ (currentTime+1) + ':00';;
+                     }
+                     tbody.appendChild(tr);
+
+                     }  
                   }
                }
+               //Send insID
                xhttp.send();
             }
 
+            function showForm(slotID) {
+               let booking_form = document.querySelector('#booking_form')
+                  booking_form.setAttribute('action','/booking'); //FOR SERVER
+                  booking_form.setAttribute('method','POST');
+               let label = document.createElement('label');
+                  label.innerHTML = slotID;
+                  booking_form.appendChild(label);
+               
+            }
 
-            getRooms();              
+            getRooms();             
 
          </script>
 
