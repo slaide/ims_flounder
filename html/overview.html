@@ -43,7 +43,7 @@
 
             function getRooms() {
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "room.json", true);
+               xhttp.open("GET", "/get_rooms", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var resObj = JSON.parse(this.responseText);
@@ -73,7 +73,7 @@
             function getIns(RoomID) {
                $(`#ins_${RoomID}`).empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "instruments.json", true);
+               xhttp.open("GET", "/get_machines_in_room", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var resObj = JSON.parse(this.responseText);
@@ -99,7 +99,7 @@
                $("#date").empty();
                $("tbody").empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "ins_booking.json", true);
+               xhttp.open("GET", "/ins_bookings, true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      let schedule = document.querySelector('#schedule');
