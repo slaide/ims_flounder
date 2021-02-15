@@ -76,14 +76,14 @@
                xhttp.open("POST", "/get_machines_in_room", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
-                     var instruments = JSON.parse(this.responseText);
-                     for (let i = 0; i < instruments.length; i++) {
+                     var instrument = JSON.parse(this.responseText);
+                     for (let i = 0; i < instrument.length; i++) {
                         let instruments = document.querySelector(`#ins_${RoomID}`);
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            //Add insID in getSched()
-                           ins.setAttribute('onclick',`getSched('${instruments[i].description}, ${instruments[i].insID}')`);
-                           ins.innerHTML = instruments[i].description;
+                           ins.setAttribute('onclick',`getSched('${instrument[i].description}, ${instrument[i].insID}')`);
+                           ins.innerHTML = instrument[i].description;
                         instruments.appendChild(ins);
                      }
                   }
