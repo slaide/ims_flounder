@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   Special_Rights varchar(40) NOT NULL,
   Immunocompromised varchar(40) NOT NULL,
   PRIMARY KEY (SSN)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_Rights, Immunocompromised) VALUES
 (762324167, 'Ariel', 'Fin', '45678', 'No', 703052249, 'ariel.fin@gmail.com', 'B', 'Yes'),
