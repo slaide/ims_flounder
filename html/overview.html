@@ -73,7 +73,7 @@
             function getIns(RoomID) {
                $(`#ins_${RoomID}`).empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "/get_machines_in_room", true);
+               xhttp.open("POST", "/get_machines_in_room", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var instruments = JSON.parse(this.responseText);
@@ -82,24 +82,24 @@
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            //Add insID in getSched()
-                           ins.setAttribute('onclick',`getSched('${instruments[i].description}')`);
+                           ins.setAttribute('onclick',`getSched('${instruments[i].description}, ${instruments[i].insID}')`);
                            ins.innerHTML = instruments[i].description;
                         instruments.appendChild(ins);
                      }
                   }
                };
-               xhttp.send(RoomID);
+               xhttp.send(JSON.stringify({'roomid': RoomID}));
             }
 
             //Function for displaying instrument booking options/instrument schedule
             //All booking information for one instrument that is choosen
             //Do we want a display of the weekly schedule, or many weeks
-            function getSched(ins_desc) {
+            function getSched(ins_desc, insID) {
                $("#info_text").empty();
                $("#date").empty();
                $("tbody").empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "/ins_bookings", true);
+               xhttp.open("POST", "/ins_bookings", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var bookings = JSON.parse(this.responseText);
@@ -136,7 +136,7 @@
                   }
                }
                //Send insID
-               xhttp.send();
+               xhttp.send(JSON.stringify({'insID':insID}));
             }
 
             //dateID range from 0 to 4 and is index for day of the week, Monday=0, Tuesday=1...
