@@ -46,19 +46,19 @@
                xhttp.open("GET", "/get_rooms", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
-                     var resObj = JSON.parse(this.responseText);
+                     var rooms = JSON.parse(this.responseText);
                      let overview = document.querySelector('#room_overview');
-                     for (let i = 0; i < resObj.rooms.length; i++) {
+                     for (let i = 0; i < rooms.length; i++) {
                         let room_container = document.createElement('div');
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns('${resObj.rooms[i].RoomID}')`);
+                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}')`);
                            room.setAttribute('class','room');
-                           room.innerHTML = 'Room ' + resObj.rooms[i].RoomCode;
+                           room.innerHTML = 'Room ' + rooms[i].RoomCode;
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
-                           instruments.setAttribute('id', `ins_${resObj.rooms[i].RoomID}`);
+                           instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
                         room_container.appendChild(instruments);
 
                      }
@@ -76,14 +76,14 @@
                xhttp.open("GET", "/get_machines_in_room", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
-                     var resObj = JSON.parse(this.responseText);
-                     for (let i = 0; i < resObj.instruments.length; i++) {
+                     var instruments = JSON.parse(this.responseText);
+                     for (let i = 0; i < instruments.length; i++) {
                         let instruments = document.querySelector(`#ins_${RoomID}`);
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            //Add insID in getSched()
-                           ins.setAttribute('onclick',`getSched('${resObj.instruments[i].description}')`);
-                           ins.innerHTML = resObj.instruments[i].description;
+                           ins.setAttribute('onclick',`getSched('${instruments[i].description}')`);
+                           ins.innerHTML = instruments[i].description;
                         instruments.appendChild(ins);
                      }
                   }
@@ -102,6 +102,7 @@
                xhttp.open("GET", "/ins_bookings", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
+                     var bookings = JSON.parse(this.responseText);
                      let schedule = document.querySelector('#schedule');
                      //Title end up in the bottom...
                      let ins_title = document.createElement('h2');
