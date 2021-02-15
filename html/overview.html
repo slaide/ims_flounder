@@ -99,7 +99,7 @@
                $("#date").empty();
                $("tbody").empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "/ins_bookings, true);
+               xhttp.open("GET", "/ins_bookings", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      let schedule = document.querySelector('#schedule');
