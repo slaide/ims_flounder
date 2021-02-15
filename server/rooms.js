@@ -1,8 +1,13 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
 
-//return list of all rooms (in lab)
-//include all room specific data (id, name etc.)
+/**
+ * Respond to a request with a list of all rooms in json format
+ * currently expects client data: none
+ * currently responds with: RoomID, RoomCode
+ * @param {Request} req Request object with client data
+ * @param {Response} res Reponse object
+ */
 function get_list(req,res){
     database.connect_database((connection,error)=>{
         if(error){
@@ -35,8 +40,13 @@ function get_list(req,res){
 }
 module.exports.get_list=get_list
 
-//return list of machines in a specific room
-//include all machine data (id, name, type etc.)
+/**
+ * Respond to a request with a list of all machines in a specific room in json format
+ * currently expects client data: RoomID
+ * currently responds with: InsID, description
+ * @param {Request} req Request object with client data
+ * @param {Response} res Reponse object
+ */
 function get_machines(req,res){
     database.connect_database((connection,error)=>{
         if(error){

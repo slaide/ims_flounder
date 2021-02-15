@@ -1,6 +1,13 @@
 const fs=require("fs")
 const url=require("url")
 
+/**
+ * Respond to a request with static data, if the url corresponds to a file in the 'html' folder
+ * currently expects client data: none
+ * currently responds with: static data, if exists (otherwise return without response)
+ * @param {Request} req Request object with client data
+ * @param {Response} res Reponse object
+ */
 function send_static_data(req,res){
     const html_folder=fs.readdirSync("../html");
     if(html_folder.includes(req.url.substr(1))){
@@ -80,8 +87,12 @@ const encoding={
 }
 module.exports.encoding=encoding
 
-//parse data from get/post methods
-//'then' is callback executed after data has been parsed
+/**
+ * parse client data from request
+ * currently expects client data: any
+ * @param {Request} req Request object with client data
+ * @param {(data:Object)=>void} then Function to be called with parsed client request data
+ */
 function parse_data(req,then){
     if(req.method=="POST"){
         var chunks=""
