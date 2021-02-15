@@ -89,12 +89,20 @@ function parse_data(req,then){
             chunks+=chunk
         })
         req.on("end",()=>{
-            var params=new url.URLSearchParams(chunks)
-            var ret={method:"POST"}
-            params.forEach((value,key,searchparams)=>{
-                ret[key]=value
-            })
-            then(ret)
+            if(chunks[0]=="{"){
+                var ret=JSON.parse(chunks)
+                if(!ret.method){
+                    ret.method="POST"
+                }
+                then(ret)
+            }else{
+                var params=new url.URLSearchParams(chunks)
+                var ret={method:"POST"}
+                params.forEach((value,key,searchparams)=>{
+                    ret[key]=value
+                })
+                then(ret)
+            }
         })
     }else{
         var params=new url.URLSearchParams(req.url)

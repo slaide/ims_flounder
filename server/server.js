@@ -15,7 +15,7 @@ const request_handler={
     },
     "/login":login.check_login_data,
 
-    "/get_room_list":rooms.get_list,
+    "/get_rooms":rooms.get_list,
     "/get_machines_in_room":rooms.get_machines,
     "/get_machine_schedule":machines.get_schedule,
     "/set_machine_schedule_slot":machines.set_schedule_slot,

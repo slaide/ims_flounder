@@ -51,34 +51,37 @@ function connect_build_database(then){
                 return
             }
             console.log("error on connect for rebuild:",err)
-            //generally, only quit on fatal errors
-            if(err.fatal){
-                return
+            if(!err.fatal){
+                disconnect(conn)
             }
+            return
         }
         conn.query("drop database lims",(err,res,fields)=>{
             if(err){
                 //ignore the database not existing (e.g. after fresh server install. we delete all of the data here, so the data not existing prior doesnt matter)
                 if(!err.code=="ER_DB_DROP_EXISTS"){
                     console.log("error on drop:",err)
-                    if(err.fatal){
-                        return
+                    if(!err.fatal){
+                        disconnect(conn)
                     }
+                    return
                 }
             }
             conn.query("create database lims",(err,res,fields)=>{
                 if(err){
                     console.log("error on create:",err)
-                    if(err.fatal){
-                        return
+                    if(!err.fatal){
+                        disconnect(conn)
                     }
+                    return
                 }
                 disconnect(conn,(err)=>{
                     if(err){
                         console.log("disconnect after database creation failed.",err)
-                        if(err.fatal){
-                            return
+                        if(!err.fatal){
+                            disconnect(conn)
                         }
+                        return
                     }
                     connect_database((conn,err)=>{
                         if(err){
