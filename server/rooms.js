@@ -24,7 +24,7 @@ function get_list(req,res){
             for(item of result){
                 ret.push({RoomID:item.Room_ID,RoomCode:item.Room_code})
             }
-            res.writeHeader(200,utility.content.from_filename(".json"))
+            res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
 
             database.disconnect(connection)
