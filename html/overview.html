@@ -29,7 +29,7 @@
             <h1 class="overview_title">Book an instrument</h1>
             <div id="schedule">
                <p id="info_text">Select a room and instrument under room overview</p>
-
+               <div id="change_buttons"></div>
                <table id="ins_table">
                   <thead id="date"></thead>
                   <tbody id="timeSlots"></tbody>
@@ -101,6 +101,7 @@
                $("#info_text").empty();
                $("#date").empty();
                $("tbody").empty();
+               $('#change_buttons').empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/ins_bookings", true);
                xhttp.onreadystatechange = function() {
@@ -123,8 +124,7 @@
                         schedule.appendChild(ins_title);
                      
                      //Change-of-week buttons
-                     let change = document.createElement('div');
-                        change.setAttribute('id','change_buttons');
+                     let change = document.querySelector('#change_buttons');
                      let previous_week = document.createElement('button');
                         previous_week.setAttribute('class','change_week');
                         previous_week.setAttribute(onclick,`previous(${UTCyear,UTCmonth,UTCdate})`);
@@ -156,9 +156,11 @@
                         let td = document.createElement('td');
                            tr.appendChild(td);
                         let slotButton = document.createElement('button');
+                        //Dont know if working
                         if (i < weekday) {
                            slotButton.setAttribute('class','non-available');
                         }
+                        //....
                            slotButton.setAttribute('class','slot')
                            slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, ${i})`)
                            slotButton.innerHTML = (7+j) + ':00';
@@ -200,7 +202,7 @@
 
 
             //dateID range from 0 to 4 and is index for day of the week, Monday=0, Tuesday=1...
-               // OBS!!! SHould be changed to true date
+               // OBS!!! Should be changed to true date
             //slotID is the start time
             function show_BookingForm(slotID,date) {
                //Creating a booking form with action: /booking, which is sent to server with info of booking
