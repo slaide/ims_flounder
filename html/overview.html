@@ -29,6 +29,7 @@
             <h1 class="overview_title">Book an instrument</h1>
             <div id="schedule">
                <p id="info_text">Select a room and instrument under room overview</p>
+
                <table id="ins_table">
                   <thead id="date"></thead>
                   <tbody id="timeSlots"></tbody>
@@ -59,6 +60,7 @@
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
                            instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
+                           instruments.setAttribute('class','ins');
                         room_container.appendChild(instruments);
 
                      }
@@ -72,6 +74,7 @@
             //instruments.json must contain insID and ins_description
             function getIns(RoomID) {
                $(`#ins_${RoomID}`).empty();
+               $('.ins').empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/get_machines_in_room", true);
                xhttp.onreadystatechange = function() {
@@ -104,31 +107,62 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var bookings = JSON.parse(this.responseText);
                      let schedule = document.querySelector('#schedule');
-                     //Title end up in the bottom...
+
+                     //Todays date
+                     var today = new Date();
+                     let UTCyear = today.getUTCFullYear();
+                     //OBS!!! January = 0, February = 1... -> change to January = 1, February = 2 for display and add 0 using addZero function
+                     let UTCmonth = today.getUTCMonth();
+                     let UTCdate = today.getUTCDate();
+                     //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
+                     let weekday = today.getUTCDay()-1;
+
+                     //Title end up in the bottom...and many times??
                      let ins_title = document.createElement('h2');
                         ins_title.innerHTML = ins_desc;
                         schedule.appendChild(ins_title);
+                     
+                     //Change-of-week buttons
+                     let change = document.createElement('div');
+                        change.setAttribute('id','change_buttons');
+                     let previous_week = document.createElement('button');
+                        previous_week.setAttribute('class','change_week');
+                        previous_week.setAttribute(onclick,`previous(${UTCyear,UTCmonth,UTCdate})`);
+                        previous_week.setAttribute('id','next');
+                        previous_week.innerHTML = "Previous";
+                        change.appendChild(previous_week);
+                     let next_week = document.createElement('button');
+                        next_week.setAttribute('class','change_week');
+                        next_week.setAttribute('onclick',`next(${UTCyear,UTCmonth,UTCdate})`);
+                        next_week.setAttribute("id","previous");
+                        next_week.innerHTML = "Next";
+                        change.appendChild(next_week);
+
                      //Choose tbody and thead elements by id
                      let tbody = document.querySelector('#timeSlots');
                      let thead = document.querySelector('#date');
-                     //Array for the days of the week
-                     let date_arr = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+                     //Array for the days of the week 
+                     let day_arr = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+                     //Loop for creating table rows
                      for (let j = 0; j < 12; j++) {
+                        //Create table row for every booking hour 
                         let tr = document.createElement('tr');
                      for (let i = 0; i < 5; i++) {
                         if (j == 0) {
                            let th = document.createElement('th');
-                              th.innerHTML = date_arr[i];
+                              th.innerHTML = day_arr[i];
                               thead.appendChild(th);
                         }
                         let td = document.createElement('td');
                            tr.appendChild(td);
                         let slotButton = document.createElement('button');
+                        if (i < weekday) {
+                           slotButton.setAttribute('class','non-available');
+                        }
                            slotButton.setAttribute('class','slot')
                            slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, ${i})`)
-                           td.appendChild(slotButton);
-                        let currentTime = 7+j;
-                           slotButton.innerHTML = currentTime + ':00' +'-'+ (currentTime+1) + ':00';;
+                           slotButton.innerHTML = (7+j) + ':00';
+                           td.appendChild(slotButton);     
                      }
                      tbody.appendChild(tr);
 
@@ -138,6 +172,32 @@
                //Send insID
                xhttp.send(JSON.stringify({'insID':insID}));
             }
+
+            //Add zero month or date
+            function addZero(j) {
+               if (j < 10) {
+                  j = "0" + j;
+               }
+               return j;
+            }
+
+            //Change to previous week
+            function next(currentYear,currentMonth,currentDate) {
+               currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+               currentMonth = (currentMonth + 1) % 12;
+               //Change date
+               return [currentYear,currentMonth,currentDate];
+               
+            }
+
+            //Change to next week
+            function previous(currentYear,currentMonth,currentDate) {
+               currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+               currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+               //Change date
+               return [currentYear,currentMonth,currentDate];
+            }
+
 
             //dateID range from 0 to 4 and is index for day of the week, Monday=0, Tuesday=1...
                // OBS!!! SHould be changed to true date
