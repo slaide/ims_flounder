@@ -85,7 +85,7 @@
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            //Add insID in getSched()
-                           ins.setAttribute('onclick',`getSched('${instrument[i].description}, ${instrument[i].insID}')`);
+                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', ${instrument[i].insID})`);
                            ins.innerHTML = instrument[i].description;
                         instruments.appendChild(ins);
                      }
@@ -99,15 +99,16 @@
             //Do we want a display of the weekly schedule, or many weeks
             function getSched(ins_desc, insID) {
                $("#info_text").empty();
-               $("#date").empty();
-               $("tbody").empty();
-               $('#change_buttons').empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/ins_bookings", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var bookings = JSON.parse(this.responseText);
                      let schedule = document.querySelector('#schedule');
+
+                     //Title of instrument
+                     let ins_text = document.querySelector('#info_text');
+                        ins_text.innerHTML = ins_desc;
 
                      //Todays date
                      var today = new Date();
@@ -116,59 +117,9 @@
                      let UTCmonth = today.getUTCMonth();
                      let UTCdate = today.getUTCDate();
                      //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
-                     let weekday = today.getUTCDay()-1;
-
-                     //Title end up in the bottom...and many times??
-                     let ins_title = document.createElement('h2');
-                        ins_title.innerHTML = ins_desc;
-                        schedule.appendChild(ins_title);
-                     
-                     //Change-of-week buttons
-                     let change = document.querySelector('#change_buttons');
-                     let previous_week = document.createElement('button');
-                        previous_week.setAttribute('class','change_week');
-                        previous_week.setAttribute(onclick,`previous(${UTCyear,UTCmonth,UTCdate})`);
-                        previous_week.setAttribute('id','next');
-                        previous_week.innerHTML = "Previous";
-                        change.appendChild(previous_week);
-                     let next_week = document.createElement('button');
-                        next_week.setAttribute('class','change_week');
-                        next_week.setAttribute('onclick',`next(${UTCyear,UTCmonth,UTCdate})`);
-                        next_week.setAttribute("id","previous");
-                        next_week.innerHTML = "Next";
-                        change.appendChild(next_week);
-
-                     //Choose tbody and thead elements by id
-                     let tbody = document.querySelector('#timeSlots');
-                     let thead = document.querySelector('#date');
-                     //Array for the days of the week 
-                     let day_arr = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-                     //Loop for creating table rows
-                     for (let j = 0; j < 12; j++) {
-                        //Create table row for every booking hour 
-                        let tr = document.createElement('tr');
-                     for (let i = 0; i < 5; i++) {
-                        if (j == 0) {
-                           let th = document.createElement('th');
-                              th.innerHTML = day_arr[i];
-                              thead.appendChild(th);
-                        }
-                        let td = document.createElement('td');
-                           tr.appendChild(td);
-                        let slotButton = document.createElement('button');
-                        //Dont know if working
-                        if (i < weekday) {
-                           slotButton.setAttribute('class','non-available');
-                        }
-                        //....
-                           slotButton.setAttribute('class','slot')
-                           slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, ${i})`)
-                           slotButton.innerHTML = (7+j) + ':00';
-                           td.appendChild(slotButton);     
-                     }
-                     tbody.appendChild(tr);
-
-                     }  
+                     let weekday = today.getUTCDay();
+                     //Show calendar
+                     calendar(UTCyear,UTCmonth,UTCdate,weekday);
                   }
                }
                //Send insID
@@ -184,20 +135,116 @@
             }
 
             //Change to previous week
-            function next(currentYear,currentMonth,currentDate) {
-               currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-               currentMonth = (currentMonth + 1) % 12;
-               //Change date
-               return [currentYear,currentMonth,currentDate];
-               
+            function next(year,month,last_date) {
+               let date = 0;
+               let nmr_days = 32 - (new Date(year,month)).getDate();
+               console.log(nmr_days);
+               console.log(last_date);
+               if (nmr_days === last_date) {
+                  date = 1;
+                  month = (month+1) % 12;
+               } else {
+                  date = last_date+1;
+               }
+               year = (month === 11) ? year + 1 : year;
+               calendar(year,month,date,0);
             }
 
             //Change to next week
-            function previous(currentYear,currentMonth,currentDate) {
-               currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-               currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-               //Change date
-               return [currentYear,currentMonth,currentDate];
+            function previous(year,month,first_date) {
+               year = (month === 0) ? year - 1 : year;
+               let date = 0;
+               if (first_date == 1) {
+                  date = 32 - (new Date(year,month-1)).getDate();
+                  month = month-1;
+               } else {
+                  date = first_date-1;
+               }
+               calendar(year,month,date,6);
+            }
+            
+            //Showing calender 
+            function calendar(UTCyear,UTCmonth,UTCdate,weekday) {
+               $("tbody").empty();
+               $("thead").empty();
+               $('#change_buttons').empty();
+               //Choose tbody and thead elements by id
+               let tbody = document.querySelector('#timeSlots');
+               let thead = document.querySelector('#date');
+               //Array for the days of the week 
+               let day_arr = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+               //Dates in a week
+               let week_dates = [];
+               //Days in current month
+               let daysInMonth = 32 - (new Date(UTCyear, UTCmonth, 32)).getDate();
+               //Days in prevoius month
+               let daysInPreviousMonth = 32 - new Date(UTCyear, UTCmonth-1, 32).getDate();
+               //Loop for creating table rows
+               for (let j = 0; j < 12; j++) {
+                  //Create table row for every booking hour 
+                  let tr = document.createElement('tr');
+                  //For new month
+                  let k = 1;
+                  //For last month
+                  let p = 0;
+                  //Loop for table columns, one for each day of the month
+                  for (let i = 0; i < 7; i++) {
+                     let td = document.createElement('td');
+                        tr.appendChild(td);
+                     let slotButton = document.createElement('button');
+                     //First row is table head
+                     if (j == 0) {
+                        let th = document.createElement('th');
+                        //If the date is in the days of the moth, display date
+                        if (parseInt(UTCdate+(i-weekday)) <= daysInMonth && UTCdate >= 7) {
+                           th.innerHTML = day_arr[i] + ' ' + parseInt(UTCdate+(i-weekday)) + '/' + parseInt(UTCmonth+1);
+                           week_dates[i] = [UTCyear,UTCmonth,parseInt(UTCdate+(i-weekday))];
+                        } else if (UTCdate < 7) {
+                           if (weekday - i >= UTCdate) {
+                              week_dates[i] = [UTCyear,UTCmonth-1,parseInt(daysInPreviousMonth+p)];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + UTCmonth;
+                              p = p-1;
+                           } else {
+                              week_dates[i] = [UTCyear,UTCmonth,parseInt(UTCdate+(i-weekday))];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(UTCdate+(i-weekday)) + '/' + parseInt(UTCmonth+1);
+                           }
+                        } else {
+                           th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(UTCmonth+2);
+                           week_dates[i] = [UTCyear,UTCmonth+1,parseInt(UTCmonth+2)];
+                           k = k+1;
+                        }
+                        thead.appendChild(th);
+                     }
+                     if (i == 0 || i == 6) {
+                        td.innerHTML = "";
+                     } else {
+                        slotButton.setAttribute('class','slot')
+                        let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
+                        slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}')`)
+                        slotButton.innerHTML = (7+j) + ':00';
+                        td.appendChild(slotButton);
+                     }
+                  }
+                  tbody.appendChild(tr);
+               }
+               //Change-of-week buttons
+               let change = document.querySelector('#change_buttons');
+               let previous_week = document.createElement('button');
+                  previous_week.setAttribute('class','change_week');
+                  let first_date = week_dates[0][2];
+                  let month_sun = week_dates[0][1];
+                  previous_week.setAttribute('onclick',`previous(${UTCyear},${month_sun},${first_date})`)
+                  previous_week.setAttribute('id','next');
+                  previous_week.innerHTML = "Previous";
+                  change.appendChild(previous_week);
+               let next_week = document.createElement('button');
+                  next_week.setAttribute('class','change_week');
+                  let last_date = week_dates[6][2];
+                  let month_sat = week_dates[6][1];
+                  next_week.setAttribute('onclick',`next(${UTCyear},${month_sat},${last_date})`);
+                  next_week.setAttribute("id","previous");
+                  next_week.innerHTML = "Next";
+                  change.appendChild(next_week);
             }
 
 
