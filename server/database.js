@@ -2,7 +2,8 @@ const mysql=require("mysql")
 const fs=require("fs")
 const utility=require("./utility.js")
 
-/** Create connection to server, for interaction with databases
+/** 
+ * Create connection to server, for interaction with databases
  * @param {(connection:mysql.Connection,error:Error)=>void} handle function to be called after attempted connection
  */
 function connect_server(handle){
@@ -17,7 +18,8 @@ function connect_server(handle){
 }
 module.exports.connect_server=connect_server
 
-/** Create connection to database
+/** 
+ * Create connection to database
  * @param {(connection:mysql.Connection,error:Error)=>void} handle function to be called after attempted connection
  */
 function connect_database(handle){
@@ -33,7 +35,8 @@ function connect_database(handle){
 }
 module.exports.connect_database=connect_database
 
-/** End connection to database
+/** 
+ * End connection to database
  * @param {mysql.Connection} connection Connection to be closed
  * @param {?(error:Error)=>void} end_function Function will be called with error, if any
  */
@@ -46,7 +49,8 @@ function disconnect(connection,end_function=(err)=>{
 }
 module.exports.disconnect=disconnect
 
-/** Connect to database server and (re)create lims database
+/** 
+ * Connect to database server and (re)create lims database
  * @param {(connection:mysql.Connection)=>void} then Function called after database creation
  * @param {(connection:mysql.Connection,error:Error)=>bool} on_error Function called with error, if any. Return 'true' if function should be aborted after on_error call
  */
