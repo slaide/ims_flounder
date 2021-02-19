@@ -6,19 +6,23 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE IF NOT EXISTS booking (
+CREATE TABLE booking (
   Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
   start_Time int NOT NULL,
   Status varchar(40) NOT NULL DEFAULT 'NOT NULL',
   SSN int NOT NULL,
   Inst_ID varchar(40) NOT NULL,
   End_Time int NOT NULL,
-  PRIMARY KEY (SSN),
-  UNIQUE KEY Inst_ID (Inst_ID)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+  Date int NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO booking (Note, start_Time, `Status`, SSN, Inst_ID, End_Time) VALUES
-('The instrument  will be used ', 900, 'Using ', 882767577, 'ins1', 930);
+INSERT INTO booking (Note, start_Time, `Status`, SSN, Inst_ID, End_Time, `Date`) VALUES
+('The instrument  will be used ', 900, 'Using ', 882767577, 'ins1', 930, 20210129);
+
+
+ALTER TABLE booking
+  ADD PRIMARY KEY (SSN),
+  ADD UNIQUE KEY Inst_ID (Inst_ID);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
