@@ -101,7 +101,7 @@ input {
 }
 
 .grid_room h1, .grid_sched h1 {
-   font-size: 1.6rem;
+   font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
    padding: 0.5rem;
@@ -206,7 +206,7 @@ input {
 }
 
 
-input[type=text] {
+#booking_form input[type=text] {
    background-color: #ffffff00;
    border: none;
    width: 100px;
@@ -214,7 +214,7 @@ input[type=text] {
    font-size: 0.9rem;
 }
 
-input[type=submit] {
+#booking_form input[type=submit] {
    display: block;
    margin: auto;
    margin-top: 0.8rem;
@@ -226,11 +226,11 @@ input[type=submit] {
    font-size: 1rem;
 }
 
-input[type=submit]:hover {
+#booking_form input[type=submit]:hover {
    background-color: #262223;
 }
 
-textarea {
+#booking_form textarea {
    display: block;
    background-color: #E8F4F2;
    margin: auto;
