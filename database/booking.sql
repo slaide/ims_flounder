@@ -14,7 +14,7 @@ CREATE TABLE booking (
   Inst_ID varchar(40) NOT NULL,
   End_Time int NOT NULL,
   Date int NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO booking (Note, start_Time, `Status`, SSN, Inst_ID, End_Time, `Date`) VALUES
 ('The instrument  will be used ', 900, 'Using ', 882767577, 'ins1', 930, 20210129);
