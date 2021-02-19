@@ -8,7 +8,7 @@ const database=require("./database.js")
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
-function get_list(req,res){
+function get_rooms(req,res){
     database.connect_database((connection,error)=>{
         if(error){
             console.log("error connecting for room selection",error)
@@ -38,7 +38,7 @@ function get_list(req,res){
         })
     })
 }
-module.exports.get_list=get_list
+module.exports.get_rooms=get_rooms
 
 /**
  * Respond to a request with a list of all machines in a specific room in json format
@@ -47,7 +47,7 @@ module.exports.get_list=get_list
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
-function get_machines(req,res){
+function get_instruments_in_room(req,res){
     database.connect_database((connection,error)=>{
         if(error){
             console.log("error connecting for instrument selection",error)
@@ -77,4 +77,4 @@ function get_machines(req,res){
         })
     })
 }
-module.exports.get_machines=get_machines
+module.exports.get_instruments_in_room=get_instruments_in_room

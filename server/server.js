@@ -18,9 +18,9 @@ const request_handler={
     },
     "/login":login.check_login_data,
 
-    "/get_rooms":rooms.get_list,
-    "/get_instruments_in_room":rooms.get_machines,
-    "/get_instrument_schedule":get_schedule.get_schedule, //TODO unfinished
+    "/get_rooms":rooms.get_rooms,
+    "/get_instruments_in_room":rooms.get_instruments_in_room,
+    "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //TODO unfinished
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //TODO unfinished
     "/reserve_instrument_timeframe":reserve_instrument.reserve_instrument, //TODO unfinished
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO unfinished
