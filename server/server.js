@@ -4,7 +4,6 @@ const utility=require("./utility.js")
 const database=require("./database.js")
 const login=require("./login.js")
 const rooms=require("./rooms.js")
-//const machines=require("./machines.js")
 
 /**
  * central object that routes client requests

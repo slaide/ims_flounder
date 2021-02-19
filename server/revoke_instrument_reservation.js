@@ -1,13 +1,19 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
 
-//revoke reservation of some timeslot(s) on a single machine
+/**
+ * Revoke reservation of some timeslot(s) on a single machine
+ * currently expects client data: InsID, Username, SSN, booking_id
+ * currently responds with: success
+ * @param {Request} req Request object with client data
+ * @param {Response} res Reponse object
+ */
 function revoke_reservation(req,res){
     console.log("tying to revoke a reservation with a function that is not done yet. no promises on what will happen.")
 
     database.connect_database((connection,error)=>{
         if(error){
-            console.log("failed to connect to db for timeslot reservation")
+            console.log("failed to connect to db for timeslot revocation")
             if(!error.fatal){
                 database.disconnect(connection)
             }
@@ -15,7 +21,7 @@ function revoke_reservation(req,res){
         }
         utility.parse_data(req,(data)=>{
             if(!data.InsID || !data.Username || !data.SSN || !data.booking_id){
-                console.log("request is missing at least one these attributes: InsID, StartTime, EndTime, Username, SSN")
+                console.log("request is missing at least one these attributes: InsID, Username, SSN, booking_id")
                 database.disconnect(connection)
                 return
             }

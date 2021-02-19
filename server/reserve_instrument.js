@@ -3,7 +3,7 @@ const database=require("./database.js")
 
 /**
  * Reserve the requested timeslot for the specified user on the specified instrument
- * currently expects client data: InsID, StartTime, EndTime, Username, SSN (because i am too lazy to write the code to get the ssn for a username right now)
+ * currently expects client data: InsID, StartTime, EndTime, Username, SSN
  * currently responds with: success
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
