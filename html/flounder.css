@@ -3,6 +3,7 @@ body {
    text-align: center;
    /*Just one more font, incase arial doesn't work (also declare "sans-serif")*/
    font-family: Arial, Helvetica, sans-serif;
+   color: #262223;
    background-size:cover;
 }
 
@@ -56,19 +57,181 @@ input {
    margin: 0.5rem;
 }
 
+/*Navigation menu style*/
+/*Can be improved..!!*/
+.menu {
+   margin: 1rem 1rem 0 1rem;
+}
+
+.menu li{
+   display: inline-block;
+   padding: 1rem 2rem;
+}
+
+.menu li a{
+   text-decoration: none;
+   color: #ffffff;
+   font-family: 'Poppins','Helvetica',sans-serif;
+   font-size: 1.2rem;
+}
+
 /*Grid display for the overview page*/
 #overview_cont{
    display: grid;
-   grid-template-columns: 1fr 1fr;
-   grid-column-gap: 1rem;
+   grid-template-columns: 0.2fr 1fr;
 }
 
-.grid {
-   background-color: #ffffff;
+/*same font for many buttons etc...*/
+#overview_cont, .room, .ins_button, .slot, .change_week, input[type=text], textarea, input[type=submit]{
+   font-family: 'Poppins','Helvetica',sans-serif;
+}
+
+.grid_room, .grid_sched {
+   background-color: #ffffffb6;
    padding: 0.8rem;
+   border-radius: 10px;
 }
 
-.grid h1 {
-   font-size: 1.2rem;
-   text-transform: uppercase;
+.grid_room {
+   margin: 1rem 0.5rem 1rem 1rem;
+}
+
+.grid_sched {
+   margin: 1rem 1rem 1rem 0.5rem;
+}
+
+.grid_room h1, .grid_sched h1 {
+   font-size: 1.6rem;
+   font-weight: 600;
+   text-transform: uppercase; 
+   padding: 0.5rem;
+   line-height: 1.8rem;
+}
+
+/*Room display*/
+.room {
+   padding: 0.5rem 0.8rem;
+   width: 130px;
+   border: none;
+   color:#20658C;
+   border: 2px solid #20658C;
+   background-color: #E8F4F2;
+   font-size: 1rem;
+   margin: 0.5rem;
+   font-weight: 500;
+}
+
+.room:hover {
+   background-color: #20658C;
+   color: #E8F4F2;
+}
+
+/*Instrument display*/
+.ins_button {
+   border: none;
+   display: block;
+   margin: auto;
+   background-color: #ffffff00;
+   padding: 0.2rem;
+   color: #262223;
+   text-transform: capitalize;
+   font-size: 0.9rem;
+}
+
+.ins_button:hover {
+   text-decoration: underline;
+}
+
+/*Schedule display*/
+
+#info_text {
+   padding: 0.6rem;
+   margin-bottom: 0.6rem;
+}
+
+.change_week {
+   width: 75px;
+   border: none;
+   background-color: #262223e3;
+   color: #ffffff;
+   padding: 0.3rem;
+   margin: 0.2rem;
+}
+
+#ins_table {
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 1rem;
+}
+
+#date {
+   background-color: #262223e3;
+   color: #ffffff;
+}
+
+#date th, #timeSlots td {
+   padding: 0.5rem;
+   width: 100px;
+}
+
+.slot {
+   padding: 0.5rem 1rem;
+   width: 80px;
+   border: none;
+   background-color: #20658C;
+   color: #E8F4F2;
+
+}
+
+.slot:hover {
+   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.today {
+   background-color: #F2AC57;
+}
+
+.non-available, .non-available:hover {
+   background-color: #8A9190;
+   box-shadow: none;
+}
+
+/*Style for booking form*/
+#booking_form {
+   width: 600px;
+   margin: auto;
+   text-align: left;
+   padding: 0.8rem;
+   text-align: center;
+}
+
+
+input[type=text] {
+   background-color: #ffffff00;
+   border: none;
+   width: 100px;
+   font-weight: 600; 
+   font-size: 0.9rem;
+}
+
+input[type=submit] {
+   display: block;
+   margin: auto;
+   margin-top: 0.8rem;
+   border: none;
+   background-color: #F2AC57;
+   border-radius: 10px;
+   padding: 0.5rem 1rem;
+   color: #ffffff;
+   font-size: 1rem;
+}
+
+input[type=submit]:hover {
+   background-color: #262223;
+}
+
+textarea {
+   display: block;
+   background-color: #E8F4F2;
+   margin: auto;
 }

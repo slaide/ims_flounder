@@ -132,7 +132,7 @@
 
                      //Title of instrument
                      let ins_text = document.querySelector('#info_text');
-                        ins_text.innerHTML = ins_desc;
+                        ins_text.innerHTML = "Schedule for: " + ins_desc;
 
                      //Todays date
                      var today = new Date();
@@ -295,7 +295,7 @@
                   booking_form.setAttribute('method','POST');
                //Label and input for date
                let date_label = document.createElement('label');
-                  date_label.innerHTML = "Date";
+                  date_label.innerHTML = "Date:";
                   date_label.setAttribute('for','booking_date');
                   booking_form.appendChild(date_label);
                let date_input = document.createElement('input');
@@ -307,7 +307,7 @@
                   booking_form.appendChild(date_input);
                //Label and input for start time
                let start_label = document.createElement('label');
-                  start_label.innerHTML = "Start time"
+                  start_label.innerHTML = "Start time:"
                   start_label.setAttribute('for','start');
                   booking_form.appendChild(start_label);
                let start_time = document.createElement('input');
@@ -319,7 +319,7 @@
                   booking_form.appendChild(start_time);
                //Label and input for end time
                let end_label = document.createElement('label');
-                  end_label.innerHTML = "End time";
+                  end_label.innerHTML = "End time:";
                   end_label.setAttribute('for','end');
                   booking_form.appendChild(end_label);
                let end_time = document.createElement('input');
@@ -331,7 +331,7 @@
                   booking_form.appendChild(end_time);
                //Label and input for notes
                let note_label = document.createElement('label');
-                  note_label.innerHTML = "Notes";
+                  note_label.innerHTML = "Notes:";
                   note_label.setAttribute('for','note');
                   booking_form.appendChild(note_label);
                let notes = document.createElement('textarea');
@@ -341,7 +341,7 @@
                //Submit button, action /booking is performed
                let submit = document.createElement('input');
                   submit.setAttribute("type","submit");
-                  submit.setAttribute("value","Submit");
+                  submit.setAttribute("value","Submit booking");
                   booking_form.appendChild(submit);
 
                
