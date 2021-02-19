@@ -69,7 +69,7 @@ function get_machines(req,res){
                 for(item of result){
                     ret.push({InsID:item.Ins_ID,description:item.Description})
                 }
-                res.writeHeader(200,utility.content.from_filename(".json"))
+                res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify(ret))
 
                 console.log("sent machines for room ",data.RoomID)
