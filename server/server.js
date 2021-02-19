@@ -19,9 +19,11 @@ const request_handler={
     "/login":login.check_login_data,
 
     "/get_rooms":rooms.get_list,
-    "/get_machines_in_room":rooms.get_machines,
-    //"/get_machine_schedule":machines.get_schedule,
-    //"/set_machine_schedule_slot":machines.set_schedule_slot,
+    "/get_instruments_in_room":rooms.get_machines,
+    "/get_instrument_schedule":get_schedule.get_schedule, //TODO unfinished
+    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //TODO unfinished
+    "/reserve_instrument_timeframe":reserve_instrument.reserve_instrument, //TODO unfinished
+    "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO unfinished
 
     "/shutdown":function(req,res){
         res.end()

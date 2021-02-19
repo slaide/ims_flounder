@@ -8,7 +8,7 @@ const database=require("./database.js")
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
-function reserve_timeslot(req,res){
+function reserve_instrument_timeframe(req,res){
     database.connect_database((connection,error)=>{
         if(error){
             console.log("failed to connect to db for timeslot reservation")
@@ -58,4 +58,4 @@ function reserve_timeslot(req,res){
         })
     })
 }
-module.exports.reserve_timeslot=reserve_timeslot
+module.exports.reserve_instrument_timeframe=reserve_instrument_timeframe
