@@ -42,4 +42,4 @@ function get_instrument_schedule(req,res){
         })
     }) 
 }
-module.exports.get_schedule=get_schedule
+module.exports.get_instrument_schedule=get_instrument_schedule
