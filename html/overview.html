@@ -93,7 +93,7 @@
                $(`#ins_${RoomID}`).empty();
                $('.ins').empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("POST", "/get_machines_in_room", true);
+               xhttp.open("POST", "/get_instruments_in_room", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var instrument = JSON.parse(this.responseText);
@@ -121,7 +121,7 @@
             function getSched(ins_desc, insID, RoomCode) {
                $("#info_text").empty();
                var xhttp = new XMLHttpRequest();
-               xhttp.open("POST", "/ins_bookings", true);
+               xhttp.open("POST", "/get_instrument_schedule", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var bookings = JSON.parse(this.responseText);
