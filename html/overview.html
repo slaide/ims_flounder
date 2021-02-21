@@ -71,7 +71,7 @@
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}')`);
+                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}', ${rooms[i].RoomCode})`);
                            room.setAttribute('class','room');
                            room.innerHTML = 'Room ' + rooms[i].RoomCode;
                         room_container.appendChild(room);
@@ -89,7 +89,7 @@
             
             //Function for showing instruments when a room button is clicked
             //instruments.json must contain insID and ins_description
-            function getIns(RoomID) {
+            function getIns(RoomID, RoomCode) {
                $(`#ins_${RoomID}`).empty();
                $('.ins').empty();
                var xhttp = new XMLHttpRequest();
@@ -106,7 +106,7 @@
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            ins.setAttribute('class','ins_button');
-                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].insID}')`);
+                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].insID}', ${RoomCode})`);
                            ins.innerHTML = instrument[i].description;
                         instruments.appendChild(ins);
                      }
@@ -118,7 +118,7 @@
             //Function for displaying instrument booking options/instrument schedule
             //All booking information for one instrument that is choosen
             //Do we want a display of the weekly schedule, or many weeks
-            function getSched(ins_desc, insID) {
+            function getSched(ins_desc, insID, RoomCode) {
                $("#info_text").empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/ins_bookings", true);
@@ -133,7 +133,7 @@
 
                      //Title of instrument
                      let ins_text = document.querySelector('#info_text');
-                        ins_text.innerHTML = "Schedule for: " + ins_desc;
+                        ins_text.innerHTML = "Room " + RoomCode + ': ' + ins_desc;
 
                      //Todays date
                      var today = new Date();
