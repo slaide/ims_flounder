@@ -6,6 +6,6 @@
     "dependencies": {
         "mysql": "^2.18.1"
     },
-    "author": "",
-    "license": "none"
+    "author": "Team Ariel",
+    "license": "GNU General Public License 3"
 }

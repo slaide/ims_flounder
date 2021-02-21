@@ -3,12 +3,14 @@ const database=require("./database.js")
 
 /**
  * Reserve the requested timeslot for the specified user on the specified instrument
- * currently expects client data: InsID, StartTime, EndTime, Username, SSN (because i am too lazy to write the code to get the ssn for a username right now)
+ * currently expects client data: InsID, StartTime, EndTime, Username, SSN
  * currently responds with: success
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
-function reserve_timeslot(req,res){
+function reserve_instrument(req,res){
+    console.log("tying to reserve an instrument with a function that is not done yet. no promises on what will happen.")
+
     database.connect_database((connection,error)=>{
         if(error){
             console.log("failed to connect to db for timeslot reservation")
@@ -58,4 +60,4 @@ function reserve_timeslot(req,res){
         })
     })
 }
-module.exports.reserve_timeslot=reserve_timeslot
+module.exports.reserve_instrument=reserve_instrument
