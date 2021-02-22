@@ -9,8 +9,6 @@ const database=require("./database.js")
  * @param {Response} res Reponse object
  */
 function reserve_instrument(req,res){
-    console.log("tying to reserve an instrument with a function that is not done yet. no promises on what will happen.")
-
     database.connect_database((connection,error)=>{
         if(error){
             console.log("failed to connect to db for timeslot reservation")
