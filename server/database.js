@@ -120,7 +120,9 @@ function connect_build_database(then,on_error=(conn,err)=>{
                         var max_done=0
 
                         for(file of sql_files){
-                            const single_queries=fs.readFileSync(file,utility.encoding.utf8).split(";")
+                            const file_content=fs.readFileSync(file,utility.encoding.utf8).replace("COLLATE utf8mb4_0900_ai_ci","").replace("COLLATE=utf8mb4_0900_ai_ci","")
+
+                            const single_queries=file_content.split(";")
                             max_done+=single_queries.length
 
                             for(i in single_queries){
