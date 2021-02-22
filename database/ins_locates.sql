@@ -7,13 +7,13 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 
 CREATE TABLE ins_locates (
-  Start_time/Date datetime NOT NULL,
-  End_time/Date datetime NOT NULL,
+  Start_time_Date datetime NOT NULL,
+  End_time_Date datetime NOT NULL,
   Room_ID varchar(40) NOT NULL,
   Ins_ID varchar(40) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO ins_locates (Start_time/Date, End_time/Date, Room_ID, Ins_ID) VALUES
+INSERT INTO ins_locates (Start_time_Date, End_time_Date, Room_ID, Ins_ID) VALUES
 ('2021-01-16 09:00:00', '2021-03-22 10:00:00', 'r1', 'ins4'),
 ('2021-01-16 08:00:00', '2021-03-22 09:00:00', 'r1', 'ins5'),
 ('2021-01-16 15:00:00', '2021-03-22 16:00:00', 'r1', 'wb3'),
