@@ -56,12 +56,12 @@
 
             function getRooms() {
                var xhttp = new XMLHttpRequest();
-               xhttp.open("GET", "/get_rooms", true);
+               xhttp.open("POST", "/get_rooms", true);
                xhttp.onreadystatechange = function() {
                   if (this.readyState == 4 && this.status == 200) {
                      var rooms = JSON.parse(this.responseText);
                      if (rooms.error) {
-                        console.log(error);
+                        console.log(rooms.error);
                         return;
                      }
                      let overview = document.querySelector('#room_overview');
@@ -98,7 +98,7 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var instrument = JSON.parse(this.responseText);
                      if (instrument.error) {
-                        console.log(error);
+                        console.log(instrument.error);
                         return;
                      }
                      for (let i = 0; i < instrument.length; i++) {
@@ -112,7 +112,7 @@
                      }
                   }
                };
-               xhttp.send(JSON.stringify({'RoomID': RoomID}), JSON.stringify({'ssn': ssn}));
+               xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
             }
 
             //Function for displaying instrument booking options/instrument schedule
@@ -126,7 +126,7 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var bookings = JSON.parse(this.responseText);
                      if (bookings.error) {
-                        console.log(error);
+                        console.log(bookings.error);
                         return;
                      }
                      let schedule = document.querySelector('#schedule');
