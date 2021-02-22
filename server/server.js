@@ -4,6 +4,10 @@ const utility=require("./utility.js")
 const database=require("./database.js")
 const login=require("./login.js")
 const rooms=require("./rooms.js")
+const get_instrument_schedule=require("./get_instrument_schedule")
+const get_personal_schedule=require("./get_personal_schedule")
+const reserve_instrument=require("./reserve_instrument")
+const revoke_instrument_reservation=require("./revoke_instrument_reservation")
 
 /**
  * central object that routes client requests
