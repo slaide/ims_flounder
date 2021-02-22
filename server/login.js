@@ -21,15 +21,13 @@ function check_login_data(req,res){
                 //Check email and password match 
                 if(db_data.length!=0 && user_data.password.localeCompare(db_data[0].Password)==0){
                     console.log('>> db_data email: ', db_data[0].Email);
-                    //console.log('>> typeof(db_data[0].Email): ', typeof(db_data[0].Email));  //db_data[0].Email is a string 
                     console.log(">> Email and password match found, login succesfull")
 
                     overview_string=fs.readFileSync("../html/overview.html",utility.encoding.utf8)
-                    overview_string.replace("$$EMAIL$$", db_data[0].Email) 
-                    overview_string.replace("$$SSN$$", db_data[0].SSN)
-                    res.end(overview_string)
-                    //res.end(fs.readFileSync("../html/overview.html",utility.encoding.utf8))
+                    with_email=overview_string.replace("$$EMAIL$$", db_data[0].Email) 
+                    res.end(with_email.replace("$$SSN$$", db_data[0].SSN))
                     console.log('>> overview.html file sent back to client')
+
                     database.disconnect(connection)
                     console.log('>> Database disconnected')
                 }
