@@ -24,8 +24,8 @@ const request_handler={
     "/get_rooms":rooms.get_rooms,
     "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //TODO unfinished
-    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //TODO unfinished
-    "/reserve_instrument":reserve_instrument.reserve_instrument, //TODO unfinished
+    "/get_bookings":get_personal_schedule.get_personal_schedule, //TODO unfinished
+    "/reserve_instrument":reserve_instrument.reserve_instrument, //TODO unfinished   // /get_personal_schedule waiting for Linnea to rename her action
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO unfinished
 
     "/shutdown":function(req,res){

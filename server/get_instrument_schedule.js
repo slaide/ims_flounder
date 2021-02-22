@@ -6,7 +6,7 @@ const database=require("./database.js")
 //return schedule for this instrument
 //schedule=list of reserved timeslots with start- and end-time, and username
 function get_instrument_schedule(req,res){
-    
+
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data)
         console.log('>> ins_id: ',data.insID) 
@@ -31,7 +31,7 @@ function get_instrument_schedule(req,res){
                 console.log('>> db_booking: ', db_booking)
 
                 //Q: If no bookign, just send an empty? 
-                //Q: How to do with date, if keep datetime format? Wait for answere
+                //Q: How to do with date, if keep datetime format? Wait for answeres
                 var ret=[];
                 for(item of db_booking){
                     ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, Date:item.Date})
