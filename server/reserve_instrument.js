@@ -14,7 +14,7 @@ function reserve_instrument(req,res){
     database.connect_database((connection,error)=>{
         if(error){
             console.log("failed to connect to db for timeslot reservation")
-            
+
             if(!error.fatal){
                 database.disconnect(connection)
             }
@@ -93,7 +93,3 @@ function reserve_instrument(req,res){
     })
 }
 module.exports.reserve_instrument=reserve_instrument
-
-how link child account works?
-contradicting vaccines?
-on time?
