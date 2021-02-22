@@ -249,16 +249,9 @@
                         td.innerHTML = "";
                      } else {
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
-                        for (let s = 0; s < res.length; s++) {
-                           //Does not work the way it should with the non-available time slots
-                           if (res[s].date == booking_date && res[s].start_time == (7+j) && res[s].end_time == (9+j) || (week_dates[i][2] < today.getUTCDate() || week_dates[i][1] < today.getUTCMonth())) {
-                              slotButton.className = "non-available slot";
-                              slotButton.setAttribute('onclick','');
-                           } else {
+
                               slotButton.setAttribute('class','slot');
                               slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}')`);
-                           }
-                        }
                         slotButton.innerHTML = (7+j) + ':00';
                         td.appendChild(slotButton);
                      }
