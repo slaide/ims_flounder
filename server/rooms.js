@@ -3,8 +3,8 @@ const database=require("./database.js")
 
 /**
  * Respond to a request with a list of all rooms in json format
- * currently expects client data: none
- * currently responds with: RoomID, RoomCode
+ * currently expects client data: ssn
+ * currently responds with: list of (RoomID, RoomCode)
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
@@ -17,24 +17,38 @@ function get_rooms(req,res){
             }
             return
         }
-        connection.query("select Room_ID,Room_code from room;",(error,result,fields)=>{
-            if(error){
-                console.log("error selection rooms",error)
-                if(!error.fatal){
-                    database.disconnect(connection)
-                }
+        utility.parse_data(req,(data)=>{
+            if(!data.ssn){
+                console.log(data)
+                const error_message="ssn missing in request data for room list request"
+                console.log(error_message)
+                database.disconnect(connection)
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
                 return
             }
-            var ret=[];
-            for(item of result){
-                ret.push({RoomID:item.Room_ID,RoomCode:item.Room_code})
-            }
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify(ret))
+            connection.query("select Room_ID,Room_code from room where strcmp(Class,(select Special_rights from User where SSN=?))<=0;",[data.ssn],(error,result,fields)=>{
+                if(error){
+                    const error_message="error selecting rooms"
+                    console.log(error_message,error)
+                    if(!error.fatal){
+                        database.disconnect(connection)
+                    }
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+                    return
+                }
+                var ret=[];
+                for(item of result){
+                    ret.push({RoomID:item.Room_ID,RoomCode:item.Room_code})
+                }
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify(ret))
 
-            database.disconnect(connection)
+                database.disconnect(connection)
 
-            console.log("sent room list")
+                console.log("sent room list")
+            })
         })
     })
 }
