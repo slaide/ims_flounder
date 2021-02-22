@@ -11,15 +11,17 @@ const database=require("./database.js")
 function get_rooms(req,res){
     database.connect_database((connection,error)=>{
         if(error){
-            console.log("error connecting for room selection",error)
+            const error_message="error connecting to database for room selection"
+            console.log(error_message,error)
             if(!error.fatal){
                 database.disconnect(database)
             }
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error_message}))
             return
         }
         utility.parse_data(req,(data)=>{
             if(!data.ssn){
-                console.log(data)
                 const error_message="ssn missing in request data for room list request"
                 console.log(error_message)
                 database.disconnect(connection)
