@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <title>My schedule</title>
+        <link rel="stylesheet" type="text/css" href="./flounder.css">
+    </head>
+        <body>
+            <!--Navigation menu for users-->
+            <nav class="menu">
+            <ul>
+                <li><a href="#">Book an instrument</a></li>
+                <li><a href="#">My Schedule</a></li>
+                <li><a href="#">Administrator</a></li>
+                <li><a href="#">Maintenance</a></li>
+            </ul>
+            </nav>
+
+            <h1>My Schedule</h1>
+
+              <script>
+            function getBookings() {
+               var xhttp = new XMLHttpRequest();
+               xhttp.open("POST", "/get_bookings", true);
+               xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                     var bookings = JSON.parse(this.responseText);
+                     if (bookings.error) {
+                         console.log(error);
+                         return;
+                     }
+                     let schedule = document.querySelector('#room_overview');
+                     for (let i = 0; i < bookings.length; i++) {
+                        let container = document.createElement('div');
+                           schedule.appendChild(container);
+                        let list = document.createElement('ul');
+                           room.setAttribute('type', 'button');
+                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}')`);
+                           room.setAttribute('class','room');
+                           room.innerHTML = 'Room ' + rooms[i].RoomCode;
+                        room_container.appendChild(room);
+                        let instruments = document.createElement('div');
+                           instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
+                           instruments.setAttribute('class','ins');
+                        room_container.appendChild(instruments);
+
+                     }
+                  }  
+               };
+               xhttp.send();
+            }
+              </script>
+
+              <h1>Revoke a booking</h1>
+            <label for="bookings">Choose a booking:</label>
+            <select name="bookings" id="bookings">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            </select>
+              </div>
+        </body>
+</html>
