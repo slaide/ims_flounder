@@ -11,20 +11,19 @@ CREATE TABLE instrument (
   Description varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Serial int NOT NULL,
   Proc_date date NOT NULL,
-  Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Room_ID varchar(40) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Note, Room_ID) VALUES
-('ins1', 'Mass spec ', 6047, '2020-12-14', 'Everything works just fine ', 'r2'),
-('ins2', 'Laser ', 5282, '2021-01-02', 'Everything works just fine ', 'r3'),
-('ins4', 'Pipette 3000', 3940, '2020-12-30', 'should be cleaned ', 'r1'),
-('ins3', 'Pipette', 2016, '2021-01-24', 'workes fine ', 'r3'),
-('ins5', 'Mass spec 2000', 1244, '2021-01-24', 'works fine ', 'r1'),
-('wb1', 'Workbech ', 5656, '2021-02-03', 'clean and ready to be used ', 'r2'),
-('wb2', 'Workbech ', 4096, '2020-12-01', 'should be cleaned ', 'r3'),
-('wb3', 'Workbech ', 2687, '2021-02-01', 'clean and ready to be used ', 'r1'),
-('wb4', 'Workbech ', 3487, '2020-12-14', 'should be cleaned ', 'r1');
+INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Room_ID) VALUES
+('ins1', 'Mass spec ', 6047, '2020-12-14', 'r2'),
+('ins2', 'Laser ', 5282, '2021-01-02', 'r3'),
+('ins4', 'Pipette 3000', 3940, '2020-12-30', 'r1'),
+('ins3', 'Pipette', 2016, '2021-01-24', 'r3'),
+('ins5', 'Mass spec 2000', 1244, '2021-01-24', 'r1'),
+('wb1', 'Workbech ', 5656, '2021-02-03', 'r2'),
+('wb2', 'Workbech ', 4096, '2020-12-01', 'r3'),
+('wb3', 'Workbech ', 2687, '2021-02-01', 'r1'),
+('wb4', 'Workbech ', 3487, '2020-12-14', 'r1');
 
 
 ALTER TABLE instrument
