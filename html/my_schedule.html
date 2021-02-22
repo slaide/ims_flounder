@@ -16,38 +16,55 @@
             </nav>
 
             <h1>My Schedule</h1>
+            <div id="my_schedule"></div>
 
               <script>
-            function getBookings() {
-               var xhttp = new XMLHttpRequest();
-               xhttp.open("POST", "/get_bookings", true);
-               xhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                     var bookings = JSON.parse(this.responseText);
-                     if (bookings.error) {
-                         console.log(error);
-                         return;
-                     }
-                     let schedule = document.querySelector('#room_overview');
-                     for (let i = 0; i < bookings.length; i++) {
-                        let container = document.createElement('div');
-                           schedule.appendChild(container);
-                        let list = document.createElement('ul');
-                           room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}')`);
-                           room.setAttribute('class','room');
-                           room.innerHTML = 'Room ' + rooms[i].RoomCode;
-                        room_container.appendChild(room);
-                        let instruments = document.createElement('div');
-                           instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
-                           instruments.setAttribute('class','ins');
-                        room_container.appendChild(instruments);
 
-                     }
-                  }  
-               };
-               xhttp.send();
-            }
+               //SSN from storage
+               var ssn = localStorage.getItem(ssn);
+
+               function getBookings() {
+
+                  //XML part
+                  var xhttp = new XMLHttpRequest();
+                  xhttp.open("POST", "/get_bookings", true);
+                  xhttp.onreadystatechange = function() {
+                     if (this.readyState == 4 && this.status == 200) {
+                        var bookings = JSON.parse(this.responseText);
+
+                        //Error handling
+                        if (bookings.error) {
+                           console.log(error);
+                           return;
+                        }
+                        
+                        //Dunno?? 
+                        let schedule = document.querySelector('#my_schedule');
+                        
+                        //Container element for list
+                        let container = document.createElement('div');
+
+                        //Make list 
+                        let list = document.createElement('ul');
+
+                        //Add to page
+                        document.getElementsByTagName('body')[0].appendChild(container);
+                        container.appendChild(list); 
+                        
+                        for (let i = 0; i < bookings.length; i++) {
+                        // create an item for each one
+                        listItem = document.createElement('li');
+
+                        // Add the item text
+                        listItem.innerHTML = bookings[i];
+
+                        // Add listItem to the listElement
+                        listElement.appendChild(listItem);
+                        }
+                     }  
+                  };
+                  xhttp.send();
+               }
               </script>
 
               <h1>Revoke a booking</h1>
