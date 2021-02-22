@@ -14,7 +14,7 @@
       <nav class="menu">
          <ul>
             <li><a href="#">Book an instrument</a></li>
-            <li><a href="#">My Schedule</a></li>
+            <li><a href="./my_schedule.html">My Schedule</a></li>
             <li><a href="#">Administrator</a></li>
             <li><a href="#">Maintenance</a></li>
          </ul>
@@ -83,7 +83,7 @@
                      }
                   }  
                };
-               xhttp.send();
+               xhttp.send(JSON.stringify({'ssn': ssn}));
             }
 
             
@@ -106,13 +106,13 @@
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            ins.setAttribute('class','ins_button');
-                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].insID}', ${RoomCode})`);
+                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].InsID}', ${RoomCode})`);
                            ins.innerHTML = instrument[i].description;
                         instruments.appendChild(ins);
                      }
                   }
                };
-               xhttp.send(JSON.stringify({'RoomID': RoomID}));
+               xhttp.send(JSON.stringify({'RoomID': RoomID}), JSON.stringify({'ssn': ssn}));
             }
 
             //Function for displaying instrument booking options/instrument schedule
