@@ -72,7 +72,7 @@ function get_instruments_in_room(req,res){
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify(ret))
 
-                console.log("sent machines for room ",data.RoomID)
+                console.log("sent instruments for room ",data.RoomID)
             })
         })
     })
