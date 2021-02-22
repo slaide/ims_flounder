@@ -204,7 +204,7 @@
                //Days in prevoius month
                let daysInPreviousMonth = 32 - new Date(UTCyear, UTCmonth-1, 32).getDate();
                //Loop for creating table rows
-               for (let j = 0; j < 12; j=j+2) {
+               for (let j = 0; j < 12; j++) {
                   //Create table row for every booking hour 
                   let tr = document.createElement('tr');
                   //For new month
@@ -327,7 +327,7 @@
                   end_time.setAttribute('type','text');
                   end_time.setAttribute('name','end_time'); //
                   end_time.setAttribute('id','end');
-                  end_time.setAttribute('value',`${slotID+2}:00`);
+                  end_time.setAttribute('value',`${slotID+1}:00`);
                   end_time.readOnly = true;
                   booking_form.appendChild(end_time);
                //Label and input for notes
