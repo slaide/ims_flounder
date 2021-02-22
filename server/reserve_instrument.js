@@ -26,7 +26,7 @@ function reserve_instrument(req,res){
         }
         utility.parse_data(req,(data)=>{
             //make sure all of the expected data is here and defined
-            for(attribute of "date start_time end_time notes".split(" ")){
+            for(attribute of "ins_id date start_time end_time notes".split(" ")){
                 if(!data[attribute]){
                     const error_message="request is missing the attribute '"+attribute+"'"
                     console.log(error_message)
@@ -38,7 +38,10 @@ function reserve_instrument(req,res){
                     return
                 }
             }
-            connection.query("select * from booking where Ins_ID=? and (Start_time>=? or End_time<=?);",[data.InsId,data.StartTime,data.EndTime],(error,results,fields)=>{
+            //select all bookings for the same machine that start before the new one should end, and end after the new should start
+            //all bookings that match these overlap with the new one
+            //TODO this needs to be wrapped into a transaction combined with inserting the new data
+            connection.query("select * from booking where Ins_ID=? and (timediff(Start_time,?)>=0 and timediff(End_time,?)<=0);",[data.ins_id,data.end_time,data.start_time],(error,results,fields)=>{
                 if(error){
                     console.log("error checking for free timeslot ",error)
 
@@ -52,32 +55,35 @@ function reserve_instrument(req,res){
                     return
                 }
                 if(results.length!=0){
-                    console.log("timeslot already reserved: ",data)
+                    const error_message="timeslot already reserved: "
+                    console.log(error_message,data)
 
                     res.writeHeader(200,utility.content.json)
-                    res.end(JSON.stringify({'error':'timeslot already reserved'}))
+                    res.end(JSON.stringify({error:error_message}))
 
                     database.disconnect(connection)
                     return
                 }
-                connection.query("insert into booking(Note, Start_time, End_time, Status, SSN, Inst_ID)) values('',?,?,'booked',?,?)",[data.StartTime,data.EndTime,data.SSN,data.InsID],(error,results,fields)=>{
+                connection.query("insert into booking(Start_time, End_time, Status, SSN, Inst_ID)) values(?,?,'booked',?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id],(error,results,fields)=>{
                     if(error){
-                        console.log("error reserving free timeslot",error)
+                        const error_message="error reserving free timeslot"
+                        console.log(error_message,error)
 
                         if(!error.fatal){
                             database.disconnect(connection)
                         }
 
                         res.writeHeader(200,utility.content.json)
-                        res.end(JSON.stringify({error:"failed to reserve timeslot due to internal error"}))
+                        res.end(JSON.stringify({error:error_message}))
 
                         return
                     }
                     if(results.length!=0){
-                        console.log("timeslot could not be reserved")
+                        const error_message="timeslot could not be reserved"
+                        console.log(error_message)
 
                         res.writeHeader(200,utility.content.json)
-                        res.end(JSON.stringify({'error':'timeslot could not be reserved'}))
+                        res.end(JSON.stringify({error:error_message}))
 
                         database.disconnect(connection)
                         return
