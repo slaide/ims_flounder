@@ -8,21 +8,21 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE booking (
   Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
-  start_Time int NOT NULL,
+  Start_Time datetime NOT NULL,
   Status varchar(40) NOT NULL DEFAULT 'NOT NULL',
   SSN int NOT NULL,
-  Inst_ID varchar(40) NOT NULL,
-  End_Time int NOT NULL,
-  Date int NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+  Ins_ID varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  End_Time datetime NOT NULL,
+  Date date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO booking (Note, start_Time, `Status`, SSN, Inst_ID, End_Time, `Date`) VALUES
-('The instrument  will be used ', 900, 'Using ', 882767577, 'ins1', 930, 20210129);
+INSERT INTO booking (Note, Start_Time, `Status`, SSN, Ins_ID, End_Time, `Date`) VALUES
+('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 882767577, 'ins1', '2021-02-02 11:47:01', '2021-01-29');
 
 
 ALTER TABLE booking
   ADD PRIMARY KEY (SSN),
-  ADD UNIQUE KEY Inst_ID (Inst_ID);
+  ADD UNIQUE KEY Inst_ID (Ins_ID);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

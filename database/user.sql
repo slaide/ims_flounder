@@ -6,7 +6,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE TABLE `user` (
   SSN int NOT NULL,
   First_name varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Last_name varchar(40) NOT NULL DEFAULT 'NOT NULL',
@@ -15,14 +15,17 @@ CREATE TABLE IF NOT EXISTS `user` (
   Phone_number int NOT NULL,
   Email varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Special_Rights varchar(40) NOT NULL,
-  Immunocompromised varchar(40) NOT NULL,
-  PRIMARY KEY (SSN)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+  Immunocompromised varchar(40) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_Rights, Immunocompromised) VALUES
-(762324167, 'Ariel', 'Fin', '45678', 'No', 703052249, 'ariel.fin@gmail.com', 'B', 'Yes'),
-(882767577, 'Sebastian', 'Carbb', '65789', 'No', 762940501, 'seb.carbb@gmail.com', 'C', 'No'),
-(1450238774, 'Eric', 'Prince', '123456', 'Yes', 709483940, 'eric.prince@gmail.com', 'A', 'No');
+(762324167, 'Ariel', 'Fin', 'dfr456', 'No', 703052249, 'ariel.fin@gmail.com', 'B', 'Yes'),
+(882767577, 'Sebastian', 'Carbb', 'cfr789', 'No', 762940501, 'seb.carbb@gmail.com', 'C', 'No'),
+(1450238774, 'Eric', 'Prince', 'swq123', 'Yes', 709483940, 'eric.prince@gmail.com', 'A', 'No');
+
+
+ALTER TABLE `user`
+  ADD PRIMARY KEY (SSN);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

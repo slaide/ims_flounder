@@ -6,20 +6,23 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE IF NOT EXISTS `room` (
-  `Room_ID` varchar(40) NOT NULL,
-  `Room_code` int NOT NULL,
-  `Area` int NOT NULL,
-  `Building_code` int NOT NULL,
-  `Capacity` int NOT NULL,
-  `Class` varchar(40) NOT NULL,
-  PRIMARY KEY (`Room_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+CREATE TABLE room (
+  Room_ID varchar(40) NOT NULL,
+  Room_code int NOT NULL,
+  Area int NOT NULL,
+  Building_code int NOT NULL,
+  Capacity int NOT NULL,
+  Class varchar(40) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `room` (`Room_ID`, `Room_code`, `Area`, `Building_code`, `Capacity`, `Class`) VALUES
+INSERT INTO room (Room_ID, Room_code, `Area`, Building_code, Capacity, Class) VALUES
 ('r1', 1, 1374, 201, 5, 'C'),
 ('r2', 2, 1374, 201, 3, 'B'),
 ('r3', 3, 1374, 201, 2, 'A');
+
+
+ALTER TABLE room
+  ADD PRIMARY KEY (Room_ID);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
