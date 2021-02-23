@@ -8,10 +8,10 @@
             <!--Navigation menu for users-->
             <nav class="menu">
             <ul>
-                <li><a href="#">Book an instrument</a></li>
-                <li><a href="#">My Schedule</a></li>
+                <li><a href="overview.html">Book an instrument</a></li>
+                <li><a href="my_schedule.html">My Schedule</a></li>
                 <li><a href="#">Administrator</a></li>
-                <li><a href="#">Maintenance</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
             </ul>
             </nav>
 
@@ -27,7 +27,7 @@
 
                   //XML part
                   var xhttp = new XMLHttpRequest();
-                  xhttp.open("POST", "/get_bookings", true);
+                  xhttp.open("POST", "/get_personal_schedule", true);
                   xhttp.onreadystatechange = function() {
                      if (this.readyState == 4 && this.status == 200) {
                         var bookings = JSON.parse(this.responseText);
@@ -65,6 +65,9 @@
                   };
                   xhttp.send();
                }
+
+               getBookings(); 
+
               </script>
 
               <h1>Revoke a booking</h1>
