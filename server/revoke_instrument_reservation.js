@@ -3,35 +3,54 @@ const database=require("./database.js")
 
 /**
  * Revoke reservation of some timeslot(s) on a single machine
- * currently expects client data: InsID, Username, SSN, booking_id
- * currently responds with: success
+ * currently expects client data: ssn, booking_id
+ * currently responds with: error/success
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
 function revoke_reservation(req,res){
-    console.log("tying to revoke a reservation with a function that is not done yet. no promises on what will happen.")
-
     database.connect_database((connection,error)=>{
         if(error){
-            console.log("failed to connect to db for timeslot revocation")
+            const error_message="failed to connect to db for timeslot revocation"
+            console.log(error_message)
             if(!error.fatal){
                 database.disconnect(connection)
             }
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error_message}))
             return
         }
         utility.parse_data(req,(data)=>{
-            if(!data.InsID || !data.Username || !data.SSN || !data.booking_id){
-                console.log("request is missing at least one these attributes: InsID, Username, SSN, booking_id")
-                database.disconnect(connection)
-                return
+            //make sure all of the expected data is here and defined
+            for(attribute of "ssn booking_id".split(" ")){
+                if(!data[attribute]){
+                    const error_message="request is missing the attribute '"+attribute+"'"
+                    console.log(error_message)
+
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+
+                    database.disconnect(connection)
+                    return
+                }
             }
 
-            database.disconnect(connection)
+            //make sure a user only revokes their own bookings?
+            connection.query("delete from booking where BookingID=? and SSN=?;",[data.booking_id,data.ssn],(error,results,fields)=>{
+                if(error){
+                    const error_message="failed to delete booking"
+                    console.log(error_message)
+                    if(!error.fatal){
+                        database.disconnect(connection)
+                    }
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+                    return
+                }
 
-            throw "unimplemented"
-
-            connection.query("delete from booking where BookingID=?;",[data.booking_id],(error,results,fields)=>{
-
+                database.disconnect(connection)
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({result:"successfully revoked booking"}))
             })
         })
     })
