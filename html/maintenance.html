@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+    <title>Flounder - Maintenence</title>
+    <meta charset="UTF-8">
+  </head>
+
+  <body>
+    <!--Navigation menu for users-->
+    <nav class="menu">
+       <ul>
+          <li><a href="#">Book an instrument</a></li>
+          <li><a href="#">My Schedule</a></li>
+          <li><a href="#">Administrator</a></li>
+          <li><a href="#">Maintenance</a></li>
+       </ul>
+    </nav>
+    <main id="maintenance_cont">
+
+
+      <div>
+      <h>Leave a note for a machine</h>
+        <div>
+          <form action="/action_page.php" id="usrform">
+            <h>Select machine</h>
+            <select id="machines" name="machines">
+              <option value="PCR1">PCR 1, room 1</option>
+              <option value="PCR2">PCR 2, room 1</option>
+              <option value="Incubator1">Incubator, room 2</option>
+              <option value="Shaker1">Shaker, room 2</option>
+              <option value="Coffe maker">Coffe maker, room 3</option>
+            </select><br>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="maintenance-date">
+            <label for="time">Time:</label>
+            <input type="time" id="time"><br>
+            <label for="note">Note:</label><br>
+            <textarea rows="4" cols="50" name="note" form="usrform"></textarea><br>
+            <input type="submit" value="Submit">
+          </form><br><br>
+        </div>
+
+      <div>
+        <h>See list of past maintenance</h>
+        <table><tr><th>Machine</th><th>Room</th><th>Date</th><th>Time</th><th>By</th><th>Note</th></tr>
+          <tr><th>PCR1</th><th>1</th><th>2021/02/19</th><th>08:15 AM</th><th>Steve Johnsson</th><th>Fixed the machine boss</th></tr>
+          <tr><th>PCR1</th><th>1</th><th>2021/02/15</th><th>04:45 PM</th><th>John Makrsson</th><th>Changed the rotar and blades</th></tr>
+          <tr><th>PCR2</th><th>1</th><th>2021/02/10</th><th>01:15 PM</th><th>margaret Smith </th><th>Changed blinker fluid</th></tr>
+          <tr><th>Shaker</th><th>2</th><th>2021/02/4</th><th>03:30 PM</th><th>Sleve McDichael</th><th>Put in new cables</th></tr>
+          <tr><th>Coffe maker</th><th>3</th><th>2021/01/13</th><th>08:30 AM</th><th>Rey McSriff</th><th>New filter</th></tr>
+
+        </table>
+      </div>
+
+
+      <script>
+
+      </script>
+    </main>
+
+  </body>
+</html>
