@@ -12,12 +12,13 @@ CREATE TABLE booking (
   Status varchar(40) NOT NULL DEFAULT 'NOT NULL',
   SSN int NOT NULL,
   Ins_ID varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  End_Time datetime NOT NULL,
-  Date date NOT NULL
+  End_Time datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO booking (Note, Start_Time, `Status`, SSN, Ins_ID, End_Time, `Date`) VALUES
-('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 882767577, 'ins1', '2021-02-02 11:47:01', '2021-01-29');
+INSERT INTO booking (Note, Start_Time, `Status`, SSN, Ins_ID, End_Time) VALUES
+('The instrument  will be used ', '2021-02-10 12:26:13', 'Working ', 762324167, 'ins5', '2021-02-10 13:26:13'),
+('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 882767577, 'ins1', '2021-02-02 11:47:01'),
+('The instrument  will be used ', '2021-02-11 08:00:00', 'Working', 1450238774, 'wb1', '2021-02-11 09:00:00');
 
 
 ALTER TABLE booking
