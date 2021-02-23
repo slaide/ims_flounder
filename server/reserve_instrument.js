@@ -4,7 +4,7 @@ const database=require("./database.js")
 /**
  * Reserve the requested timeslot for the specified user on the specified instrument
  * currently expects client data: date, start_time, end_time, notes, email/ssn?
- * currently responds with: error message on failure, reservation message otherwise
+ * currently responds with: error/success
  * @param {Request} req Request object with client data
  * @param {Response} res Reponse object
  */
@@ -24,7 +24,7 @@ function reserve_instrument(req,res){
         }
         utility.parse_data(req,(data)=>{
             //make sure all of the expected data is here and defined
-            for(attribute of "ins_id date start_time end_time notes".split(" ")){
+            for(attribute of "ins_id date start_time end_time notes ssn".split(" ")){
                 if(!data[attribute]){
                     const error_message="request is missing the attribute '"+attribute+"'"
                     console.log(error_message)
