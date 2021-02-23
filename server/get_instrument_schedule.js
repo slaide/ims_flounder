@@ -19,7 +19,7 @@ function get_instrument_schedule(req,res){
                 }
                 return
             }
-            connection.query("Select Start_Time, End_Time, Date FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
+            connection.query("Select Start_Time, End_Time FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
                 if(error){
                     console.log("error selecting attributes from booking",error)
                     if(!error.fatal){
@@ -34,7 +34,7 @@ function get_instrument_schedule(req,res){
                 //Q: How to do with date, if keep datetime format? Wait for answeres
                 var ret=[];
                 for(item of db_booking){
-                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, Date:item.Date})
+                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
                 }
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))

@@ -17,9 +17,9 @@ function get_personal_schedule(req,res){
             console.log('>>data: ', data)
             console.log('>> ins_id: ',data.SSN) 
 
-            //Q: Get user SSN from storage in overview.html
             //Q: Wait answere datetime stuff 
-            connection.query("Start_Time, End_Time, Date FROM booking WHERE SSN = ?", [data.SSN], (error, result)=> {
+            //Q:waiting answere from Linnea
+            connection.query("Start_Time, End_Time, FROM booking WHERE SSN = ?", [data.SSN], (error, result)=> {
                 if(error){
                     console.log("error selecting attributes from booking",error)
                     if(!error.fatal){
@@ -32,7 +32,7 @@ function get_personal_schedule(req,res){
 
                 var ret=[];
                 for(item of db_booking){
-                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, Date:item.Date})
+                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
                 }
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))
