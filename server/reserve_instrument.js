@@ -3,10 +3,10 @@ const database=require("./database.js")
 
 /**
  * Reserve the requested timeslot for the specified user on the specified instrument
- * currently expects client data: date, start_time, end_time, notes, email/ssn?
+ * currently expects client data: date, start_time, end_time, notes, ssn
  * currently responds with: error/success
  * @param {Request} req Request object with client data
- * @param {Response} res Reponse object
+ * @param {Response} res Response object
  */
 function reserve_instrument(req,res){
     database.connect_database((connection,error)=>{

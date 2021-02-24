@@ -6,7 +6,7 @@ const database=require("./database.js")
  * currently expects client data: ssn
  * currently responds with: list of (RoomID, RoomCode)
  * @param {Request} req Request object with client data
- * @param {Response} res Reponse object
+ * @param {Response} res Response object
  */
 function get_rooms(req,res){
     database.connect_database((connection,error)=>{
@@ -61,7 +61,7 @@ module.exports.get_rooms=get_rooms
  * currently expects client data: RoomID
  * currently responds with: InsID, description
  * @param {Request} req Request object with client data
- * @param {Response} res Reponse object
+ * @param {Response} res Response object
  */
 function get_instruments_in_room(req,res){
     database.connect_database((connection,error)=>{
