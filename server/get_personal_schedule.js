@@ -17,7 +17,7 @@ function get_personal_schedule(req,res){
             console.log('>>data: ', data)
             console.log('>> SSN: ',data.SSN) 
 
-            var sql="SELECT booking.Start_Time, booking.End_Time, instrument.Description FROM booking WHERE booking.SSN = ? JOIN instrument ON booking.Ins_ID=instrument.Ins_ID" 
+            var sql="SELECT booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID WHERE booking.SSN = ?" 
             
             connection.query(sql, [data.SSN], (error, result)=> {
                 if(error){
