@@ -17,10 +17,11 @@ function get_personal_schedule(req,res){
             console.log('>>data: ', data)
             console.log('>> SSN: ',data.SSN) 
 
-            //Q: Waiting for function to be implemented in webpage so can test it 
-            connection.query("Select Start_Time, End_Time, Ins_ID FROM booking WHERE SSN = ?", [data.SSN], (error, result)=> {
+            var sql="SELECT booking.Start_Time, booking.End_Time, instrument.Description FROM booking WHERE booking.SSN = ? JOIN instrument ON booking.Ins_ID=instrument.Ins_ID" 
+            
+            connection.query(sql, [data.SSN], (error, result)=> {
                 if(error){
-                    console.log("error selecting attributes from booking",error)
+                    console.log("error selecting attributes",error)
                     if(!error.fatal){
                     database.disconnect(connection)
                     }
@@ -31,17 +32,19 @@ function get_personal_schedule(req,res){
 
                 var ret=[];
                 for(item of db_booking){
-                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, InsID:item.Ins_ID})
+                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, Description:item.Description})
                 }
-                console.log('>>ret:', ret)
+                
+                console.log('>>ret:', ret) 
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))
-                console.log(">> Sent scedule for user", data.SSN)
+                console.log(">> Sent scedule for user", data.SSN) 
                 
                 database.disconnect(connection)
-                console.log('>> Database disconnected')
+                console.log('>> Database disconnected') 
             })
         })
     })
 }
+
 module.exports.get_personal_schedule=get_personal_schedule
