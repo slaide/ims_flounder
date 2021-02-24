@@ -1,0 +1,44 @@
+ <!DOCTYPE html>
+ <html>
+
+<form action="/add_user.js" method="POST"> 
+
+
+    <label for="fname">First name:</label>
+    <input type="text" name="fname"> 
+
+
+    <br><br><label for="lname">Last name:</label>
+    <input type="text" name="lname">
+
+    <br><br><label for="p_num">Phone number:</label>
+    <input type="text" name="p_num">
+
+
+    <br><br><label for="SSN">SSN:</label>
+    <input type="text" name="SSN">
+
+
+    <h3>Special Rights:</h3>
+    <input type="checkbox" name="top" value="A">
+    <label for="top">A</label><br> 
+    <input type="checkbox" name="middle" value="B">
+    <label for="middle"> B</label><br>
+    <input type="checkbox" name="low" value="C">
+    <label for="low">C</label><br>
+    <input type="checkbox" name="none" value="none">
+    <label for="none">None</label><br>
+
+    <h3>Administrator</h3>
+    <input type="checkbox" name="yes" value="yes">
+    <label for="yes">Yes</label><br> 
+    <input type="checkbox" name="no" value="no">
+    <label for="no">No</label><br>
+
+
+    <br><label for="im_comp">Immunocompromised:</label>
+    <input type="text" name="im_comp">
+    <br><br><input type="submit" value="Add User">
+</form>
+
+</html>
