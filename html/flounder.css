@@ -1,8 +1,7 @@
 body {
    background-image: url("bg.png");
    text-align: center;
-   /*Just one more font, incase arial doesn't work (also declare "sans-serif")*/
-   font-family: Arial, Helvetica, sans-serif;
+   font-family: 'Poppins', Arial, Helvetica, sans-serif;
    color: #262223;
    background-size:cover;
 }
@@ -26,9 +25,9 @@ body {
 .button{
    background-color: #007ec7; /* Green */
    border-radius: 25px;
-   border: 1px #3874ce; /*Why different colors for border and backgorund, could do 'border: none;'*/
+   border: 1px #3874ce; 
    color: white;
-   padding: 15px 32px;
+   padding: 12px 30px;
    text-align: center;
    text-decoration: none;
    display: inline-block;
