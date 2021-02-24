@@ -6,7 +6,8 @@
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <style>@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');</style>
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
    </head>
 
    <body>
@@ -254,9 +255,16 @@
                         td.innerHTML = "";
                      } else {
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
-
-                              slotButton.setAttribute('class','slot');
-                              slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                        //Change color when choosen time slot
+                        slotButton.addEventListener("click", function() {
+                           var current = document.getElementsByClassName("active");
+                           if (current[0] != undefined) {
+                              current[0].className = current[0].className.replace(" active", "");
+                           }
+                           this.className += " active";
+                        })
+                        slotButton.setAttribute('class','slot');
+                        slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
                         slotButton.innerHTML = (7+j) + ':00';
                         td.appendChild(slotButton);
                      }
@@ -283,11 +291,9 @@
                   change.appendChild(next_week);
             }
 
-            //dateID range from 0 to 4 and is index for day of the week, Monday=0, Tuesday=1...
-               // OBS!!! Should be changed to true date
             //slotID is the start time
             function show_BookingForm(slotID,date,insID) {
-               //Creating a booking form with action: /booking, which is sent to server with info of booking
+               //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
                let booking_form = document.querySelector('#booking_form')
                   booking_form.setAttribute('action','/reserve_instrument'); //FOR SERVER
@@ -349,8 +355,6 @@
                   ssn_input.setAttribute('name',`${ssn}`);
                   ssn_input.setAttribute('value',`${ssn}`);
                   booking_form.appendChild(ssn_input);
-                  console.log(ssn);
-                  console.log(insID);
                //Submit button, action /booking is performed
                let submit = document.createElement('input');
                   submit.setAttribute("type","submit");

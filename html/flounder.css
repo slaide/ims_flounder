@@ -112,6 +112,7 @@ input {
    padding: 0.5rem 0.8rem;
    width: 130px;
    border: none;
+   outline: none;
    color:#20658C;
    border: 2px solid #20658C;
    background-color: #E8F4F2;
@@ -128,6 +129,7 @@ input {
 /*Instrument display*/
 .ins_button {
    border: none;
+   outline: none;
    display: block;
    margin: auto;
    background-color: #ffffff00;
@@ -177,6 +179,7 @@ input {
    padding: 0.5rem 1rem;
    width: 80px;
    border: none;
+   outline: none;
    background-color: #20658C;
    color: #E8F4F2;
 
@@ -233,4 +236,8 @@ input {
    display: block;
    background-color: #E8F4F2;
    margin: auto;
+}
+
+.active {
+   background-color: #1EBA67;
 }
