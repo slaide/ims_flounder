@@ -44,14 +44,16 @@
          <script>
 
             //Email and SSN storage
-            var email = $$EMAIL$$
-            var ssn = $$SSN$$
+            if (localStorage.getItem("ssn")) {
 
-            if (typeof(Storage) !== "undefined") {
-               localStorage.setItem(email,ssn);
-            } else {
-               //would probably look terrible without style added... oh well hope it never happens
-               document.querySelector('#overview_cont').innerHTML = "Sorry, your web browser does not support web storage."
+               if (typeof(Storage) !== "undefined") {
+                  var ssn = $$SSN$$;
+                  var email = $$EMAIL$$;
+                  localStorage.setItem(ssn,email);
+               } else {
+                  //would probably look terrible without style added... oh well hope it never happens
+                  document.querySelector('#overview_cont').innerHTML = "Sorry, your web browser does not support web storage."
+               }
             }
 
             function getRooms() {
