@@ -17,9 +17,8 @@ function get_personal_schedule(req,res){
             console.log('>>data: ', data)
             console.log('>> ins_id: ',data.SSN) 
 
-            //Q: Wait answere datetime stuff 
-            //Q:waiting answere from Linnea
-            connection.query("Start_Time, End_Time, FROM booking WHERE SSN = ?", [data.SSN], (error, result)=> {
+            //Q: Waiting for function to be implemented in webpage so can test it 
+            connection.query("Start_Time, End_Time, Ins_ID in FROM booking WHERE SSN = ?", [data.SSN], (error, result)=> {
                 if(error){
                     console.log("error selecting attributes from booking",error)
                     if(!error.fatal){
@@ -32,7 +31,7 @@ function get_personal_schedule(req,res){
 
                 var ret=[];
                 for(item of db_booking){
-                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
+                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time, InsID:item.Ins_ID})
                 }
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))

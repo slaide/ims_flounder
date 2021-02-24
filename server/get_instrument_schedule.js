@@ -30,8 +30,7 @@ function get_instrument_schedule(req,res){
                 db_booking=JSON.parse(JSON.stringify(result))  
                 console.log('>> db_booking: ', db_booking)
 
-                //Q: If no bookign, just send an empty? 
-                //Q: How to do with date, if keep datetime format? Wait for answeres
+                //Q: Waiting to see if Maija can work with the result 
                 var ret=[];
                 for(item of db_booking){
                     ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
