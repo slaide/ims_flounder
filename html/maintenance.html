@@ -1,23 +1,53 @@
 <!DOCTYPE html>
 <html lang="eng">
   <head>
-    <title>Flounder - Maintenence</title>
+    <title>Maintenence</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="./reset.css">
+    <link rel="stylesheet" type="text/css" href="./flounder.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!--<style>@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');</style>-->
   </head>
 
   <body>
     <!--Navigation menu for users-->
     <nav class="menu">
        <ul>
-          <li><a href="#">Book an instrument</a></li>
-          <li><a href="#">My Schedule</a></li>
+          <li><a href="./overview.html">Book an instrument</a></li>
+          <li><a href="./my_schedule.html">My Schedule</a></li>
           <li><a href="#">Administrator</a></li>
-          <li><a href="#">Maintenance</a></li>
+          <li><a href="./maintenance.html">Maintenance</a></li>
        </ul>
     </nav>
-    <main id="maintenance_cont">
+    
+    <main id="overview_cont">
+    <div>
+      <h1>Maintenance</h1>
+    </div>
 
 
+    <script>
+
+
+
+
+      function getNotes(Ins_ID) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/get_maintenance", true);
+        xhttp.onreadystatechange = function() {
+          var maintenance_notes = JSON.parse(this.responseText);
+          if (maintenance.error)
+        }
+      }
+
+
+    </script>
+
+
+
+
+<!--
       <div>
       <h>Leave a note for a machine</h>
         <div>
@@ -51,11 +81,8 @@
 
         </table>
       </div>
+      -->
 
-
-      <script>
-
-      </script>
     </main>
 
   </body>
