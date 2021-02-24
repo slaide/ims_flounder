@@ -39,7 +39,7 @@ function reserve_instrument(req,res){
             //select all bookings for the same machine that start before the new one should end, and end after the new should start
             //all bookings that match these overlap with the new one
             //TODO this needs to be wrapped into a transaction combined with inserting the new data
-            connection.query("select * from booking where Ins_ID=? and (timediff(Start_time,?)>=0 and timediff(End_time,?)<=0);",[data.ins_id,data.end_time,data.start_time],(error,results,fields)=>{
+            connection.query("select * from booking where Ins_ID=? and (timediff(Start_time,?)>0 and timediff(End_time,?)<0);",[data.ins_id,data.end_time,data.start_time],(error,results,fields)=>{
                 if(error){
                     console.log("error checking for free timeslot ",error)
 
