@@ -64,18 +64,19 @@
                         let list = document.createElement('ul');
 
                         //Add to page
-                        document.getElementsByTagName('body')[0].appendChild(container);
+                        //document.getElementsByTagName('body')[0].appendChild(container);
+                        schedule.appendChild(container);
                         container.appendChild(list); 
                         
                         for (let i = 0; i < bookings.length; i++) {
                         // create an item for each one
                         listItem = document.createElement('li');
 
-                        // Add the item text
+                        // Add the item
                         listItem.innerHTML = bookings[i];
 
                         // Add listItem to the listElement
-                        listElement.appendChild(listItem);
+                        list.appendChild(listItem);
                         }
                      }  
                   };
