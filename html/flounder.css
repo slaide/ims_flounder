@@ -36,6 +36,7 @@ body {
    margin: 0.9rem;
    /*Perhaps uppercase letters?*/
    text-transform: uppercase;
+   outline: none;
 }
 
 /*Added something for when hovering over log in button*/
@@ -85,7 +86,7 @@ input {
    font-family: 'Poppins','Helvetica',sans-serif;
 }
 
-.grid_room, .grid_sched {
+.grid {
    background-color: #ffffffb6;
    padding: 0.8rem;
    border-radius: 10px;
@@ -99,7 +100,7 @@ input {
    margin: 1rem 1rem 1rem 0.5rem;
 }
 
-.grid_room h1, .grid_sched h1 {
+.grid h1 {
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
@@ -240,4 +241,9 @@ input {
 
 .active {
    background-color: #1EBA67;
+}
+
+/**/
+.sched {
+   margin: 1rem;
 }

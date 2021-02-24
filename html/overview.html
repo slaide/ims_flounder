@@ -22,12 +22,12 @@
       </nav>
       
       <main id="overview_cont">
-         <div class="grid_room">
+         <div class="grid grid_room">
             <h1 class="overview_title">Room overview</h1>
             <div id="room_overview"></div>
          </div>
 
-         <div class="grid_sched">
+         <div class="grid grid_sched">
             <h1 class="overview_title">Book an instrument</h1>
             <div id="schedule">
                <p id="info_text">Select a room and instrument under room overview</p>
@@ -347,7 +347,7 @@
                var ssn = localStorage.getItem("ssn");
                let ins_id = document.createElement('input');
                   ins_id.setAttribute('type','hidden');
-                  ins_id.setAttribute('name','InsID');
+                  ins_id.setAttribute('name','ins_id');
                   ins_id.setAttribute('value',`${insID}`);
                   booking_form.appendChild(ins_id);
                let ssn_input = document.createElement('input');
