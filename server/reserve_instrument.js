@@ -45,20 +45,21 @@ function reserve_instrument(req,res){
             //TODO this needs to be wrapped into a transaction combined with inserting the new data
             connection.query("select * from booking where Ins_ID=? and (timediff(Start_time,?)>0 and timediff(End_time,?)<0);",[data.ins_id,data.end_time,data.start_time],(error,results,fields)=>{
                 if(error){
-                    console.log("error checking for free timeslot ",error)
+                    const error_message="error checking for free timeslot: "+error.sqlMessage
+                    console.log(error_message)
 
                     if(!error.fatal){
                         database.disconnect(connection)
                     }
 
                     res.writeHeader(200,utility.content.json)
-                    res.end(JSON.stringify({error:"error selecting potentially overlapping reservations"}))
+                    res.end(JSON.stringify({error:error_message}))
 
                     return
                 }
                 if(results.length!=0){
-                    const error_message="timeslot already reserved: "
-                    console.log(error_message,data)
+                    const error_message="timeslot already reserved"
+                    console.log(error_message,": ",data)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -69,7 +70,7 @@ function reserve_instrument(req,res){
                 connection.query("insert into booking(Start_time, End_time, Status, SSN, Ins_ID) values(?,?,'booked',?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id],(error,results,fields)=>{
                     if(error){
                         const error_message="error reserving free timeslot: "+error.sqlMessage
-                        console.log(error_message,error)
+                        console.log(error_message)
 
                         if(!error.fatal){
                             database.disconnect(connection)
