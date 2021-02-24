@@ -24,7 +24,7 @@ function reserve_instrument(req,res){
         }
         utility.parse_data(req,(data)=>{
             //make sure all of the expected data is here and defined
-            for(attribute of "ins_id date start_time end_time notes ssn".split(" ")){
+            for(attribute of "ins_id date start_time end_time ssn".split(" ")){
                 if(!data[attribute]){
                     const error_message="request is missing the attribute '"+attribute+"'"
                     console.log(error_message)
@@ -35,6 +35,10 @@ function reserve_instrument(req,res){
                     database.disconnect(connection)
                     return
                 }
+            }
+            //when no notes were added this field is undefined, though it should just be an empty string
+            if(!data.notes){
+                data.notes=""
             }
             //select all bookings for the same machine that start before the new one should end, and end after the new should start
             //all bookings that match these overlap with the new one
@@ -62,9 +66,9 @@ function reserve_instrument(req,res){
                     database.disconnect(connection)
                     return
                 }
-                connection.query("insert into booking(Start_time, End_time, Status, SSN, Inst_ID)) values(?,?,'booked',?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id],(error,results,fields)=>{
+                connection.query("insert into booking(Start_time, End_time, Status, SSN, Ins_ID) values(?,?,'booked',?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id],(error,results,fields)=>{
                     if(error){
-                        const error_message="error reserving free timeslot"
+                        const error_message="error reserving free timeslot: "+error.sqlMessage
                         console.log(error_message,error)
 
                         if(!error.fatal){
@@ -77,7 +81,7 @@ function reserve_instrument(req,res){
                         return
                     }
                     if(results.length!=0){
-                        const error_message="timeslot could not be reserved"
+                        const error_message="timeslot is already occupied"
                         console.log(error_message)
 
                         res.writeHeader(200,utility.content.json)
