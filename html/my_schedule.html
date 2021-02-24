@@ -19,12 +19,12 @@
             </ul>
             </nav>
 
-            <div class="grid_sched">
+            <div class="grid sched">
             <h1 class="overview_title">My Schedule</h1>
             <div id="my_schedule"></div>
             </div>
 
-            <div class="grid_sched">
+            <div class="grid sched">
             <h1>Revoke a booking</h1>
             <label for="bookings">Choose a booking:</label>
             <select name="bookings" id="bookings">
@@ -80,7 +80,7 @@
                         }
                      }  
                   };
-                  xhttp.send();
+                  xhttp.send(JSON.stringify({'ssn': ssn}));
                }
 
                getBookings(); 
