@@ -38,8 +38,13 @@ function add_user(req,res){
                 add_user_data.push(data[attribute])
             }
 
+            //create the placeholder questionsmarks with comma seperation for the sql query (so the number of question marks stays consistent with the number of values inserted)
+            var query_placeholders="?"
+            for(var i=1;i<add_user_data.length;i++){
+                query_placeholders+=",?"
+            }
             //make sure a user only revokes their own bookings?
-            connection.query("insert into user values ();",add_user_data,(error,results,fields)=>{
+            connection.query("insert into user values ("+query_placeholders+");",add_user_data,(error,results,fields)=>{
                 if(error){
                     const error_message="failed to add user because "+error
                     console.log(error_message)
