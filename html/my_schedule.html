@@ -64,7 +64,8 @@
                         let list = document.createElement('ul');
 
                         //Add to page
-                        document.getElementsByTagName('body')[0].appendChild(container);
+                        //document.getElementsByTagName('body')[0].appendChild(container);
+                        schedule.appendChild(container);
                         container.appendChild(list); 
                         
                         for (let i = 0; i < bookings.length; i++) {
