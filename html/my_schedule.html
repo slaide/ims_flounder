@@ -2,32 +2,48 @@
 <html lang="eng">
     <head>
         <title>My schedule</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="./reset.css">
         <link rel="stylesheet" type="text/css" href="./flounder.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     </head>
         <body>
             <!--Navigation menu for users-->
             <nav class="menu">
             <ul>
-                <li><a href="#">Book an instrument</a></li>
+                <li><a href="overview.html">Book an instrument</a></li>
                 <li><a href="#">My Schedule</a></li>
                 <li><a href="#">Administrator</a></li>
-                <li><a href="#">Maintenance</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
             </ul>
             </nav>
 
-            <h1>My Schedule</h1>
+            <div class="grid sched">
+            <h1 class="overview_title">My Schedule</h1>
             <div id="my_schedule"></div>
+            </div>
 
+            <div class="grid sched">
+            <h1>Revoke a booking</h1>
+            <label for="bookings">Choose a booking:</label>
+            <select name="bookings" id="bookings">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            </select>
+         </div>
               <script>
 
                //SSN from storage
-               var ssn = localStorage.getItem(ssn);
+               var SSN = localStorage.getItem("ssn");
 
                function getBookings() {
 
                   //XML part
                   var xhttp = new XMLHttpRequest();
-                  xhttp.open("POST", "/get_bookings", true);
+                  xhttp.open("POST", "/get_personal_schedule", true);
                   xhttp.onreadystatechange = function() {
                      if (this.readyState == 4 && this.status == 200) {
                         var bookings = JSON.parse(this.responseText);
@@ -48,33 +64,30 @@
                         let list = document.createElement('ul');
 
                         //Add to page
-                        document.getElementsByTagName('body')[0].appendChild(container);
+                        //document.getElementsByTagName('body')[0].appendChild(container);
+                        schedule.appendChild(container);
                         container.appendChild(list); 
                         
                         for (let i = 0; i < bookings.length; i++) {
                         // create an item for each one
                         listItem = document.createElement('li');
 
-                        // Add the item text
+                        // Add the item
                         listItem.innerHTML = bookings[i];
 
                         // Add listItem to the listElement
-                        listElement.appendChild(listItem);
+                        list.appendChild(listItem);
                         }
                      }  
                   };
-                  xhttp.send();
+                  xhttp.send(JSON.stringify({'SSN': SSN}));
                }
+
+               getBookings(); 
+
               </script>
 
-              <h1>Revoke a booking</h1>
-            <label for="bookings">Choose a booking:</label>
-            <select name="bookings" id="bookings">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            </select>
+
               </div>
         </body>
 </html>

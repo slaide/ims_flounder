@@ -6,7 +6,7 @@ const database=require("./database.js")
 //return schedule for this instrument
 //schedule=list of reserved timeslots with start- and end-time, and username
 function get_instrument_schedule(req,res){
-    
+
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data)
         console.log('>> ins_id: ',data.insID) 
@@ -19,8 +19,7 @@ function get_instrument_schedule(req,res){
                 }
                 return
             }
-            
-            connection.query("Start_Time, End_Time, Date FROM booking WHERE Ins_ID = ?", [data.insID], (err, result)=> {
+            connection.query("Select Start_Time, End_Time FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
                 if(error){
                     console.log("error selecting attributes from booking",error)
                     if(!error.fatal){
@@ -28,19 +27,20 @@ function get_instrument_schedule(req,res){
                     }
                     return
                 }
-                //Q: When no bookings exist? And when res is only 1 long.  
+                db_booking=JSON.parse(JSON.stringify(result))  
+                console.log('>> db_booking: ', db_booking)
+
+                //Q: Waiting to see if Maija can work with the result 
                 var ret=[];
-                for(item of result){
-                    ret.push({Date: item.Date, StartTime:item.start_Time, EndTime: item.End_Time})
+                for(item of db_booking){
+                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
                 }
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))
-
-                console.log(">> sent scedule for intrument", data.insID)
+                console.log(">> Sent scedule for intrument", data.insID)
                 
                 database.disconnect(connection)
                 console.log('>> Database disconnected')
-   
             })
         })
     }) 

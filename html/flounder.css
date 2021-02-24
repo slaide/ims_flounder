@@ -1,8 +1,7 @@
 body {
    background-image: url("bg.png");
    text-align: center;
-   /*Just one more font, incase arial doesn't work (also declare "sans-serif")*/
-   font-family: Arial, Helvetica, sans-serif;
+   font-family: 'Poppins', Arial, Helvetica, sans-serif;
    color: #262223;
    background-size:cover;
 }
@@ -26,9 +25,9 @@ body {
 .button{
    background-color: #007ec7; /* Green */
    border-radius: 25px;
-   border: 1px #3874ce; /*Why different colors for border and backgorund, could do 'border: none;'*/
+   border: 1px #3874ce; 
    color: white;
-   padding: 15px 32px;
+   padding: 12px 30px;
    text-align: center;
    text-decoration: none;
    display: inline-block;
@@ -37,6 +36,7 @@ body {
    margin: 0.9rem;
    /*Perhaps uppercase letters?*/
    text-transform: uppercase;
+   outline: none;
 }
 
 /*Added something for when hovering over log in button*/
@@ -86,7 +86,7 @@ input {
    font-family: 'Poppins','Helvetica',sans-serif;
 }
 
-.grid_room, .grid_sched {
+.grid {
    background-color: #ffffffb6;
    padding: 0.8rem;
    border-radius: 10px;
@@ -100,7 +100,7 @@ input {
    margin: 1rem 1rem 1rem 0.5rem;
 }
 
-.grid_room h1, .grid_sched h1 {
+.grid h1 {
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
@@ -113,6 +113,7 @@ input {
    padding: 0.5rem 0.8rem;
    width: 130px;
    border: none;
+   outline: none;
    color:#20658C;
    border: 2px solid #20658C;
    background-color: #E8F4F2;
@@ -129,6 +130,7 @@ input {
 /*Instrument display*/
 .ins_button {
    border: none;
+   outline: none;
    display: block;
    margin: auto;
    background-color: #ffffff00;
@@ -178,6 +180,7 @@ input {
    padding: 0.5rem 1rem;
    width: 80px;
    border: none;
+   outline: none;
    background-color: #20658C;
    color: #E8F4F2;
 
@@ -234,4 +237,13 @@ input {
    display: block;
    background-color: #E8F4F2;
    margin: auto;
+}
+
+.active {
+   background-color: #1EBA67;
+}
+
+/**/
+.sched {
+   margin: 1rem;
 }
