@@ -6,7 +6,7 @@ const database=require("./database.js")
  * currently expects client data: ssn, booking_id
  * currently responds with: error/success
  * @param {Request} req Request object with client data
- * @param {Response} res Reponse object
+ * @param {Response} res Response object
  */
 function revoke_reservation(req,res){
     database.connect_database((connection,error)=>{

@@ -6,7 +6,7 @@ const database=require("./database.js")
  * currently expects client data: ssn, first_name, last_name, password, admin, phone_number, email, special_rights, immunocompromised
  * currently responds with: error/success
  * @param {Request} req Request object with client data
- * @param {Response} res Reponse object
+ * @param {Response} res Response object
  */
 function add_user(req,res){
     database.connect_database((connection,error)=>{
