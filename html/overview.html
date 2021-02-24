@@ -44,12 +44,13 @@
          <script>
 
             //Email and SSN storage
-            if (localStorage.getItem("ssn")) {
+            if (!localStorage.getItem("ssn")) {
 
                if (typeof(Storage) !== "undefined") {
                   var ssn = $$SSN$$;
                   var email = $$EMAIL$$;
-                  localStorage.setItem(ssn,email);
+                  localStorage.setItem("ssn", ssn);
+                  localStorage.setItem("email", email);
                } else {
                   //would probably look terrible without style added... oh well hope it never happens
                   document.querySelector('#overview_cont').innerHTML = "Sorry, your web browser does not support web storage."
