@@ -24,8 +24,8 @@ const request_handler={
 
     "/get_rooms":rooms.get_rooms,
     "/get_instruments_in_room":rooms.get_instruments_in_room,
-    "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //TODO unfinished
-    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //TODO unfinished
+    "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //finished if Maija is happy
+    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //Finished if Linnéa is happy 
     "/reserve_instrument":reserve_instrument.reserve_instrument, //TODO testing
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
     "/add_user":add_user.add_user, //TODO testing
