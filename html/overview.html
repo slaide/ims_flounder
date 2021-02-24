@@ -347,12 +347,12 @@
                var ssn = localStorage.getItem("ssn");
                let ins_id = document.createElement('input');
                   ins_id.setAttribute('type','hidden');
-                  ins_id.setAttribute('name',`${insID}`);
+                  ins_id.setAttribute('name','InsID');
                   ins_id.setAttribute('value',`${insID}`);
                   booking_form.appendChild(ins_id);
                let ssn_input = document.createElement('input');
                   ssn_input.setAttribute('type','hidden');
-                  ssn_input.setAttribute('name',`${ssn}`);
+                  ssn_input.setAttribute('name','ssn');
                   ssn_input.setAttribute('value',`${ssn}`);
                   booking_form.appendChild(ssn_input);
                //Submit button, action /booking is performed
