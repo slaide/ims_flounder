@@ -43,3 +43,4 @@ function get_personal_schedule(req,res){
         })
     })
 }
+module.exports.get_personal_schedule=get_personal_schedule
