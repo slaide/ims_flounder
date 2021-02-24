@@ -2,22 +2,38 @@
 <html lang="eng">
     <head>
         <title>My schedule</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="./reset.css">
         <link rel="stylesheet" type="text/css" href="./flounder.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     </head>
         <body>
             <!--Navigation menu for users-->
             <nav class="menu">
             <ul>
                 <li><a href="overview.html">Book an instrument</a></li>
-                <li><a href="my_schedule.html">My Schedule</a></li>
+                <li><a href="#">My Schedule</a></li>
                 <li><a href="#">Administrator</a></li>
                 <li><a href="maintenance.html">Maintenance</a></li>
             </ul>
             </nav>
 
-            <h1>My Schedule</h1>
+            <div class="grid_sched">
+            <h1 class="overview_title">My Schedule</h1>
             <div id="my_schedule"></div>
+            </div>
 
+            <div class="grid_sched">
+            <h1>Revoke a booking</h1>
+            <label for="bookings">Choose a booking:</label>
+            <select name="bookings" id="bookings">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            </select>
+         </div>
               <script>
 
                //SSN from storage
@@ -70,14 +86,7 @@
 
               </script>
 
-              <h1>Revoke a booking</h1>
-            <label for="bookings">Choose a booking:</label>
-            <select name="bookings" id="bookings">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            </select>
+
               </div>
         </body>
 </html>
