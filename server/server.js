@@ -8,6 +8,7 @@ const get_instrument_schedule=require("./get_instrument_schedule")
 const get_personal_schedule=require("./get_personal_schedule")
 const reserve_instrument=require("./reserve_instrument")
 const revoke_instrument_reservation=require("./revoke_instrument_reservation")
+const add_user=require("./add_user")
 
 /**
  * central object that routes client requests
@@ -25,9 +26,9 @@ const request_handler={
     "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //TODO unfinished
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //TODO unfinished
-    //TODO rename this action
-    "/booking":reserve_instrument.reserve_instrument, //TODO unfinished
-    "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO unfinished
+    "/booking":reserve_instrument.reserve_instrument, //TODO testing, renaming
+    "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
+    "/add_user":add_user.add_user, //TODO testing
 
     "/shutdown":function(req,res){
         res.end()
