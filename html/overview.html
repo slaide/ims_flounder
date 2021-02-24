@@ -149,7 +149,7 @@
                      //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
                      let weekday = today.getUTCDay();
                      //Show calendar
-                     calendar(UTCyear,UTCmonth,UTCdate,weekday,bookings);
+                     calendar(UTCyear,UTCmonth,UTCdate,weekday,bookings,insID);
                   }
                }
                //Send insID
@@ -165,7 +165,7 @@
             }
 
             //Change to previous week
-            function next(year,month,last_date,booking) {
+            function next(year,month,last_date,booking,insID) {
                let date = 0;
                let nmr_days = 32 - (new Date(year,month)).getDate();
                if (nmr_days === last_date) {
@@ -175,11 +175,11 @@
                   date = last_date+1;
                }
                year = (month === 11) ? year + 1 : year;
-               calendar(year,month,date,0,booking);
+               calendar(year,month,date,0,booking,insID);
             }
 
             //Change to next week
-            function previous(year,month,first_date,booking) {
+            function previous(year,month,first_date,booking,insID) {
                year = (month === 0) ? year - 1 : year;
                let date = 0;
                if (first_date == 1) {
@@ -188,11 +188,11 @@
                } else {
                   date = first_date-1;
                }
-               calendar(year,month,date,6,booking);
+               calendar(year,month,date,6,booking,insID);
             }
             
             //Showing calender 
-            function calendar(UTCyear,UTCmonth,UTCdate,weekday,res) {
+            function calendar(UTCyear,UTCmonth,UTCdate,weekday,res,insID) {
                $("tbody").empty();
                $("thead").empty();
                $('#change_buttons').empty();
@@ -256,7 +256,7 @@
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
 
                               slotButton.setAttribute('class','slot');
-                              slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}')`);
+                              slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
                         slotButton.innerHTML = (7+j) + ':00';
                         td.appendChild(slotButton);
                      }
@@ -286,7 +286,7 @@
             //dateID range from 0 to 4 and is index for day of the week, Monday=0, Tuesday=1...
                // OBS!!! Should be changed to true date
             //slotID is the start time
-            function show_BookingForm(slotID,date) {
+            function show_BookingForm(slotID,date,insID) {
                //Creating a booking form with action: /booking, which is sent to server with info of booking
                $("#booking_form").empty();
                let booking_form = document.querySelector('#booking_form')
@@ -337,6 +337,20 @@
                   notes.setAttribute('name','notes'); //
                   notes.setAttribute('id','note');
                   booking_form.appendChild(notes);
+               //Hidden field for InsID and ssn
+               var ssn = localStorage.getItem("ssn");
+               let ins_id = document.createElement('input');
+                  ins_id.setAttribute('type','hidden');
+                  ins_id.setAttribute('name',`${insID}`);
+                  ins_id.setAttribute('value',`${insID}`);
+                  booking_form.appendChild(ins_id);
+               let ssn_input = document.createElement('input');
+                  ssn_input.setAttribute('type','hidden');
+                  ssn_input.setAttribute('name',`${ssn}`);
+                  ssn_input.setAttribute('value',`${ssn}`);
+                  booking_form.appendChild(ssn_input);
+                  console.log(ssn);
+                  console.log(insID);
                //Submit button, action /booking is performed
                let submit = document.createElement('input');
                   submit.setAttribute("type","submit");
