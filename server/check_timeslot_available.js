@@ -39,7 +39,7 @@ function check_timeslot_available(req,res){
             }
 
             //check if the instrument is already occupied in this timeframe
-            const query="select * from booking where ? and timediff(starttime,?)=0";
+            const query="select * from booking where ? and timediff(Start_Time,?)=0";
             connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{
                 if(error){
                     const error_message="error checking for timeslot availability (slot occupied): "+error.sqlMessage
@@ -56,7 +56,7 @@ function check_timeslot_available(req,res){
                 }
                 if(results.length!=0){
                     const error_message="timeslot is already occupied"
-                    console.log(error_message,": ",data)
+                    console.log(error_message)//,": ",data) //uncomment this to see which one
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -64,10 +64,17 @@ function check_timeslot_available(req,res){
                     database.disconnect(connection)
                     return
                 }
-                //select all bookings for this instrument in this timeframe of users that are immunocompromised
+                //select all bookings in the same room in this timeframe, of users that are immunocompromised
                 //check if this number is 0 (allow further checks) or 1 (disallow)
-                const query="select * from booking join user on user.ssn=booking.ssn where ? and timediff(starttime,?)=0 and user.immunocompromised=true";
-                connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{
+                const query="select * from booking" //select all bookings
+                +" join user on user.SSN=booking.SSN" //select all user that have booked something
+                +" join instrument on instrument.Ins_ID=booking.Ins_ID" //select all instruments that have been booked
+                +" join room on room.Room_ID=instrument.Room_ID" //select all rooms within which an instrument was booked
+                +" where timediff(Start_Time,?)=0" //select timeslots identical to the one currently checked
+                +" and user.Immunocompromised=true" //where the booker is immunocompromised
+                +" and user.SSN=?" //immunocompromised people can book multiple instruments in the same room at the same time, so booking is only disallowed if the immunocompromised person in the room is not the 'new' user
+                +" and room.Room_ID in (select Room_ID from instrument where Ins_ID=?)"; //in the same room as the the one where the current instrument is in
+                connection.query(query,[data.start_time,data.ssn,data.ins_id],(error,results,fields)=>{
                     if(error){
                         const error_message="error checking for timeslot availability (immunocompromised in room): "+error.sqlMessage
                         console.log(error_message)
@@ -82,8 +89,9 @@ function check_timeslot_available(req,res){
                         return
                     }
                     if(results.length!=0){
-                        const error_message="room is already occupied by an immunocompromised person"
-                        console.log(error_message,": ",data)
+                        //console.log(results)
+                        const error_message="room is already occupied by an immunocompromised person that is not you"
+                        console.log(error_message)//,": ",data) //uncomment this to see which one
     
                         res.writeHeader(200,utility.content.json)
                         res.end(JSON.stringify({error:error_message}))
@@ -97,8 +105,15 @@ function check_timeslot_available(req,res){
                     //if so, disallow, otherwise allow
                     //also, if the user themself is immunocompromised, check if the room is empty
                     //if empty, allow, else disallow
-                    const query="select count(*) as PeopleInRoom, room.capacity as RoomCapacity, user.Immunocompromised as YouAreImmunocompromised from booking join user on ? join instrument on booking.insid=instrument.insid join room on instrument.roomid=room.roomid where ? and timediff(starttime,?)=0 group by booking.ssn";
-                    connection.query(query,[{"user.ssn":data.ssn},{"booking.insid":data.insid},data.starttime],(error,results,fields)=>{
+                    const query="select count(*) as NumberPeopleInRoom, room.Capacity as RoomCapacity, user.Immunocompromised as YouAreImmunocompromised" //select some values required for further availability checks
+                    +" from booking join user on ?" //select all bookings
+                    +" join instrument on booking.Ins_ID=instrument.Ins_ID" //select all instruments booked
+                    +" join room on instrument.Room_ID=room.Room_ID" //select all rooms containing a booked instrument
+                    +" where instrument.Room_ID in (" //where the instrument is the same as the tried-to-be-booked one
+                        +"select Room_ID from instrument where ?"
+                    +") and timediff(Start_Time,?)=0" //and the booking starts at the same time as the possibly new one
+                    +" group by booking.SSN";//group by ssn to count people in the room (a person can book multiple instruments in the same room at the same time)
+                    connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{ //{"user.SSN":data.ssn},
                         if(error){
                             const error_message="error checking for timeslot availability (complex check): "+error.sqlMessage
                             console.log(error_message)
@@ -122,7 +137,7 @@ function check_timeslot_available(req,res){
                             database.disconnect(connection)
                             return
                         }
-                        console.log(results,fields)
+                        //console.log(results.length,"results",results,"fields",fields)
                         
                         database.disconnect(connection)
 
