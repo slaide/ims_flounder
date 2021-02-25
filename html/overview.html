@@ -248,7 +248,6 @@
                               }
                               //Mark todays date
                               if (week_dates[i][0] === today.getFullYear() && week_dates[i][1] === today.getMonth() && week_dates[i][2] === today.getDate()) {
-                                 console.log('hello');
                                  th.classList.add("today");
                               }
                               thead.appendChild(th);
@@ -261,12 +260,9 @@
 
                               let start_ = addZero(7+j) + ':00:00';
 
-                              //TRYING THE availability function
-                              console.log(requestAvailability(insID,`${booking_date} ${addZero(week_dates[i][2])}:00:00`));
-
                               //Mark non-available slots
                               let today = new Date();
-                              if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
+                              if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || (requestAvailability(insID,`${booking_date} ${addZero(week_dates[i][2])}:00:00`))) {
                                  slotButton.className = "slot non-available";
                               }
                               else if (bookings.length > 0) {
@@ -421,10 +417,9 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var available = JSON.parse(this.responseText);
                      if (available.error) {
-                        console.log(available.error);
-                        return;
+                        return false;
                      } else {
-                        return;
+                        return true;
                      }
                   }
                }
