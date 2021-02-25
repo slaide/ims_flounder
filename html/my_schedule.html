@@ -73,13 +73,14 @@
                         listItem = document.createElement('li');
 
                         // Add the item
-                        listItem.innerHTML = bookings[i];
+                        listItem.innerHTML = 'Instrument: ' + bookings[i].Description + '<br> Start Time: ' + bookings[i].StartTime + '<br> End Time: ' + bookings[i].EndTime;
 
                         // Add listItem to the listElement
                         list.appendChild(listItem);
                         }
                      }  
                   };
+                  //Send request and info to server 
                   xhttp.send(JSON.stringify({'SSN': SSN}));
                }
 

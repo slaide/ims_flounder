@@ -4,6 +4,8 @@ body {
    font-family: 'Poppins', Arial, Helvetica, sans-serif;
    color: #262223;
    background-size:cover;
+   background-repeat: no-repeat;
+   background-attachment: fixed;
 }
 
 .container{
@@ -127,6 +129,11 @@ input {
    color: #E8F4F2;
 }
 
+.chosen {
+   background-color: #20658C;
+   color: #E8F4F2;
+}
+
 /*Instrument display*/
 .ins_button {
    border: none;
@@ -195,8 +202,9 @@ input {
 }
 
 .non-available, .non-available:hover {
-   background-color: #8A9190;
+   background-color: #7d818065;
    box-shadow: none;
+   color: #ffffff73;
 }
 
 /*Style for booking form*/
@@ -212,7 +220,7 @@ input {
 #booking_form input[type=text] {
    background-color: #ffffff00;
    border: none;
-   width: 100px;
+   width: 180px;
    font-weight: 600; 
    font-size: 0.9rem;
 }
