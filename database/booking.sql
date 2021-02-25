@@ -10,19 +10,18 @@ CREATE TABLE booking (
   Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Start_Time datetime NOT NULL,
   Status varchar(40) NOT NULL DEFAULT 'NOT NULL',
-  SSN int NOT NULL,
   Ins_ID varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  End_Time datetime NOT NULL
+  End_Time datetime NOT NULL,
+  SSN int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO booking (Note, Start_Time, `Status`, SSN, Ins_ID, End_Time) VALUES
-('The instrument  will be used ', '2021-02-10 12:26:13', 'Working ', 762324167, 'ins5', '2021-02-10 13:26:13'),
-('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 882767577, 'ins1', '2021-02-02 11:47:01'),
-('The instrument  will be used ', '2021-02-11 08:00:00', 'Working', 1450238774, 'wb1', '2021-02-11 09:00:00');
+INSERT INTO booking (Note, Start_Time, `Status`, Ins_ID, End_Time, SSN) VALUES
+('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 'ins1', '2021-02-02 11:47:01', 1450238774),
+('The instrument  will be used ', '2021-02-10 12:26:13', 'Working ', 'ins5', '2021-02-10 13:26:13', 762324167),
+('The instrument  will be used ', '2021-02-11 08:00:00', 'Working', 'wb1', '2021-02-11 09:00:00', 882767577);
 
 
 ALTER TABLE booking
-  ADD PRIMARY KEY (SSN),
   ADD UNIQUE KEY Inst_ID (Ins_ID);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
