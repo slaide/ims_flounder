@@ -9,7 +9,6 @@ to be able to run this whole software you need:
     - below this command you will see messages from the server, which are about the status of the server, e.g. "server started at '127.0.0.1:8080'"
     - error messages will also show up here. if you do something on the website, and something that you did not expect to happen happens (like nothing at all, or the browser says the site cannot be reached), look here.
         - some errors that can occur:
-            - database error:  Unknown database 'doesnotexist' - this means that the database does not exist (doesnotexist is just a placeholder name for the actual database for now, this is expected in the current version of the website when you go to 127.0.0.1:8080/login )
             - database is not running - pretty self explanatory: the mysql server is not running (cannot be started by node.js, you need to start it yourself and then just keep it open while working on the whole system)
 - go to "127.0.0.1:8080" in your browser to open the website
     - "127.0.0.1:8080/shutdown" - if you visit this link, the server will shutdown (this is the currently official way to just close the server when you are done. it takes some seconds and will print a message once the server actually shuts down)
