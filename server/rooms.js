@@ -49,7 +49,7 @@ function get_rooms(req,res){
 
                 database.disconnect(connection)
 
-                console.log("sent room list")
+                console.log("sent room list to user ",data.ssn)
             })
         })
     })
@@ -73,6 +73,19 @@ function get_instruments_in_room(req,res){
             return
         }
         utility.parse_data(req,(data)=>{
+            //make sure all of the expected data is here and defined
+            for(attribute of "RoomID ssn".split(" ")){
+                if(!data[attribute]){
+                    const error_message="request is missing the attribute '"+attribute+"'"
+                    console.log(error_message)
+
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+
+                    database.disconnect(connection)
+                    return
+                }
+            }
             connection.query("select Ins_ID,Description from instrument where ?;",{Room_ID:data.RoomID},(error,result,fields)=>{
                 if(error){
                     console.log("error selecting instruments",error)
@@ -88,7 +101,7 @@ function get_instruments_in_room(req,res){
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify(ret))
 
-                console.log("sent instruments for room ",data.RoomID)
+                console.log("sent instruments for room ",data.RoomID," requested by user ",data.ssn)
             })
         })
     })
