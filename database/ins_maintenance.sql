@@ -7,20 +7,24 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 
 CREATE TABLE ins_maintenance (
-  Date date NOT NULL,
-  Time time NOT NULL,
+  DateTime datetime NOT NULL,
   Status varchar(40) NOT NULL,
   Notes varchar(40) NOT NULL,
-  Ins_ID varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  SSN int NOT NULL
+  SSN int NOT NULL,
+  Ins_ID varchar(40) NOT NULL,
+  Maintence_ID int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO ins_maintenance (`Date`, `Time`, `Status`, Notes, Ins_ID, SSN) VALUES
-('2021-01-29', '10:00:09', 'Working', 'fixed loose rotor ', 'ins1', 1450238774);
+INSERT INTO ins_maintenance (`DateTime`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
+('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 'ins1', 1);
 
 
 ALTER TABLE ins_maintenance
-  ADD PRIMARY KEY (Ins_ID,SSN);
+  ADD PRIMARY KEY (Maintence_ID);
+
+
+ALTER TABLE ins_maintenance
+  MODIFY Maintence_ID int NOT NULL AUTO_INCREMENT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
