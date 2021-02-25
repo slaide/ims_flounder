@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <!--<style>@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');</style>-->
+
   </head>
 
   <body>
@@ -16,36 +17,110 @@
        <ul>
           <li><a href="./overview.html">Book an instrument</a></li>
           <li><a href="./my_schedule.html">My Schedule</a></li>
-          <li><a href="#">Administrator</a></li>
+          <li><a href="./">Administrator</a></li>
           <li><a href="./maintenance.html">Maintenance</a></li>
        </ul>
     </nav>
     
-    <main id="overview_cont">
-    <div>
+    <main id="whole_page">
       <h1>Maintenance</h1>
-    </div>
+      <div id="select_ins">
+        <h1>Select instrument</h1>
+        <p id="test"><p>
+        <select id="instrument_menu" name="instrument_menu">
+        </select>
+      <div id="maintenance_overview">
+        <h1>Maintanence overview</h1>
+        <div id="leave_note">
+          <h2>Leave note</h2>
+        </div>
+        <div id="see_notes">
+          <h2>See earlier notes</h2>
+        </div>
+      </div>
 
+      <div id="lmao"></div>
 
-    <script>
+      <script>
 
+         var ssn = $$SSN$$
+          
+         function hello_world() {
+         document.querySelector('#lmao').innerHTML = "hello world";
+         //  let ins_menu = document.querySelector('#lmao');
+         //  let room_alt = document.createElement('div');
+         //  ins_menu.innerHTML = "Hello world";
+         //  ins_menu.appendChild(room_alt);
+         }
+         //hello_world();
 
+         function getRooms() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/get_rooms", true);
+            xhttp.onreadystatechange = function() {
+               if (this.readyState == 4 && this.status == 200) {
+                  var rooms = JSON.parse(this.responseText);
+                  if (rooms.error) {
+                     console.log(rooms.error)
+                     return;
+                  }
+                  let ins_menu = document.querySelector("#instrument_menu");
+                  for (let i = 0; i < rooms.length; i++) {
+                     populateMenu(rooms[i].RoomID, rooms[i].RoomCode);
+                     //let room_alt = document.createElement('option');
+                     //room_alt.innerHTML = 'Room ' + rooms[i].RoomCode;
+                     //ins_menu.appendChild(room_alt);
+                     //room_alt.setAttribute('class', 'room_alt');
+                     //let room_name = document.createTextNode(rooms[i]);
+                     //room_alt.appendChild(room_name);
+                  }
+               }
+            };
+            xhttp.send(JSON.stringify({'ssn':ssn}));
+         }
 
-
-      function getNotes(Ins_ID) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/get_maintenance", true);
-        xhttp.onreadystatechange = function() {
-          var maintenance_notes = JSON.parse(this.responseText);
-          if (maintenance.error)
+         function populateMenu(RoomID, RoomCode) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/get_instruments_in_room", true);
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+               var instruments = JSON.parse(this.responseText);
+               if (instruments.error) {
+                  console.log(instruments.error)
+                  return;
+               }
+               document.querySelector('#lmao').innerHTML = instruments.length;
+               let ins_menu = document.querySelector("#instrument_menu");
+               for (let i = 0; i < instruments.length; i++) {
+                  let ins_alt = document.createElement('option');
+                  ins_alt.innerHTML = 'Room ' + RoomCode + ": " + instruments[i].description;
+                  ins_menu.appendChild(ins_alt);
+                  }
+            }
+         };
+         xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
         }
-      }
+        getRooms();
+/*
+        function getNotes(Ins_ID) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/get_maintenance", true);
+          xhttp.onreadystatechange = function() {
+            if (this.readState == 4 && this.status == 200) {
+              var maintenance_notes = JSON.parse(this.responseText);
+              if (maintenance_notes.error) {
+                console.log(booking.error);
+                return;
+              }
 
-
-    </script>
-
-
-
+              let 
+            }
+            if (maintenance.error)
+          }
+        }
+*/
+        //hello_world();
+      </script>
 
 <!--
       <div>
