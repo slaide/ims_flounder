@@ -4,22 +4,22 @@ const database=require("./database.js")
 ///get maintanance function 
 //function returns maintanance from ins_maintaenance in database
 //for a specific ins_ID 
-function get_maintanence(req, res) {
+function get_maintanence(req,res) {
          
     utility.parse_data(req,(data)=>{
-        console.log('>>data: ', data)
-        console.log('>> ins_id: ',data.insID) 
+        console.log('>>data: ', data) 
+        console.log('>> ins_id: ',data.InsID) 
         
         database.connect_database((connection,error)=>{
             if(error){
-                console.log(">> error connecting database for schedule of instrument ID",error)
+                console.log(">> error connecting database for maintenace of instrument ID",error)
                 if(!error.fatal){
                     database.disconnect(database)
                 }
                 return
             }
-            var sql ="SELECT Date, Time, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
-            connection.query(sql, [data.insID], (error, result)=> {
+            var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
+            connection.query(sql, [data.InsID], (error, result)=> {
                 if(error){
                     console.log("error selecting attributes from ins_maintenance",error)
                     if(!error.fatal){
@@ -32,8 +32,7 @@ function get_maintanence(req, res) {
     
                 var ret=[];
                 for(item of db_maintenance){
-                    //Change date and time to datetime in db? 
-                    ret.push({Date:item.Date, Time:item.Time, Status:item.Status, Notes:item.Notes})
+                    ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
                 }   
                 //console.log('>>ret:', ret) 
                 res.writeHeader(200,utility.content.from_filename(".json"))
