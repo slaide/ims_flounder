@@ -129,7 +129,7 @@ input {
    color: #E8F4F2;
 }
 
-.chosen {
+.selected_room {
    background-color: #20658C;
    color: #E8F4F2;
 }
@@ -147,9 +147,10 @@ input {
    font-size: 0.9rem;
 }
 
-.ins_button:hover {
+.ins_button:hover, .selected_ins {
    text-decoration: underline;
 }
+
 
 /*Schedule display*/
 

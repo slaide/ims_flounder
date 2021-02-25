@@ -79,11 +79,11 @@
                            room.setAttribute('class','room');
                            room.innerHTML = 'Room ' + rooms[i].RoomCode;
                            room.addEventListener("click", function() {
-                              var current = document.getElementsByClassName("chosen");
+                              var current = document.getElementsByClassName("selected_room");
                               if (current[0] != undefined) {
-                                 current[0].className = current[0].className.replace(" chosen", "");
+                                 current[0].className = current[0].className.replace(" selected_room", "");
                               }
-                              this.className += " chosen";
+                              this.className += " selected_room";
                            })
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
@@ -120,6 +120,13 @@
                            ins.setAttribute('class','ins_button');
                            ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].InsID}', ${RoomCode})`);
                            ins.innerHTML = instrument[i].description;
+                           ins.addEventListener("click", function() {
+                              var current = document.getElementsByClassName("selected_ins");
+                              if (current[0] != undefined) {
+                                 current[0].className = current[0].className.replace(" selected_ins", "");
+                              }
+                              this.className += " selected_ins";
+                           })
                         instruments.appendChild(ins);
                      }
                   }
@@ -190,7 +197,7 @@
             function previous(year,month,first_date,booking,insID) {
                year = (month === 0) ? year - 1 : year;
                let date = 0;
-               if (first_date == 1) {
+               if (first_date === 1) {
                   date = 32 - (new Date(year,month-1)).getDate();
                   month = month-1;
                } else {
@@ -224,6 +231,8 @@
                   let k = 1;
                   //For last month
                   let p = 0;
+                  //When UTCdate = 1
+                  let q = -5;
                   //Date object
                   let today = new Date();
                   //Loop for table columns, one for each day of the month
@@ -239,7 +248,12 @@
                            th.innerHTML = day_arr[i] + ' ' + parseInt(UTCdate+(i-weekday)) + '/' + parseInt(UTCmonth+1);
                            week_dates[i] = [UTCyear,UTCmonth,parseInt(UTCdate+(i-weekday))];
                         } else if (UTCdate < 7) {
-                           if (weekday - i >= UTCdate) {
+                           if (UTCdate === 1 && i < 6) {
+                              week_dates[i] = [UTCyear,UTCmonth-1,parseInt(daysInPreviousMonth+q)];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + UTCmonth;
+                              q = q+1;
+                           }
+                           else if (weekday - i >= UTCdate) {
                               week_dates[i] = [UTCyear,UTCmonth-1,parseInt(daysInPreviousMonth+p)];
                               th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + UTCmonth;
                               p = p-1;
@@ -267,7 +281,7 @@
                         //Mark non_available slots
                         let today = new Date();
 
-                        if ((week_dates[i][2] < today.getUTCDate() && week_dates[i][1] === today.getUTCMonth()) || today.getUTCMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getUTCDate() === week_dates[i][2])) {
+                        if ((week_dates[i][2] < today.getUTCDate() && week_dates[i][1] === today.getUTCMonth()) || today.getUTCMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getUTCDate() === week_dates[i][2] && today.getUTCMonth() === week_dates[i][1] && today.getUTCFullYear() === week_dates[i][0])) {
                            slotButton.className = "slot non-available";
                         }
                         else if (res.length > 0) {
