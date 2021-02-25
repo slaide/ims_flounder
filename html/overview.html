@@ -164,7 +164,7 @@
                      //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
                      let weekday = today.getDay();
                      //Show calendar
-                     calendar(year,month,date,weekday,bookings,insID);
+                     calendar(year,month,date,weekday,bookings,insID,ins_desc);
                   }
                }
                //Send insID
@@ -180,7 +180,7 @@
             }
 
             //Change to previous week
-            function next(year,month,last_date,booking,insID) {
+            function next(year,month,last_date,booking,insID,ins_desc) {
                let date = 0;
                let nmr_days = 32 - (new Date(year,month)).getDate();
                if (nmr_days === last_date) {
@@ -190,11 +190,11 @@
                   date = last_date+1;
                }
                year = (month === 11) ? year + 1 : year;
-               calendar(year,month,date,0,booking,insID);
+               calendar(year,month,date,0,booking,insID,ins_desc);
             }
 
             //Change to next week
-            function previous(year,month,first_date,booking,insID) {
+            function previous(year,month,first_date,booking,insID,ins_desc) {
                year = (month === 0) ? year - 1 : year;
                let date = 0;
                if (first_date === 1) {
@@ -203,11 +203,11 @@
                } else {
                   date = first_date-1;
                }
-               calendar(year,month,date,6,booking,insID);
+               calendar(year,month,date,6,booking,insID,ins_desc);
             }
             
             //Showing calender 
-            function calendar(year,month,date,weekday,res,insID) {
+            function calendar(year,month,date,weekday,res,insID,ins_desc) {
                $("tbody").empty();
                $("thead").empty();
                $('#change_buttons').empty();
@@ -286,7 +286,7 @@
                         }
                         else if (res.length > 0) {
                            for (let s = 0; s < res.length; s++) {
-                              if ((start_ === res[s].StartTime.substring(11,19) && booking_date === res[s].StartTime.substring(0,10))) {
+                              if (((7+j) === new Date(res[s].StartTime).getHours() && new Date(booking_date).toLocaleDateString() === new Date(res[s].StartTime).toLocaleDateString())) {
                                  slotButton.className = "slot non-available";
                                  slotButton.disabled = "disabled";
                               }
@@ -302,12 +302,12 @@
                                     console.log('wop');
                                  })
                                  slotButton.className = "slot";
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                               }
                            }
                         } else {
                            slotButton.className = "slot";
-                           slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                           slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                            //Change color when choosing time slot
                            slotButton.addEventListener("click", function() {
                               var current = document.getElementsByClassName("active");
@@ -346,7 +346,7 @@
             }
 
             //slotID is the start time
-            function show_BookingForm(slotID,date,insID) {
+            function show_BookingForm(slotID,date,insID,ins_desc) {
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
                let booking_form = document.querySelector('#booking_form')
@@ -415,6 +415,10 @@
                var successful = $$RESERVATIONSUCCESS$$
                if (successful) {
                   $('#booking_form').empty();
+                  let schedule = document.querySelector('#schedule');
+                  let success = document.createElement('div');
+                     success.innerHTML = `Your reservation of ${ins_desc} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
+                  schedule.appendChild(success);
                }
             }
 
