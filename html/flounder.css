@@ -4,6 +4,8 @@ body {
    font-family: 'Poppins', Arial, Helvetica, sans-serif;
    color: #262223;
    background-size:cover;
+   background-repeat: no-repeat;
+   background-attachment: fixed;
 }
 
 .container{

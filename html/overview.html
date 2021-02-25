@@ -266,7 +266,6 @@
                         let start_ = addZero(7+j) + ':00:00';
                         //Mark non_available slots
                         let today = new Date();
-                        console.log(week_dates[i][2])
 
                         if ((week_dates[i][2] < today.getUTCDate() && week_dates[i][1] === today.getUTCMonth()) || today.getUTCMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getUTCDate() === week_dates[i][2])) {
                            slotButton.className = "slot non-available";
@@ -278,7 +277,7 @@
                                  slotButton.disabled = "disabled";
                               }
                               //Dont know if the if statement works...
-                              else if (slotButton.querySelector('.non-available') == null){
+                              else {
                                  //Change color when choosing time slot
                                  slotButton.addEventListener("click", function() {
                                     var current = document.getElementsByClassName("active");
@@ -286,6 +285,7 @@
                                        current[0].className = current[0].className.replace(" active", "");
                                     }
                                     this.className += " active";
+                                    console.log('wop');
                                  })
                                  slotButton.className = "slot";
                                  slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
@@ -294,6 +294,15 @@
                         } else {
                            slotButton.className = "slot";
                            slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                           //Change color when choosing time slot
+                           slotButton.addEventListener("click", function() {
+                              var current = document.getElementsByClassName("active");
+                              if (current[0] != undefined) {
+                                 current[0].className = current[0].className.replace(" active", "");
+                              }
+                              this.className += " active";
+                              console.log('wop');
+                           })
                         }
                         
                         slotButton.innerHTML = addZero(7+j) + ':00';
