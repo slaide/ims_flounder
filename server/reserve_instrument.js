@@ -58,7 +58,7 @@ function reserve_instrument(req,res){
                     return
                 }
                 if(results.length!=0){
-                    const error_message="timeslot already reserved"
+                    const error_message="timeslot is already occupied"
                     console.log(error_message,": ",data)
 
                     res.writeHeader(200,utility.content.json)
@@ -81,8 +81,8 @@ function reserve_instrument(req,res){
 
                         return
                     }
-                    if(results.length!=0){
-                        const error_message="timeslot is already occupied"
+                    if(!results.affectedRows===1){
+                        const error_message="could not book timeslot for some reason"
                         console.log(error_message)
 
                         res.writeHeader(200,utility.content.json)
