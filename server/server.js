@@ -11,7 +11,7 @@ const revoke_instrument_reservation=require("./revoke_instrument_reservation")
 const add_user=require("./add_user")
 const add_room=require("./add_room")
 const add_instrument=require("./add_instrument")
-const get_maintanence=require("./get_maintanence")
+const get_maintenance=require("./get_maintenance")
 
 /**
  * central object that routes client requests
@@ -34,7 +34,7 @@ const request_handler={
     "/add_user":add_user.add_user, //TODO testing
     "/add_room":add_room.add_room, //TODO testing
     "/add_instrument":add_instrument.add_instrument, //TODO testing
-    "/get_maintanence": get_maintanence.get_maintanence, //TODO testing
+    "/get_maintanence":get_maintenance.get_maintenance, //TODO testing
 
     "/shutdown":function(req,res){
         res.end()
