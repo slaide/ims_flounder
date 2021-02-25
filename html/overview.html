@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="eng">
    <head>
-      <title>Room overview</title>
+      <title>Book an instrument</title>
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
@@ -16,7 +16,7 @@
          <ul>
             <li><a href="#">Book an instrument</a></li>
             <li><a href="./my_schedule.html">My Schedule</a></li>
-            <li><a href="#">Administrator</a></li>
+            <li><a href="./ADMIN_DEMO_2.html">Administrator</a></li>
             <li><a href="./maintenance.html">Maintenance</a></li>
          </ul>
       </nav>
@@ -78,6 +78,13 @@
                            room.setAttribute('onclick', `getIns('${rooms[i].RoomID}', ${rooms[i].RoomCode})`);
                            room.setAttribute('class','room');
                            room.innerHTML = 'Room ' + rooms[i].RoomCode;
+                           room.addEventListener("click", function() {
+                              var current = document.getElementsByClassName("chosen");
+                              if (current[0] != undefined) {
+                                 current[0].className = current[0].className.replace(" chosen", "");
+                              }
+                              this.className += " chosen";
+                           })
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
                            instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
@@ -255,17 +262,41 @@
                         td.innerHTML = "";
                      } else {
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
-                        //Change color when choosen time slot
-                        slotButton.addEventListener("click", function() {
-                           var current = document.getElementsByClassName("active");
-                           if (current[0] != undefined) {
-                              current[0].className = current[0].className.replace(" active", "");
+
+                        let start_ = addZero(7+j) + ':00:00';
+                        //Mark non_available slots
+                        let today = new Date();
+                        console.log(week_dates[i][2])
+
+                        if ((week_dates[i][2] < today.getUTCDate() && week_dates[i][1] === today.getUTCMonth()) || today.getUTCMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getUTCDate() === week_dates[i][2])) {
+                           slotButton.className = "slot non-available";
+                        }
+                        else if (res.length > 0) {
+                           for (let s = 0; s < res.length; s++) {
+                              if ((start_ === res[s].StartTime.substring(11,19) && booking_date === res[s].StartTime.substring(0,10))) {
+                                 slotButton.className = "slot non-available";
+                                 slotButton.disabled = "disabled";
+                              }
+                              //Dont know if the if statement works...
+                              else if (slotButton.querySelector('.non-available') == null){
+                                 //Change color when choosing time slot
+                                 slotButton.addEventListener("click", function() {
+                                    var current = document.getElementsByClassName("active");
+                                    if (current[0] != undefined) {
+                                       current[0].className = current[0].className.replace(" active", "");
+                                    }
+                                    this.className += " active";
+                                 })
+                                 slotButton.className = "slot";
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                              }
                            }
-                           this.className += " active";
-                        })
-                        slotButton.setAttribute('class','slot');
-                        slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
-                        slotButton.innerHTML = (7+j) + ':00';
+                        } else {
+                           slotButton.className = "slot";
+                           slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}')`);
+                        }
+                        
+                        slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
                      }
                   }
@@ -299,12 +330,8 @@
                   booking_form.setAttribute('action','/reserve_instrument'); //FOR SERVER
                   booking_form.setAttribute('method','POST');
                //Label and input for date
-               let date_label = document.createElement('label');
-                  date_label.innerHTML = "Date:";
-                  date_label.setAttribute('for','booking_date');
-                  booking_form.appendChild(date_label);
                let date_input = document.createElement('input');
-                  date_input.setAttribute('type','text');
+                  date_input.setAttribute('type','hidden');
                   date_input.setAttribute('name','date'); //
                   date_input.setAttribute('id','booking_date');
                   date_input.setAttribute("value",date);
@@ -319,7 +346,7 @@
                   start_time.setAttribute('type','text');
                   start_time.setAttribute('name','start_time'); //
                   start_time.setAttribute('id','start');
-                  start_time.setAttribute("value",`${slotID}:00`);
+                  start_time.setAttribute("value",`${date} ${addZero(slotID)}:00:00`);
                   start_time.readOnly = true;
                   booking_form.appendChild(start_time);
                //Label and input for end time
@@ -331,7 +358,7 @@
                   end_time.setAttribute('type','text');
                   end_time.setAttribute('name','end_time'); //
                   end_time.setAttribute('id','end');
-                  end_time.setAttribute('value',`${slotID+1}:00`);
+                  end_time.setAttribute('value',`${date} ${addZero(slotID+1)}:00:00`);
                   end_time.readOnly = true;
                   booking_form.appendChild(end_time);
                //Label and input for notes
