@@ -254,4 +254,12 @@ input {
 /**/
 .sched {
    margin: 1rem;
+   float: left;
+   width: 60%;
+}
+
+.book {
+   margin: 1rem;
+   float: left;
+   width: 30%;
 }
