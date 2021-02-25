@@ -9,6 +9,8 @@ const get_personal_schedule=require("./get_personal_schedule")
 const reserve_instrument=require("./reserve_instrument")
 const revoke_instrument_reservation=require("./revoke_instrument_reservation")
 const add_user=require("./add_user")
+const add_room=require("./add_room")
+const add_instrument=require("./add_instrument")
 
 /**
  * central object that routes client requests
@@ -29,6 +31,8 @@ const request_handler={
     "/reserve_instrument":reserve_instrument.reserve_instrument, //TODO testing
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
     "/add_user":add_user.add_user, //TODO testing
+    "/add_room":add_room.add_room, //TODO testing
+    "/add_instrument":add_instrument.add_instrument, //TODO testing
 
     "/shutdown":function(req,res){
         res.end()
