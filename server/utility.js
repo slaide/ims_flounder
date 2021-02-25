@@ -125,3 +125,13 @@ function parse_data(req,then){
     }
 }
 module.exports.parse_data=parse_data
+
+
+/**
+ * format time with swedish timezone
+ * @param {Date} date - date object to be formatted in compatible format
+ */
+function format_time(date){
+    return new Date(date).toLocaleString("en-US",{timezone:"Europe/Stockholm"})
+}
+module.exports.format_time=format_time
