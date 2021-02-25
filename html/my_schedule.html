@@ -24,15 +24,15 @@
             <div id="my_schedule"></div>
             </div>
 
-            <div class="grid sched">
+            <div class="grid book">
             <h1>Revoke a booking</h1>
             <label for="bookings">Choose a booking:</label>
-            <select name="bookings" id="bookings">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            </select>
+            <form id="revoke">
+               <select name="bookings" id="booking_menu">
+               </select>
+               <br>
+            <button type="submit" value="submit" id="revoke_submit">Revoke</button>
+            </form>
          </div>
               <script>
 
@@ -84,7 +84,65 @@
                   xhttp.send(JSON.stringify({'SSN': SSN}));
                }
 
+            function populateMenu() {
+            //XML request to server
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/get_personal_schedule", true);
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+               var bookings = JSON.parse(this.responseText);
+
+               //Error handling
+               if (bookings.error) {
+                  console.log(bookings.error)
+                  return;
+               }
+
+               //Declaring drop down menu
+               let menu = document.querySelector("#booking_menu");
+
+               //Adding each booking to menu
+               for (let i = 0; i < bookings.length; i++) {
+                  let booking_alt = document.createElement('option');
+                  booking_alt.innerHTML = bookings[i].Description; //Display bookingID instead
+                  menu.appendChild(booking_alt);
+                     }
+
+                     //var form = document.getElementById("revoke");
+                     //Will this return the specific id? 
+                     document.getElementById("revoke_submit").addEventListener("click", function () {
+                     revokebooking(booking_alt);
+                  });
+               }
+
+
+            };
+               //Send request and info to server
+               xhttp.send(JSON.stringify({'SSN': SSN}));
+         }
+
+            function revokeBooking(bookingID) {
+            //XML request to server
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/revoke_instrument_reservation", true);
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+               var bookings = JSON.parse(this.responseText);
+
+               //Error handling
+               if (bookings.error) {
+                  console.log(bookings.error)
+                  return;
+               }
+               
+            }
+         };
+         //Send request and info to server
+         xhttp.send(JSON.stringify({'bookingID': bookingID}));
+      }
+
                getBookings(); 
+               populateMenu(); 
 
               </script>
 
