@@ -125,7 +125,7 @@
                            let current_date = today.getDate();
                            let current_weekday = today.getDay();
                            //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar('${current_year}', ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomCode})`);
+                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomCode})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -218,8 +218,6 @@
                         let k = 1;
                         //For last month
                         let p = 0;
-                        //When UTCdate = 1
-                        let q = -5;
                         //Date object
                         let today = new Date();
                         //Loop for table columns, one for each day of the month
@@ -235,12 +233,7 @@
                                  th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                                  week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                               } else if (date < 7) {
-                                 if (date === 1 && i < 6) {
-                                    week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+q)];
-                                    th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + month;
-                                    q = q+1;
-                                 }
-                                 else if (weekday - i >= date) {
+                                 if (weekday - i >= date) {
                                     week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+p)];
                                     th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + month;
                                     p = p-1;
@@ -255,6 +248,7 @@
                               }
                               //Mark todays date
                               if (week_dates[i][0] === today.getFullYear() && week_dates[i][1] === today.getMonth() && week_dates[i][2] === today.getDate()) {
+                                 console.log('hello');
                                  th.classList.add("today");
                               }
                               thead.appendChild(th);
@@ -269,7 +263,7 @@
 
                               //TRYING THE availability function
                               console.log(requestAvailability(insID,`${booking_date} ${addZero(week_dates[i][2])}:00:00`));
-                              
+
                               //Mark non-available slots
                               let today = new Date();
                               if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
@@ -411,7 +405,7 @@
                if (successful) {
                   let schedule = document.querySelector('#schedule');
                   let success = document.createElement('div');
-                     success.innerHTML = `Your reservation of ${ins_desc} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
+                     success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomCode} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
                   schedule.appendChild(success);
                   }
                });
