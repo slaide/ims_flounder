@@ -67,7 +67,7 @@ function reserve_instrument(req,res){
                     database.disconnect(connection)
                     return
                 }
-                connection.query("insert into booking(Start_time, End_time, Status, SSN, Ins_ID) values(?,?,'booked',?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id],(error,results,fields)=>{
+                connection.query("insert into booking(Start_time, End_time, Status, SSN, Ins_ID, Note) values(?,?,'booked',?,?,?)",[data.start_time,data.end_time,data.ssn,data.ins_id,data.notes],(error,results,fields)=>{
                     if(error){
                         const error_message="error reserving free timeslot: "+error.sqlMessage
                         console.log(error_message)
