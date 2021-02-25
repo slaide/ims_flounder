@@ -6,23 +6,25 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE booking (
-  Note varchar(40) NOT NULL DEFAULT 'NOT NULL',
+CREATE TABLE booking1 (
+  Booking_ID varchar(40) NOT NULL,
   Start_Time datetime NOT NULL,
-  Status varchar(40) NOT NULL DEFAULT 'NOT NULL',
-  Ins_ID varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   End_Time datetime NOT NULL,
-  SSN int NOT NULL
+  Status varchar(40) NOT NULL,
+  SSN int NOT NULL,
+  Ins_ID varchar(40) NOT NULL,
+  Note varchar(40) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO booking (Note, Start_Time, `Status`, Ins_ID, End_Time, SSN) VALUES
-('The instrument  will be used ', '2021-02-02 10:47:01', 'Using ', 'ins1', '2021-02-02 11:47:01', 1450238774),
-('The instrument  will be used ', '2021-02-10 12:26:13', 'Working ', 'ins5', '2021-02-10 13:26:13', 762324167),
-('The instrument  will be used ', '2021-02-11 08:00:00', 'Working', 'wb1', '2021-02-11 09:00:00', 882767577);
+INSERT INTO booking1 (Booking_ID, Start_Time, End_Time, `Status`, SSN, Ins_ID, Note) VALUES
+('B123', '2021-02-10 12:26:13', '2021-02-10 13:26:13', 'Working', 1450238774, 'ins1', 'The instrument  will be used '),
+('B567', '2021-02-04 13:24:23', '2021-02-04 14:24:23', 'Working ', 762324167, 'ins5', 'Everything works just fine '),
+('B678', '2021-02-12 11:47:00', '2021-02-12 12:47:00', 'Working', 1450238774, 'ins3', 'should be cleaned '),
+('B891', '2021-02-24 13:24:23', '2021-02-24 14:24:23', 'Working ', 882767577, 'ins2', 'Everything works just fine ');
 
 
-ALTER TABLE booking
-  ADD UNIQUE KEY Inst_ID (Ins_ID);
+ALTER TABLE booking1
+  ADD PRIMARY KEY (Booking_ID);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
