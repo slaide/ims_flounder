@@ -118,7 +118,14 @@
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            ins.setAttribute('class','ins_button');
-                           ins.setAttribute('onclick',`getSched('${instrument[i].description}', '${instrument[i].InsID}', ${RoomCode})`);
+                           //Todays date
+                           var today = new Date();
+                           let current_year = today.getFullYear();
+                           let current_month = today.getMonth();
+                           let current_date = today.getDate();
+                           let current_weekday = today.getDay();
+                           //Set onclick funtion to calendar()
+                           ins.setAttribute('onclick',`calendar('${current_year}', ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomCode})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -135,11 +142,49 @@
                xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
             }
 
-            //Function for displaying instrument booking options/instrument schedule
-            //All booking information for one instrument that is choosen
-            //Do we want a display of the weekly schedule, or many weeks
-            function getSched(ins_desc, insID, RoomCode) {
+
+            //Add zero month or date
+            function addZero(j) {
+               if (j < 10) {
+                  j = "0" + j;
+               }
+               return j;
+            }
+
+            //Change to previous week
+            function next(year,month,last_date,insID,ins_desc,RoomCode) {
+               let date = 0;
+               let nmr_days = 32 - (new Date(year,month)).getDate();
+               if (nmr_days === last_date) {
+                  date = 1;
+                  month = (month+1) % 12;
+               } else {
+                  date = last_date+1;
+               }
+               year = (month === 11) ? year + 1 : year;
+               calendar(year,month,date,0,insID,ins_desc,RoomCode);
+            }
+
+            //Change to next week
+            function previous(year,month,first_date,insID,ins_desc,RoomCode) {
+               year = (month === 0) ? year - 1 : year;
+               let date = 0;
+               if (first_date === 1) {
+                  date = 32 - (new Date(year,month-1)).getDate();
+                  month = month-1;
+               } else {
+                  date = first_date-1;
+               }
+               calendar(year,month,date,6,insID,ins_desc,RoomCode);
+            }
+            
+            //Showing calender 
+            function calendar(year,month,date,weekday,insID,ins_desc,RoomCode) {
                $("#info_text").empty();
+               $("tbody").empty();
+               $("thead").empty();
+               $('#change_buttons').empty();
+               $('#booking_form').empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/get_instrument_schedule", true);
                xhttp.onreadystatechange = function() {
@@ -154,144 +199,105 @@
                      //Title of instrument
                      let ins_text = document.querySelector('#info_text');
                         ins_text.innerHTML = "Room " + RoomCode + ': ' + ins_desc;
-
-                     //Todays date
-                     var today = new Date();
-                     let year = today.getFullYear();
-                     //OBS!!! January = 0, February = 1... -> change to January = 1, February = 2 for display and add 0 using addZero function
-                     let month = today.getMonth();
-                     let date = today.getDate();
-                     //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
-                     let weekday = today.getDay();
-                     //Show calendar
-                     calendar(year,month,date,weekday,bookings,insID,ins_desc);
-                  }
-               }
-               //Send insID
-               xhttp.send(JSON.stringify({'insID':insID}));
-            }
-
-            //Add zero month or date
-            function addZero(j) {
-               if (j < 10) {
-                  j = "0" + j;
-               }
-               return j;
-            }
-
-            //Change to previous week
-            function next(year,month,last_date,booking,insID,ins_desc) {
-               let date = 0;
-               let nmr_days = 32 - (new Date(year,month)).getDate();
-               if (nmr_days === last_date) {
-                  date = 1;
-                  month = (month+1) % 12;
-               } else {
-                  date = last_date+1;
-               }
-               year = (month === 11) ? year + 1 : year;
-               calendar(year,month,date,0,booking,insID,ins_desc);
-            }
-
-            //Change to next week
-            function previous(year,month,first_date,booking,insID,ins_desc) {
-               year = (month === 0) ? year - 1 : year;
-               let date = 0;
-               if (first_date === 1) {
-                  date = 32 - (new Date(year,month-1)).getDate();
-                  month = month-1;
-               } else {
-                  date = first_date-1;
-               }
-               calendar(year,month,date,6,booking,insID,ins_desc);
-            }
-            
-            //Showing calender 
-            function calendar(year,month,date,weekday,res,insID,ins_desc) {
-               $("tbody").empty();
-               $("thead").empty();
-               $('#change_buttons').empty();
-               $('#booking_form').empty();
-               //Choose tbody and thead elements by id
-               let tbody = document.querySelector('#timeSlots');
-               let thead = document.querySelector('#date');
-               //Array for the days of the week 
-               let day_arr = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-               //Dates in a week
-               let week_dates = [];
-               //Days in current month
-               let daysInMonth = 32 - (new Date(year, month, 32)).getDate();
-               //Days in prevoius month
-               let daysInPreviousMonth = 32 - new Date(year, month-1, 32).getDate();
-               //Loop for creating table rows
-               for (let j = 0; j < 12; j++) {
-                  //Create table row for every booking hour 
-                  let tr = document.createElement('tr');
-                  //For new month
-                  let k = 1;
-                  //For last month
-                  let p = 0;
-                  //When UTCdate = 1
-                  let q = -5;
-                  //Date object
-                  let today = new Date();
-                  //Loop for table columns, one for each day of the month
-                  for (let i = 0; i < 7; i++) {
-                     let td = document.createElement('td');
-                        tr.appendChild(td);
-                     let slotButton = document.createElement('button');
-                     //First row is table head
-                     if (j == 0) {
-                        let th = document.createElement('th');
-                        //If the date is in the days of the month, display date
-                        if (parseInt(date+(i-weekday)) <= daysInMonth && date >= 7) {
-                           th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
-                           week_dates[i] = [year,month,parseInt(date+(i-weekday))];
-                        } else if (date < 7) {
-                           if (date === 1 && i < 6) {
-                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+q)];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + month;
-                              q = q+1;
-                           }
-                           else if (weekday - i >= date) {
-                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+p)];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + month;
-                              p = p-1;
-                           } else {
-                              week_dates[i] = [year,month,parseInt(date+(i-weekday))];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
-                           }
-                        } else {
-                           th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(month+2);
-                           week_dates[i] = [year,month+1,k];
-                           k = k+1;
-                        }
-                        //Mark todays date
-                        if (week_dates[i][0] === today.getFullYear() && week_dates[i][1] === today.getMonth() && week_dates[i][2] === today.getDate()) {
-                           th.classList.add("today");
-                        }
-                        thead.appendChild(th);
-                     }
-                     if (i == 0 || i == 6) {
-                        td.innerHTML = "";
-                     } else {
-                        let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
-
-                        let start_ = addZero(7+j) + ':00:00';
-                        //Mark non_available slots
+                     //Choose tbody and thead elements by id
+                     let tbody = document.querySelector('#timeSlots');
+                     let thead = document.querySelector('#date');
+                     //Array for the days of the week 
+                     let day_arr = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                     //Dates in a week
+                     let week_dates = [];
+                     //Days in current month
+                     let daysInMonth = 32 - (new Date(year, month, 32)).getDate();
+                     //Days in prevoius month
+                     let daysInPreviousMonth = 32 - new Date(year, month-1, 32).getDate();
+                     //Loop for creating table rows
+                     for (let j = 0; j < 12; j++) {
+                        //Create table row for every booking hour 
+                        let tr = document.createElement('tr');
+                        //For new month
+                        let k = 1;
+                        //For last month
+                        let p = 0;
+                        //When UTCdate = 1
+                        let q = -5;
+                        //Date object
                         let today = new Date();
-
-                        if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
-                           slotButton.className = "slot non-available";
-                        }
-                        else if (res.length > 0) {
-                           for (let s = 0; s < res.length; s++) {
-                              if (((7+j) === new Date(res[s].StartTime).getHours() && new Date(booking_date).toLocaleDateString() === new Date(res[s].StartTime).toLocaleDateString())) {
-                                 slotButton.className = "slot non-available";
-                                 slotButton.disabled = "disabled";
+                        //Loop for table columns, one for each day of the month
+                        for (let i = 0; i < 7; i++) {
+                           let td = document.createElement('td');
+                              tr.appendChild(td);
+                           let slotButton = document.createElement('button');
+                           //First row is table head
+                           if (j == 0) {
+                              let th = document.createElement('th');
+                              //If the date is in the days of the month, display date
+                              if (parseInt(date+(i-weekday)) <= daysInMonth && date >= 7) {
+                                 th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
+                                 week_dates[i] = [year,month,parseInt(date+(i-weekday))];
+                              } else if (date < 7) {
+                                 if (date === 1 && i < 6) {
+                                    week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+q)];
+                                    th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + month;
+                                    q = q+1;
+                                 }
+                                 else if (weekday - i >= date) {
+                                    week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+p)];
+                                    th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + month;
+                                    p = p-1;
+                                 } else {
+                                    week_dates[i] = [year,month,parseInt(date+(i-weekday))];
+                                    th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
+                                 }
+                              } else {
+                                 th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(month+2);
+                                 week_dates[i] = [year,month+1,k];
+                                 k = k+1;
                               }
-                              //Dont know if the if statement works...
-                              else if (slotButton.classList != "slot non-available") {
+                              //Mark todays date
+                              if (week_dates[i][0] === today.getFullYear() && week_dates[i][1] === today.getMonth() && week_dates[i][2] === today.getDate()) {
+                                 th.classList.add("today");
+                              }
+                              thead.appendChild(th);
+                           }
+                           //Alter the time slots
+                           if (i == 0 || i == 6) {
+                              td.innerHTML = "";
+                           } else {
+                              let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
+
+                              let start_ = addZero(7+j) + ':00:00';
+
+                              //TRYING THE availability function
+                              console.log(requestAvailability(insID,`${booking_date} ${addZero(week_dates[i][2])}:00:00`));
+                              
+                              //Mark non-available slots
+                              let today = new Date();
+                              if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
+                                 slotButton.className = "slot non-available";
+                              }
+                              else if (bookings.length > 0) {
+                                 for (let s = 0; s < bookings.length; s++) {
+                                    //Check if time slot is in the bookings response
+                                    if (((7+j) === new Date(bookings[s].StartTime).getHours() && new Date(booking_date).toLocaleDateString() === new Date(bookings[s].StartTime).toLocaleDateString())) {
+                                       slotButton.className = "slot non-available";
+                                       slotButton.disabled = "disabled";
+                                    }
+                                    else if (slotButton.classList != "slot non-available") {
+                                       //Change color when choosing time slot
+                                       slotButton.addEventListener("click", function() {
+                                          var current = document.getElementsByClassName("active");
+                                          if (current[0] != undefined) {
+                                             current[0].className = current[0].className.replace(" active", "");
+                                          }
+                                          this.className += " active";
+                                       })
+                                       slotButton.className = "slot";
+                                       slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
+                                    }
+                                 }
+                              } else {
+                                 slotButton.className = "slot";
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                                  //Change color when choosing time slot
                                  slotButton.addEventListener("click", function() {
                                     var current = document.getElementsByClassName("active");
@@ -299,50 +305,38 @@
                                        current[0].className = current[0].className.replace(" active", "");
                                     }
                                     this.className += " active";
-                                    console.log('wop');
                                  })
-                                 slotButton.className = "slot";
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                               }
+                              
+                              slotButton.innerHTML = addZero(7+j) + ':00';
+                              td.appendChild(slotButton);
                            }
-                        } else {
-                           slotButton.className = "slot";
-                           slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
-                           //Change color when choosing time slot
-                           slotButton.addEventListener("click", function() {
-                              var current = document.getElementsByClassName("active");
-                              if (current[0] != undefined) {
-                                 current[0].className = current[0].className.replace(" active", "");
-                              }
-                              this.className += " active";
-                              console.log('wop');
-                           })
                         }
-                        
-                        slotButton.innerHTML = addZero(7+j) + ':00';
-                        td.appendChild(slotButton);
+                        tbody.appendChild(tr);
                      }
-                  }
-                  tbody.appendChild(tr);
+
+                     //Change-of-week buttons
+                     let change = document.querySelector('#change_buttons');
+                     let previous_week = document.createElement('button');
+                        previous_week.setAttribute('class','change_week');
+                        let first_date = week_dates[0][2];
+                        let month_sun = week_dates[0][1];
+                        previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},'${insID}','${ins_desc}',${RoomCode})`)
+                        previous_week.setAttribute('id','next');
+                        previous_week.innerHTML = "Previous";
+                        change.appendChild(previous_week);
+                     let next_week = document.createElement('button');
+                        next_week.setAttribute('class','change_week');
+                        let last_date = week_dates[6][2];
+                        let month_sat = week_dates[6][1];
+                        next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},'${insID}','${ins_desc}',${RoomCode})`);
+                        next_week.setAttribute("id","previous");
+                        next_week.innerHTML = "Next";
+                        change.appendChild(next_week);
+                     }
                }
-               //Change-of-week buttons
-               let change = document.querySelector('#change_buttons');
-               let previous_week = document.createElement('button');
-                  previous_week.setAttribute('class','change_week');
-                  let first_date = week_dates[0][2];
-                  let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${JSON.stringify(res)})`)
-                  previous_week.setAttribute('id','next');
-                  previous_week.innerHTML = "Previous";
-                  change.appendChild(previous_week);
-               let next_week = document.createElement('button');
-                  next_week.setAttribute('class','change_week');
-                  let last_date = week_dates[6][2];
-                  let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${JSON.stringify(res)})`);
-                  next_week.setAttribute("id","previous");
-                  next_week.innerHTML = "Next";
-                  change.appendChild(next_week);
+               //Send insID
+               xhttp.send(JSON.stringify({'insID':insID}));
             }
 
             //slotID is the start time
@@ -412,14 +406,36 @@
                   booking_form.appendChild(submit);
 
                //Successful or unsuccessfull
-               var successful = $$RESERVATIONSUCCESS$$
+               $('#booking_form').submit( function() {
+               var successful = $$RESERVATIONSUCCESS$$;
                if (successful) {
-                  $('#booking_form').empty();
                   let schedule = document.querySelector('#schedule');
                   let success = document.createElement('div');
                      success.innerHTML = `Your reservation of ${ins_desc} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
                   schedule.appendChild(success);
+                  }
+               });
+
+
+            }
+
+            function requestAvailability(ins_id,start_time) {
+               var result = null;
+               var xhttp = new XMLHttpRequest();
+               xhttp.open("POST", "/check_timeslot_available", true);
+               xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                     var available = JSON.parse(this.responseText);
+                     if (available.error) {
+                        console.log(available.error);
+                        return;
+                     } else {
+                        return;
+                     }
+                  }
                }
+               var ssn = localStorage.getItem("ssn");
+               xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": ins_id, "start_time": start_time}));
             }
 
             getRooms();             
