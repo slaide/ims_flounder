@@ -33,7 +33,10 @@ function get_instrument_schedule(req,res){
                 //Q: Waiting to see if Maija can work with the result 
                 var ret=[];
                 for(item of db_booking){
-                    ret.push({StartTime:item.Start_Time, EndTime:item.End_Time})
+                    var new_booking={}
+                    new_booking.StartTime=new Date(item.Start_Time).toLocaleString("en-US",{timezone:"Europe/Stockholm"})
+                    new_booking.EndTime=new Date(item.End_Time).toLocaleString("en-US",{timezone:"Europe/Stockholm"})
+                    ret.push(new_booking)
                 }
                 res.writeHeader(200,utility.content.from_filename(".json"))
                 res.end(JSON.stringify(ret))
