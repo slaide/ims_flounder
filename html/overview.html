@@ -157,14 +157,14 @@
 
                      //Todays date
                      var today = new Date();
-                     let UTCyear = today.getUTCFullYear();
+                     let year = today.getFullYear();
                      //OBS!!! January = 0, February = 1... -> change to January = 1, February = 2 for display and add 0 using addZero function
-                     let UTCmonth = today.getUTCMonth();
-                     let UTCdate = today.getUTCDate();
+                     let month = today.getMonth();
+                     let date = today.getDate();
                      //Sunday = 0, Monday = 1... -> change to Monday = 0, Tuesday = 1
-                     let weekday = today.getUTCDay();
+                     let weekday = today.getDay();
                      //Show calendar
-                     calendar(UTCyear,UTCmonth,UTCdate,weekday,bookings,insID);
+                     calendar(year,month,date,weekday,bookings,insID);
                   }
                }
                //Send insID
@@ -207,7 +207,7 @@
             }
             
             //Showing calender 
-            function calendar(UTCyear,UTCmonth,UTCdate,weekday,res,insID) {
+            function calendar(year,month,date,weekday,res,insID) {
                $("tbody").empty();
                $("thead").empty();
                $('#change_buttons').empty();
@@ -220,9 +220,9 @@
                //Dates in a week
                let week_dates = [];
                //Days in current month
-               let daysInMonth = 32 - (new Date(UTCyear, UTCmonth, 32)).getDate();
+               let daysInMonth = 32 - (new Date(year, month, 32)).getDate();
                //Days in prevoius month
-               let daysInPreviousMonth = 32 - new Date(UTCyear, UTCmonth-1, 32).getDate();
+               let daysInPreviousMonth = 32 - new Date(year, month-1, 32).getDate();
                //Loop for creating table rows
                for (let j = 0; j < 12; j++) {
                   //Create table row for every booking hour 
@@ -244,30 +244,30 @@
                      if (j == 0) {
                         let th = document.createElement('th');
                         //If the date is in the days of the month, display date
-                        if (parseInt(UTCdate+(i-weekday)) <= daysInMonth && UTCdate >= 7) {
-                           th.innerHTML = day_arr[i] + ' ' + parseInt(UTCdate+(i-weekday)) + '/' + parseInt(UTCmonth+1);
-                           week_dates[i] = [UTCyear,UTCmonth,parseInt(UTCdate+(i-weekday))];
-                        } else if (UTCdate < 7) {
-                           if (UTCdate === 1 && i < 6) {
-                              week_dates[i] = [UTCyear,UTCmonth-1,parseInt(daysInPreviousMonth+q)];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + UTCmonth;
+                        if (parseInt(date+(i-weekday)) <= daysInMonth && date >= 7) {
+                           th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
+                           week_dates[i] = [year,month,parseInt(date+(i-weekday))];
+                        } else if (date < 7) {
+                           if (date === 1 && i < 6) {
+                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+q)];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+q) + '/' + month;
                               q = q+1;
                            }
-                           else if (weekday - i >= UTCdate) {
-                              week_dates[i] = [UTCyear,UTCmonth-1,parseInt(daysInPreviousMonth+p)];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + UTCmonth;
+                           else if (weekday - i >= date) {
+                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+p)];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + month;
                               p = p-1;
                            } else {
-                              week_dates[i] = [UTCyear,UTCmonth,parseInt(UTCdate+(i-weekday))];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(UTCdate+(i-weekday)) + '/' + parseInt(UTCmonth+1);
+                              week_dates[i] = [year,month,parseInt(date+(i-weekday))];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                            }
                         } else {
-                           th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(UTCmonth+2);
-                           week_dates[i] = [UTCyear,UTCmonth+1,k];
+                           th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(month+2);
+                           week_dates[i] = [year,month+1,k];
                            k = k+1;
                         }
                         //Mark todays date
-                        if (week_dates[i][0] === today.getUTCFullYear() && week_dates[i][1] === today.getUTCMonth() && week_dates[i][2] === today.getUTCDate()) {
+                        if (week_dates[i][0] === today.getFullYear() && week_dates[i][1] === today.getMonth() && week_dates[i][2] === today.getDate()) {
                            th.classList.add("today");
                         }
                         thead.appendChild(th);
@@ -281,7 +281,7 @@
                         //Mark non_available slots
                         let today = new Date();
 
-                        if ((week_dates[i][2] < today.getUTCDate() && week_dates[i][1] === today.getUTCMonth()) || today.getUTCMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getUTCDate() === week_dates[i][2] && today.getUTCMonth() === week_dates[i][1] && today.getUTCFullYear() === week_dates[i][0])) {
+                        if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
                            slotButton.className = "slot non-available";
                         }
                         else if (res.length > 0) {
@@ -331,7 +331,7 @@
                   previous_week.setAttribute('class','change_week');
                   let first_date = week_dates[0][2];
                   let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${UTCyear},${month_sun},${first_date},${JSON.stringify(res)})`)
+                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${JSON.stringify(res)})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
                   change.appendChild(previous_week);
@@ -339,7 +339,7 @@
                   next_week.setAttribute('class','change_week');
                   let last_date = week_dates[6][2];
                   let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${UTCyear},${month_sat},${last_date},${JSON.stringify(res)})`);
+                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${JSON.stringify(res)})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
@@ -411,7 +411,11 @@
                   submit.setAttribute("value","Submit booking");
                   booking_form.appendChild(submit);
 
-               
+               //Successful or unsuccessfull
+               var successful = $$RESERVATIONSUCCESS$$
+               if (successful) {
+                  $('#booking_form').empty();
+               }
             }
 
             getRooms();             
