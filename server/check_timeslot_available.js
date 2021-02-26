@@ -56,7 +56,7 @@ function check_timeslot_available(req,res){
                 }
                 if(results.length!=0){
                     const error_message="timeslot is already occupied"
-                    console.log(error_message)//,": ",data) //uncomment this to see which one
+                    console.log(error_message)//,": ",data)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -88,10 +88,10 @@ function check_timeslot_available(req,res){
     
                         return
                     }
+                    //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
                     if(results.length!=0){
-                        //console.log(results)
                         const error_message="room is already occupied by an immunocompromised person that is not you"
-                        console.log(error_message)//,": ",data) //uncomment this to see which one
+                        console.log(error_message)//,": ",data)
     
                         res.writeHeader(200,utility.content.json)
                         res.end(JSON.stringify({error:error_message}))
@@ -100,7 +100,6 @@ function check_timeslot_available(req,res){
                         return
                     }
                     //select number of all users (one user can book multiple instruments at the same time) in this timeframe in the same room
-                    //    select * from booking join instrument on booking.insid=instrument.insid join room on instrument.roomid=room.roomid where booking.insid=data.insid and timediff(starttime,data.starttime)=0 group by booking.ssn
                     //check if this number is equal to the capacity
                     //if so, disallow, otherwise allow
                     //also, if the user themself is immunocompromised, check if the room is empty
@@ -116,7 +115,7 @@ function check_timeslot_available(req,res){
                     connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{ //{"user.SSN":data.ssn},
                         if(error){
                             const error_message="error checking for timeslot availability (complex check): "+error.sqlMessage
-                            console.log(error_message)
+                            console.log(error_message)//,": ",data)
 
                             if(!error.fatal){
                                 database.disconnect(connection)
@@ -127,8 +126,8 @@ function check_timeslot_available(req,res){
 
                             return
                         }
-                        if(results.length!=0){
-                            const error_message="timeslot is already occupied (query did not work. yell at patrick)"
+                        if(results.length==0){
+                            const error_message="timeslot availability check did not work (query did not work. yell at patrick)"
                             console.log(error_message,": ",data)
 
                             res.writeHeader(200,utility.content.json)
@@ -137,7 +136,30 @@ function check_timeslot_available(req,res){
                             database.disconnect(connection)
                             return
                         }
-                        //console.log(results.length,"results",results,"fields",fields)
+                        //check if this number is equal to the capacity
+                        //if so, disallow, otherwise allow
+                        if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
+                            const error_message="room is already at max capacity at that time"
+                            console.log(error_message)//,": ",data)
+
+                            res.writeHeader(200,utility.content.json)
+                            res.end(JSON.stringify({error:error_message}))
+
+                            database.disconnect(connection)
+                            return
+                        }
+                        //also, if the user themself is immunocompromised, check if the room is empty
+                        //if empty, allow, else disallow
+                        if(results[0].YouAreImmunoCompromised && results[0].NumberPeopleInRoom>0){
+                            const error_message="room is already at occupied at that time"
+                            console.log(error_message)//,": ",data)
+
+                            res.writeHeader(200,utility.content.json)
+                            res.end(JSON.stringify({error:error_message}))
+
+                            database.disconnect(connection)
+                            return
+                        }
                         
                         database.disconnect(connection)
 
