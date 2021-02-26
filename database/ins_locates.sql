@@ -9,23 +9,28 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 CREATE TABLE ins_locates (
   Start_time_Date datetime NOT NULL,
   End_time_Date datetime NOT NULL,
-  Room_ID varchar(40) NOT NULL,
-  Ins_ID varchar(40) NOT NULL
+  Room_ID int NOT NULL,
+  Ins_ID int NOT NULL,
+  Ins_location_ID int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO ins_locates (Start_time_Date, End_time_Date, Room_ID, Ins_ID) VALUES
-('2021-01-16 09:00:00', '2021-03-22 10:00:00', 'r1', 'ins4'),
-('2021-01-16 08:00:00', '2021-03-22 09:00:00', 'r1', 'ins5'),
-('2021-01-16 15:00:00', '2021-03-22 16:00:00', 'r1', 'wb3'),
-('2021-01-16 10:00:00', '2021-03-22 11:00:00', 'r1', 'wb4'),
-('2021-01-16 12:00:00', '2021-03-22 13:00:00', 'r2', 'ins1'),
-('2021-01-16 14:30:00', '2021-03-22 15:30:00', 'r2', 'wb1'),
-('2021-01-16 13:00:00', '2021-03-22 14:00:00', 'r3', 'ins2'),
-('2021-01-16 16:00:00', '2021-03-22 17:00:00', 'r3', 'wb5');
+INSERT INTO ins_locates (Start_time_Date, End_time_Date, Room_ID, Ins_ID, Ins_location_ID) VALUES
+('2021-01-16 09:00:00', '2021-03-22 10:00:00', 1, 3, 1),
+('2021-01-16 08:00:00', '2021-03-22 09:00:00', 2, 1, 2),
+('2021-01-16 15:00:00', '2021-03-22 16:00:00', 3, 7, 3),
+('2021-01-16 10:00:00', '2021-03-22 11:00:00', 1, 5, 4),
+('2021-01-16 12:00:00', '2021-03-22 13:00:00', 2, 6, 5),
+('2021-01-16 14:30:00', '2021-03-22 15:30:00', 3, 4, 6),
+('2021-01-16 13:00:00', '2021-03-22 14:00:00', 1, 8, 7),
+('2021-01-16 16:00:00', '2021-03-22 17:00:00', 3, 2, 8);
 
 
 ALTER TABLE ins_locates
-  ADD PRIMARY KEY (Room_ID,Ins_ID);
+  ADD PRIMARY KEY (Ins_location_ID);
+
+
+ALTER TABLE ins_locates
+  MODIFY Ins_location_ID int NOT NULL AUTO_INCREMENT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
