@@ -29,7 +29,7 @@ function get_rooms(req,res){
                 res.end(JSON.stringify({error:error_message}))
                 return
             }
-            connection.query("select Room_ID,Room_code from room where strcmp(Class,(select Special_rights from User where SSN=?))>=0;",[data.ssn],(error,result,fields)=>{
+            connection.query("select Room_ID from room where strcmp(Class,(select Special_rights from User where SSN=?))>=0;",[data.ssn],(error,result,fields)=>{
                 if(error){
                     const error_message="error selecting rooms"
                     console.log(error_message,error)
@@ -42,7 +42,7 @@ function get_rooms(req,res){
                 }
                 var ret=[];
                 for(item of result){
-                    ret.push({RoomID:item.Room_ID,RoomCode:item.Room_code})
+                    ret.push({RoomID:item.Room_ID})
                 }
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify(ret))
