@@ -11,12 +11,12 @@ CREATE TABLE ins_maintenance (
   Status varchar(40) NOT NULL,
   Notes varchar(40) NOT NULL,
   SSN int NOT NULL,
-  Ins_ID varchar(40) NOT NULL,
+  Ins_ID int NOT NULL,
   Maintence_ID int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO ins_maintenance (`DateTime`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
-('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 'ins1', 1);
+('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 1, 1);
 
 
 ALTER TABLE ins_maintenance
