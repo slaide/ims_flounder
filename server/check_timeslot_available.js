@@ -105,13 +105,13 @@ function check_timeslot_available(req,res){
                     //also, if the user themself is immunocompromised, check if the room is empty
                     //if empty, allow, else disallow
                     const query="select count(*) as NumberPeopleInRoom, room.Capacity as RoomCapacity, user.Immunocompromised as YouAreImmunocompromised" //select some values required for further availability checks
-                    +" from booking join user on ?" //select all bookings
+                    +" from booking join user on booking.SSN=user.SSN" //select all bookings
                     +" join instrument on booking.Ins_ID=instrument.Ins_ID" //select all instruments booked
                     +" join room on instrument.Room_ID=room.Room_ID" //select all rooms containing a booked instrument
                     +" where instrument.Room_ID in (" //where the instrument is the same as the tried-to-be-booked one
                         +"select Room_ID from instrument where ?"
                     +") and timediff(Start_Time,?)=0" //and the booking starts at the same time as the possibly new one
-                    +" group by booking.SSN";//group by ssn to count people in the room (a person can book multiple instruments in the same room at the same time)
+                    +" group by user.SSN";//group by ssn to count people in the room (a person can book multiple instruments in the same room at the same time)
                     connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{ //{"user.SSN":data.ssn},
                         if(error){
                             const error_message="error checking for timeslot availability (complex check): "+error.sqlMessage
