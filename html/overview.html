@@ -75,9 +75,9 @@
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns('${rooms[i].RoomID}', ${rooms[i].RoomCode})`);
+                           room.setAttribute('onclick', `getIns(${rooms[i].RoomID})`);
                            room.setAttribute('class','room');
-                           room.innerHTML = 'Room ' + rooms[i].RoomCode;
+                           room.innerHTML = 'Room ' + rooms[i].RoomID;
                            room.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_room");
                               if (current[0] != undefined) {
@@ -101,7 +101,7 @@
             
             //Function for showing instruments when a room button is clicked
             //instruments.json must contain insID and ins_description
-            function getIns(RoomID, RoomCode) {
+            function getIns(RoomID) {
                $(`#ins_${RoomID}`).empty();
                $('.ins').empty();
                var xhttp = new XMLHttpRequest();
@@ -125,7 +125,7 @@
                            let current_date = today.getDate();
                            let current_weekday = today.getDay();
                            //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomCode})`);
+                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomID})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -152,7 +152,7 @@
             }
 
             //Change to previous week
-            function next(year,month,last_date,insID,ins_desc,RoomCode) {
+            function next(year,month,last_date,insID,ins_desc,RoomID) {
                let date = 0;
                let nmr_days = 32 - (new Date(year,month)).getDate();
                if (nmr_days === last_date) {
@@ -162,11 +162,11 @@
                   date = last_date+1;
                }
                year = (month === 11) ? year + 1 : year;
-               calendar(year,month,date,0,insID,ins_desc,RoomCode);
+               calendar(year,month,date,0,insID,ins_desc,RoomID);
             }
 
             //Change to next week
-            function previous(year,month,first_date,insID,ins_desc,RoomCode) {
+            function previous(year,month,first_date,insID,ins_desc,RoomID) {
                year = (month === 0) ? year - 1 : year;
                let date = 0;
                if (first_date === 1) {
@@ -175,11 +175,11 @@
                } else {
                   date = first_date-1;
                }
-               calendar(year,month,date,6,insID,ins_desc,RoomCode);
+               calendar(year,month,date,6,insID,ins_desc,RoomID);
             }
             
             //Showing calender 
-            function calendar(year,month,date,weekday,insID,ins_desc,RoomCode) {
+            function calendar(year,month,date,weekday,insID,ins_desc,RoomID) {
                $("#info_text").empty();
                $("tbody").empty();
                $("thead").empty();
@@ -198,7 +198,7 @@
 
                      //Title of instrument
                      let ins_text = document.querySelector('#info_text');
-                        ins_text.innerHTML = "Room " + RoomCode + ': ' + ins_desc;
+                        ins_text.innerHTML = "Room " + RoomID + ': ' + ins_desc;
                      //Choose tbody and thead elements by id
                      let tbody = document.querySelector('#timeSlots');
                      let thead = document.querySelector('#date');
@@ -260,6 +260,7 @@
 
                               let start_ = addZero(7+j) + ':00:00';
 
+                              console.log(requestAvailability(insID,`${booking_date} ${start_}`));
                               //Mark non-available slots
                               let today = new Date();
                               if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || (requestAvailability(insID,`${booking_date} ${start_}`))) {
@@ -287,7 +288,7 @@
                                  }
                               } else {
                                  slotButton.className = "slot";
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}', ${RoomID})`);
                                  //Change color when choosing time slot
                                  slotButton.addEventListener("click", function() {
                                     var current = document.getElementsByClassName("active");
@@ -311,7 +312,7 @@
                         previous_week.setAttribute('class','change_week');
                         let first_date = week_dates[0][2];
                         let month_sun = week_dates[0][1];
-                        previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},'${insID}','${ins_desc}',${RoomCode})`)
+                        previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},'${insID}','${ins_desc}',${RoomID})`)
                         previous_week.setAttribute('id','next');
                         previous_week.innerHTML = "Previous";
                         change.appendChild(previous_week);
@@ -319,7 +320,7 @@
                         next_week.setAttribute('class','change_week');
                         let last_date = week_dates[6][2];
                         let month_sat = week_dates[6][1];
-                        next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},'${insID}','${ins_desc}',${RoomCode})`);
+                        next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},'${insID}','${ins_desc}',${RoomID})`);
                         next_week.setAttribute("id","previous");
                         next_week.innerHTML = "Next";
                         change.appendChild(next_week);
@@ -330,7 +331,7 @@
             }
 
             //slotID is the start time
-            function show_BookingForm(slotID,date,insID,ins_desc) {
+            function show_BookingForm(slotID,date,insID,ins_desc,RoomID) {
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
                let booking_form = document.querySelector('#booking_form')
@@ -401,7 +402,7 @@
                if (successful) {
                   let schedule = document.querySelector('#schedule');
                   let success = document.createElement('div');
-                     success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomCode} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
+                     success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
                   schedule.appendChild(success);
                   }
                });
@@ -417,12 +418,13 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var available = JSON.parse(this.responseText);
                      if (available.error) {
-                        return false;
+                        result = false;
                      } else {
-                        return true;
+                        result = true;
                      }
                   }
                }
+               return result;
                var ssn = localStorage.getItem("ssn");
                xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": ins_id, "start_time": start_time}));
             }
