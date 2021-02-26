@@ -3,6 +3,7 @@ const database=require("./database")
 const mysql=require("mysql")
 const path=require('path')
 const fs=require("fs")
+const { Console } = require("console")
 
 function check_login_data(req,res){
     //parse login data from req
@@ -24,7 +25,7 @@ function check_login_data(req,res){
                     console.log(">> Email and password match found, login succesfull")
 
                     overview_string=fs.readFileSync("../html/overview.html",utility.encoding.utf8)
-                    with_email=overview_string.replace("$$EMAIL$$", `"${db_data[0].Email}"`) 
+                    with_email=overview_string.replace("$$EMAIL$$", `"${db_data[0].Email}"`)
                     res.end(with_email.replace("$$SSN$$", `"${db_data[0].SSN}"`))
                     console.log('>> overview.html file sent back to client')
 
