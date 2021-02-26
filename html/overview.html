@@ -262,7 +262,7 @@
 
                               //Mark non-available slots
                               let today = new Date();
-                              if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || (requestAvailability(insID,`${booking_date} ${addZero(week_dates[i][2])}:00:00`))) {
+                              if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || (requestAvailability(insID,`${booking_date} ${start_}`))) {
                                  slotButton.className = "slot non-available";
                               }
                               else if (bookings.length > 0) {
