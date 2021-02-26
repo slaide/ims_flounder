@@ -4,7 +4,7 @@ const database=require("./database.js")
 ///get maintanance function 
 //function returns maintanance from ins_maintaenance in database
 //for a specific ins_ID 
-function get_maintanence(req,res) {
+function get_maintenance(req,res) {
          
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data) 
@@ -45,4 +45,4 @@ function get_maintanence(req,res) {
         })
     })
 }
-module.exports.get_maintanence=get_maintanence
+module.exports.get_maintenance=get_maintenance
