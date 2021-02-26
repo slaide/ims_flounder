@@ -47,6 +47,16 @@ function revoke_reservation(req,res){
                     res.end(JSON.stringify({error:error_message}))
                     return
                 }
+                if (results.affectedRows!=1){
+                    const error_message="failed to remove the booking. maybe it was removed already?"
+                    console.log(error_message)
+
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+
+                    database.disconnect(connection)
+                    return
+                }
 
                 database.disconnect(connection)
                 res.writeHeader(200,utility.content.json)
