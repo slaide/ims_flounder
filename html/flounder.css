@@ -62,22 +62,29 @@ input {
 /*Navigation menu style*/
 /*Can be improved..!!*/
 .menu {
-   margin: 1rem 1rem 0 1rem;
-   background-color: #26222391;
-   border-top-left-radius: 10px;
-   border-top-right-radius: 10px;
+   background-color: #413d3e;
+   position: sticky;
+   top: 0;
 }
 
 .menu li{
    display: inline-block;
-   padding: 1.5rem 2rem;
+   padding: 1.2rem 2rem;
 }
 
-.menu li a{
+.menu a{
    text-decoration: none;
-   color: #ffffffea;
+   color: #ffffff;
    font-family: 'Poppins','Helvetica',sans-serif;
    font-size: 1.1rem;
+}
+
+.menu img {
+   width: 50px;
+   height: 50px;
+   float: left;
+   margin-left: 0.3rem;
+   margin-top: 0.2rem;
 }
 
 /*Grid display for the overview page*/
@@ -94,8 +101,7 @@ input {
 .grid {
    background-color: #ffffffb6;
    padding: 0.8rem;
-   border-bottom-left-radius: 10px;
-   border-bottom-right-radius: 10px;
+   border-radius: 10px;
 }
 
 .grid_room {
@@ -166,7 +172,7 @@ input {
 .change_week {
    width: 75px;
    border: none;
-   background-color: #262223e3;
+   background-color:#413d3e;
    color: #ffffff;
    padding: 0.3rem;
    margin: 0.2rem;
@@ -179,7 +185,7 @@ input {
 }
 
 #date {
-   background-color: #262223e3;
+   background-color:#413d3e;
    color: #ffffff;
 }
 
@@ -202,7 +208,7 @@ input {
    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-.today {
+.today, .menu li:hover {
    background-color: #F2AC57;
 }
 
