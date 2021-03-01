@@ -105,6 +105,7 @@ function parse_data(req,then){
                 if(!ret.method){
                     ret.method="POST"
                 }
+                ret=remove_special_chars(ret)
                 then(ret)
             }else{
                 var params=new url.URLSearchParams(chunks)
@@ -112,6 +113,7 @@ function parse_data(req,then){
                 params.forEach((value,key,searchparams)=>{
                     ret[key]=value
                 })
+                ret=remove_special_chars(ret)
                 then(ret)
             }
         })
@@ -121,11 +123,11 @@ function parse_data(req,then){
         params.forEach((value,key,searchparams)=>{
             ret[key]=value
         })
+        ret=remove_special_chars(ret)
         then(ret)
     }
 }
 module.exports.parse_data=parse_data
-
 
 /**
  * format time with swedish timezone
@@ -135,3 +137,19 @@ function format_time(date){
     return new Date(date).toLocaleString("en-US",{timezone:"Europe/Stockholm"})
 }
 module.exports.format_time=format_time
+
+/**
+ * remove special characters from keys and values of an object
+ * @param {Object} obj - object of which the special characters will be stripped
+ */
+function remove_special_chars(obj){
+    var ret_obj={}
+    const special_chars=/[;\"'`&,$#<>?!/~]/gi //allow : and - for time stuff
+    for(const key of Object.keys(obj)){
+        obj[key]=`${obj[key]}`
+        const new_key=key.replace(special_chars,"")
+        ret_obj[new_key]=obj[key].replace(special_chars,"")
+    }
+    return ret_obj
+}
+module.exports.remove_special_chars=remove_special_chars
