@@ -14,7 +14,7 @@
       <!--Navigation menu for users-->
       <nav class="menu">
          <img src="./favicon.ico" width="256" height="256">
-         <ul>
+         <ul id="menu_list">
             <a href="#"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Schedule</li></a>
             <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
@@ -393,7 +393,7 @@
                         image.setAttribute('class','success_image')
                      success.appendChild(image);
                      let message = document.createElement('p');
-                        message.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${booking_date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
+                        message.innerHTML = `Your reservation was successful`;
                      success.appendChild(message);
                      }
                   //Request failed
