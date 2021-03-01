@@ -29,7 +29,7 @@
         <h1>Select instrument</h1>
         <p id="test"><p>
         <form>
-          <select id="instrument_menu" onsubmit="selected_ins()" name="instrument_menu">
+          <select id="instrument_menu" onsubmit="show_maintanance()" name="instrument_menu">
           </select>
           <input type="submit" value="select">
         </form>
@@ -110,14 +110,14 @@
                   ins_alt.className = instruments[i].InsID;
                   ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
-                  //selected_ins(instruments[i].InsID);
+                  //show_maintanance(instruments[i].InsID);
                   }
             }
          };
          xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
         }
 
-        function selected_ins(InsID) {
+        function show_maintanance(InsID) {
         //alert(InsID);
         //return false;
         // This part is not done, want to get the form to not redirect first
