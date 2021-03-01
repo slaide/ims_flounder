@@ -6,8 +6,32 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 
+CREATE TABLE ins_maintenance (
+  DateTime datetime NOT NULL,
+  Status varchar(40) NOT NULL,
+  Notes varchar(40) NOT NULL,
+  SSN int NOT NULL,
+  Ins_ID int NOT NULL,
+  Maintence_ID int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 INSERT INTO ins_maintenance (`DateTime`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
 ('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 1, 1);
+
+
+ALTER TABLE ins_maintenance
+  ADD PRIMARY KEY (Maintence_ID),
+  ADD KEY Ins_ID (Ins_ID),
+  ADD KEY SSN (SSN);
+
+
+ALTER TABLE ins_maintenance
+  MODIFY Maintence_ID int NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE ins_maintenance
+  ADD CONSTRAINT ins_maintenance_ibfk_1 FOREIGN KEY (Ins_ID) REFERENCES instrument (Ins_ID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT ins_maintenance_ibfk_2 FOREIGN KEY (SSN) REFERENCES `user` (SSN) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
