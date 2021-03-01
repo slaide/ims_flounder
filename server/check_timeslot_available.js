@@ -37,6 +37,19 @@ function check_timeslot_available(req,res){
                     return
                 }
             }
+            try{
+                const start_time_date=new Date(data.start_time)
+                if(!start_time_date) throw "invalid date format"
+            }catch(e){
+                const error_message="start_time has invalid date/time format "+data.start_time+" ("+e+")"
+                console.log(error_message)//,": ",data)
+
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
+
+                database.disconnect(connection)
+                return
+            }
 
             //check if the instrument is already occupied in this timeframe
             const query="select * from booking where ? and timediff(Start_Time,?)=0";
@@ -126,7 +139,7 @@ function check_timeslot_available(req,res){
 
                             return
                         }
-                        if(results.length==0){
+                        if(results.length>1){
                             const error_message="timeslot availability check did not work (query did not work. yell at patrick)"
                             console.log(error_message,": ",data)
 
@@ -172,3 +185,15 @@ function check_timeslot_available(req,res){
     })
 }
 module.exports.check_timeslot_available=check_timeslot_available
+
+/*
+select count(*) as NumberPeopleInRoom, room.Capacity as RoomCapacity, user.Immunocompromised as YouAreImmunocompromised
+                    from booking join user on booking.SSN=user.SSN
+                    join instrument on booking.Ins_ID=instrument.Ins_ID
+                    join room on instrument.Room_ID=room.Room_ID
+                    where instrument.Room_ID in (
+                        select Room_ID from instrument where Ins_ID=1450238774
+                    ) and timediff(Start_Time,"2021-03-02 17:00:00")=0
+                     group by user.SSN
+
+                     */
