@@ -79,7 +79,7 @@
                   }
                   let ins_menu = document.querySelector("#instrument_menu");
                   for (let i = 0; i < rooms.length; i++) {
-                     populateMenu(rooms[i].RoomID, rooms[i].RoomID);
+                     populateMenu(rooms[i].RoomID);
                      //let room_alt = document.createElement('option');
                      //room_alt.innerHTML = 'Room ' + rooms[i].RoomID;
                      //ins_menu.appendChild(room_alt);
@@ -92,7 +92,7 @@
             xhttp.send(JSON.stringify({'ssn':ssn}));
          }
 
-         function populateMenu(RoomID, RoomID) {
+         function populateMenu(RoomID) {
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/get_instruments_in_room", true);
             xhttp.onreadystatechange = function() {
