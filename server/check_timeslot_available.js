@@ -20,7 +20,6 @@ function check_timeslot_available(req,res){
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
 
-                database.disconnect(connection)
                 return
             }
         }
