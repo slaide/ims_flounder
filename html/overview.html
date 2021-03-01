@@ -17,7 +17,7 @@
          <ul>
             <a href="#"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Schedule</li></a>
-            <a href="#"><li>Administrator</li></a>
+            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
             <a href="./maintenance.html"><li>Maintenance</li></a>
          </ul>
       </nav>
@@ -215,6 +215,7 @@
                      let td = document.createElement('td');
                         tr.appendChild(td);
                      let slotButton = document.createElement('button');
+                        slotButton.setAttribute('class','slot');
                      //First row is table head
                      if (j == 0) {
                         let th = document.createElement('th');
@@ -242,20 +243,23 @@
                         }
                         thead.appendChild(th);
                      }
-                     //Alter the time slots (no time slots for weekends, sunday and saturday)
+                     //Alter the time slots (no time slots for sunday and saturday)
                      if (i == 0 || i == 6) {
                         td.innerHTML = "";
                      } else {
+                        //Date for time slot
+                        let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
                         //HttpRequest for checking available timeslots
                         //Dont know if it works
                         var xhttp = new XMLHttpRequest();
                         xhttp.open("POST", "/check_timeslot_available", true);
                         //Is it possile to have variables in the function..? Or is it unnecessary
-                        xhttp.onreadystatechange = function(slotButton,j) {
+                        xhttp.onreadystatechange = function() {
                            if (this.readyState == 4 && this.status == 200) {
                               var available = JSON.parse(this.responseText);
+                              let slotButton = document.querySelector('.slot');
                               if (available.error) {
-                                 slotButton.className = "slot non-available";
+                                 slotButton.className += " non-available";
                                  slotButton.disabled = "disabled";
                               } else {
                                  slotButton.addEventListener("click", function() {
@@ -265,16 +269,14 @@
                                     }
                                     this.className += " active";
                                  })
-                                 slotButton.className = "slot";
                                  slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                               }
                            }
-                           let start_ = addZero(7+j) + ':00:00';
+                           let start = booking_date + '-' + addZero(7+j) + ':00:00';
                            var ssn = localStorage.getItem("ssn");
-                           xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_}));
+                           xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start}));
                         } 
-                        //Date for time slot
-                        let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
+
                         //Start time for time slot
                         let start_ = addZero(7+j) + ':00:00';
                         //Mark non-available slots
@@ -387,27 +389,6 @@
                });
 
 
-            }
-
-            function requestAvailability(ins_id,start_time) {
-               //Does not work...
-               var result = null;
-               var xhttp = new XMLHttpRequest();
-               xhttp.open("POST", "/check_timeslot_available", true);
-               xhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                     var available = JSON.parse(this.responseText);
-                     if (available.error) {
-                        //does not work...
-                        result = false;
-                     } else {
-                        result = true;
-                     }
-                  }
-               }
-               return result;
-               var ssn = localStorage.getItem("ssn");
-               xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": ins_id, "start_time": start_time}));
             }
 
             getRooms();             
