@@ -151,7 +151,10 @@ function check_timeslot_available(req,res){
                         }
                         //check if this number is equal to the capacity
                         //if so, disallow, otherwise allow
-                        if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
+                        if(
+                            (!!results[0].NumberPeopleInRoom) 
+                            && (results[0].NumberPeopleInRoom==results[0].RoomCapacity)
+                        ){
                             const error_message="room is already at max capacity at that time"
                             console.log(error_message)//,": ",data)
 
@@ -177,7 +180,7 @@ function check_timeslot_available(req,res){
                         database.disconnect(connection)
 
                         res.writeHeader(200,utility.content.json)
-                        res.end(JSON.stringify({error:"function not fully implemented"}))
+                        res.end(JSON.stringify({success:"timeslot is available"}))
                     })
                 })
             })
