@@ -8,9 +8,10 @@ const database=require("./database.js")
  * currently responds with: error/success
  * @param {Request} req Request object with client data
  * @param {Response} res Response object
+ * @param {? Object} insert_data data that will be inserted into the database if the slot is available
  */
-function check_timeslot_available(req,res){
-    utility.parse_data(req,(data)=>{
+function check_timeslot_available(req,res,insert_data=null){
+    function perform_action(data){
         //make sure all of the expected data is here and defined
         for(attribute of "ins_id start_time ssn".split(" ")){
             if(!data[attribute]){
@@ -38,15 +39,35 @@ function check_timeslot_available(req,res){
             return
         }   
 
+        var start_insert="";
+        var insert_statement="";
+        var end_insert="";
+
+        if(insert_data){
+            start_insert="start transaction;";
+            insert_statement=`
+                if (@TimeslotAlreadyReserved = 0)
+                and (@NumImmunocompromisedInRoom=0)
+                and (@RoomCapacity > @NumberPeopleInRoom)
+                and ((@YouAreImmunoCompromised = 0) or (@NumberPeopleInRoom = 0))
+                then
+                    insert into booking(Start_time, End_time, Status, SSN, Ins_ID, Note) 
+                    values("${insert_data.start_time}","${insert_data.end_time}",'booked',${insert_data.ssn},${insert_data.ins_id},"${insert_data.notes}");
+                end if;
+                `
+            end_insert="commit;"
+        }
+
         const query=`
+            ${start_insert}
             #query 1
-            select count(*) as TimeslotAlreadyReserved 
+            select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved 
             from booking 
             where Ins_ID=${data.ins_id} 
             and timediff(Start_Time,"${data.start_time}")=0;
 
             #query 2
-            select count(*) as NumImmunocompromisedInRoom
+            select @NumImmunocompromisedInRoom := count(*) as NumImmunocompromisedInRoom
             from booking
             join user on user.SSN=booking.SSN
             join instrument on instrument.Ins_ID=booking.Ins_ID
@@ -57,9 +78,9 @@ function check_timeslot_available(req,res){
             and room.Room_ID in (select Room_ID from instrument where instrument.Ins_ID=${data.ins_id});
 
             #query 3
-            select room.Capacity as RoomCapacity,
-                count(distinct user.SSN) as NumberPeopleInRoom,
-                (select Immunocompromised from user where user.SSN=${data.ssn}) as YouAreImmunoCompromised
+            select @RoomCapacity := room.Capacity as RoomCapacity,
+                @NumberPeopleInRoom := count(distinct user.SSN) as NumberPeopleInRoom,
+                @YouAreImmunoCompromised := (select Immunocompromised from user where user.SSN=${data.ssn}) as YouAreImmunoCompromised
             from booking join user on booking.SSN=user.SSN
             join instrument on booking.Ins_ID=instrument.Ins_ID
             join room on instrument.Room_ID=room.Room_ID
@@ -68,7 +89,12 @@ function check_timeslot_available(req,res){
             )
             and timediff(Start_Time,"${data.start_time}")=0
             and not user.SSN=${data.ssn};
+            ${insert_statement}
+            ${end_insert}
         `;
+        if(insert_data){
+            console.log(query)
+        }
 
         const handles=[
             //handle 1        
@@ -137,16 +163,33 @@ function check_timeslot_available(req,res){
     
                 return
             }
+
+            const result_offset=0+!!insert_data
             if(
-                handles[0](results[0])
-                && handles[1](results[1])
-                && handles[2](results[2])
+                handles[0](results[0+result_offset])
+                && handles[1](results[1+result_offset])
+                && handles[2](results[2+result_offset])
             ){
-    
+                if(insert_data && results[results.length-2].affectedRows!=1){
+                    const error_message="inserting new booking failed";
+                    console.log(error_message,results[results.length-2])
+        
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+        
+                    return
+                }
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({success:"timeslot is available"}))
             }
         })
-    })
+    }
+    if(insert_data){
+        perform_action(insert_data)
+    }else{
+        utility.parse_data(req,(data)=>{
+            perform_action(data)
+        })
+    }
 }
 module.exports.check_timeslot_available=check_timeslot_available
