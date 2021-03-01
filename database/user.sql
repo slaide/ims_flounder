@@ -16,7 +16,7 @@ CREATE TABLE `user` (
   Email varchar(40) NOT NULL,
   Special_rights varchar(40) NOT NULL,
   Immunocompromised tinyint(1) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_rights, Immunocompromised) VALUES
 (762324167, 'Ariel', 'Fin', 'dfr456', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1),

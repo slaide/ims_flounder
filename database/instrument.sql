@@ -12,7 +12,7 @@ CREATE TABLE instrument (
   Serial int NOT NULL,
   Proc_date date NOT NULL,
   Room_ID varchar(40) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Room_ID) VALUES
 (1, 'Mass spec ', 6047, '2020-12-14', '2'),

@@ -12,7 +12,7 @@ CREATE TABLE room (
   Building_code int NOT NULL,
   Capacity int NOT NULL,
   Class varchar(40) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO room (Room_ID, `Area`, Building_code, Capacity, Class) VALUES
 (1, 1374, 201, 5, 'C'),
