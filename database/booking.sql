@@ -17,10 +17,13 @@ CREATE TABLE booking (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO booking (Booking_ID, SSN, Ins_ID, Start_Time, End_Time, `Status`, Note) VALUES
-(1, 1450238774, '1', '2021-02-10 12:26:13', '2021-02-10 13:26:13', 'Working', 'The instrument  will be used '),
-(2, 762324167, '5', '2021-02-04 13:24:23', '2021-02-04 14:24:23', 'Working ', 'Everything works just fine '),
-(3, 882767577, '3', '2021-02-24 10:17:32', '2021-02-24 11:17:32', 'Working', 'The filter needs to be changed '),
-(4, 882767577, '4 ', '2021-02-16 10:17:32', '2021-02-16 11:17:32', 'Working ', 'Everything works just fine ');
+(1, 1450238774, '1', '2021-02-10 12:00:00', '2021-02-10 13:00:00', 'Working', 'The instrument  will be used '),
+(2, 762324167, '5', '2021-02-04 13:00:00', '2021-02-04 14:00:00', 'Working ', 'Everything works just fine '),
+(3, 882767577, '3', '2021-02-24 10:00:00', '2021-02-24 11:00:00', 'Working', 'The filter needs to be changed '),
+(4, 882767577, '4', '2021-02-16 10:00:00', '2021-02-16 11:00:00', 'Working ', 'Everything works just fine '),
+(5, 762324167, '5', '2021-03-02 10:00:00', '2021-03-02 11:00:00', 'Working ', 'Everything works just fine '),
+(6, 762324167, '8', '2021-03-02 10:00:00', '2021-03-02 11:00:00', 'Working ', 'Everything works just fine '),
+(7, 882767577, '9', '2021-03-02 10:00:00', '2021-03-02 11:00:00', 'Working ', 'Everything works just fine ');
 
 
 ALTER TABLE booking
