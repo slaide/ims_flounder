@@ -8,40 +8,33 @@ function get_maintenance(req,res) {
          
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data) 
-        console.log('>> ins_id: ',data.InsID) 
+        console.log('>> ins_id: ',data.InsID)
         
-        database.connect_database((connection,error)=>{
+        var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
+            
+        database.connection.query(sql, [data.InsID], (error, result)=> {
+            //Q: remove errors? 
             if(error){
-                console.log(">> error connecting database for maintenace of instrument ID",error)
+                console.log("error selecting attributes from ins_maintenance",error)
                 if(!error.fatal){
-                    database.disconnect(database)
+                    database.disconnect(connection)
                 }
                 return
             }
-            var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
-            connection.query(sql, [data.InsID], (error, result)=> {
-                if(error){
-                    console.log("error selecting attributes from ins_maintenance",error)
-                    if(!error.fatal){
-                        database.disconnect(connection)
-                    }
-                    return
-                }
-                db_maintenance=JSON.parse(JSON.stringify(result))  
-                console.log('>> db_maintenance: ', db_maintenance) 
-    
-                var ret=[];
-                for(item of db_maintenance){
-                    ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
-                }   
-                //console.log('>>ret:', ret) 
-                res.writeHeader(200,utility.content.from_filename(".json"))
-                res.end(JSON.stringify(ret))
-                console.log(">> Sent maintenance") 
-                    
-                database.disconnect(connection)
-                console.log('>> Database disconnected') 
-            })
+            db_maintenance=JSON.parse(JSON.stringify(result))  
+            console.log('>> db_maintenance: ', db_maintenance) 
+
+            var ret=[];
+            for(item of db_maintenance){
+                ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
+            }   
+            //console.log('>>ret:', ret) 
+            res.writeHeader(200,utility.content.from_filename(".json"))
+            res.end(JSON.stringify(ret))
+            console.log(">> Sent maintenance") 
+                
+            database.disconnect(connection)
+            console.log('>> Database disconnected') 
         })
     })
 }

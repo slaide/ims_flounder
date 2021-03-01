@@ -9,9 +9,14 @@ function check_login_data(req,res){
     utility.parse_data(req,(user_data)=>{
         console.log('>> user_data: ',user_data)   //user_data.password, user_data.email is a string 
         
-        database.connection.query("SELECT Email, Password, SSN FROM user WHERE Email = ?", [user_data.email], (err, result)=> {
-            if(err) throw err;
-
+        database.connection.query("SELECT Email, Password, SSN FROM user WHERE Email = ?", [user_data.email], (error, result)=> {
+            if(error){
+                console.log("error selecting attributes user",error)
+                if(!error.fatal){
+                    database.disconnect(connection)
+                }
+                return
+            }
             db_data=JSON.parse(JSON.stringify(result))  
             console.log('>> db_data: ', db_data) 
             
