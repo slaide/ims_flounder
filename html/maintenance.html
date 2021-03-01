@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="eng">
   <head>
+    <script>
+      function selected_ins(InsID) {
+        //alert(InsID);
+        return false;
+        /*
+        alert(InsID);
+        var data = new FormData();
+        data.append('InsID', domcument.getElementById(""))
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/get_maintenance", true);
+        xhttp.onreadystatechange = function() {
+        var instruments = JSON.parse(this.responseText);
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(instruents.error);
+            return;
+          }
+          document.querySelector('#lmao').innerHTML = "Hello orld";
+          document.querySelector('#see_notes').innerHTML = "Hello orld";
+          let see_notes = document.querySelector("#see_notes");
+          alert("The form was submitted");
+
+        };
+        xhttp.send(JSON.stringify({'InsID': InsID}));*/
+      }
+    </script>
+
     <title>Maintenence</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="./reset.css">
@@ -14,13 +40,12 @@
   <body>
     <!--Navigation menu for users-->
     <nav class="menu">
-      <img src="./favicon.ico" width="256" height="256">
-      <ul>
-          <a href="./overview.html"><li>Book an instrument</li></a>
-          <a href="./my_schedule.html"><li>My Schedule</li></a>
-          <a href="#"><li>Administrator</li></a>
-          <a href="#"><li>Maintenance</li></a>
-      </ul>
+       <ul>
+          <li><a href="./overview.html">Book an instrument</a></li>
+          <li><a href="./my_schedule.html">My Schedule</a></li>
+          <li><a href="./">Administrator</a></li>
+          <li><a href="./maintenance.html">Maintenance</a></li>
+       </ul>
     </nav>
     
     <main id="whole_page">
@@ -28,14 +53,26 @@
       <div id="select_ins">
         <h1>Select instrument</h1>
         <p id="test"><p>
-        <select id="instrument_menu" name="instrument_menu">
-        </select>
+        <form>
+          <select id="instrument_menu" onsubmit="selected_ins()" name="instrument_menu">
+          </select>
+          <input type="submit" value="select">
+        </form>
       <div id="maintenance_overview">
         <h1>Maintanence overview</h1>
         <div id="leave_note">
           <h2>Leave note</h2>
         </div>
         <div id="see_notes">
+          <table id="notes_table">
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Notes</th>
+              <!-- <td>object</td>-->
+            </tr>
+          </table>
           <h2>See earlier notes</h2>
         </div>
       </div>
@@ -44,7 +81,7 @@
 
       <script>
 
-         var ssn = $$SSN$$
+         var ssn = localStorage.getItem("ssn");
           
          function hello_world() {
          document.querySelector('#lmao').innerHTML = "hello world";
@@ -67,9 +104,9 @@
                   }
                   let ins_menu = document.querySelector("#instrument_menu");
                   for (let i = 0; i < rooms.length; i++) {
-                     populateMenu(rooms[i].RoomID, rooms[i].RoomCode);
+                     populateMenu(rooms[i].RoomID, rooms[i].RoomID);
                      //let room_alt = document.createElement('option');
-                     //room_alt.innerHTML = 'Room ' + rooms[i].RoomCode;
+                     //room_alt.innerHTML = 'Room ' + rooms[i].RoomID;
                      //ins_menu.appendChild(room_alt);
                      //room_alt.setAttribute('class', 'room_alt');
                      //let room_name = document.createTextNode(rooms[i]);
@@ -80,27 +117,33 @@
             xhttp.send(JSON.stringify({'ssn':ssn}));
          }
 
-         function populateMenu(RoomID, RoomCode) {
+         function populateMenu(RoomID, RoomID) {
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/get_instruments_in_room", true);
             xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                var instruments = JSON.parse(this.responseText);
                if (instruments.error) {
-                  console.log(instruments.error)
+                  console.log(instruments.error);
                   return;
                }
                document.querySelector('#lmao').innerHTML = instruments.length;
                let ins_menu = document.querySelector("#instrument_menu");
                for (let i = 0; i < instruments.length; i++) {
                   let ins_alt = document.createElement('option');
-                  ins_alt.innerHTML = 'Room ' + RoomCode + ": " + instruments[i].description;
+                  //alert(instruments[i].InsID);
+                  ins_alt.className = instruments[i].InsID;
+                  ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
+                  //selected_ins(instruments[i].InsID);
                   }
             }
          };
          xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
         }
+
+
+
         getRooms();
 /*
         function getNotes(Ins_ID) {
@@ -113,7 +156,6 @@
                 console.log(booking.error);
                 return;
               }
-
               let 
             }
             if (maintenance.error)
@@ -122,43 +164,6 @@
 */
         //hello_world();
       </script>
-
-<!--
-      <div>
-      <h>Leave a note for a machine</h>
-        <div>
-          <form action="/action_page.php" id="usrform">
-            <h>Select machine</h>
-            <select id="machines" name="machines">
-              <option value="PCR1">PCR 1, room 1</option>
-              <option value="PCR2">PCR 2, room 1</option>
-              <option value="Incubator1">Incubator, room 2</option>
-              <option value="Shaker1">Shaker, room 2</option>
-              <option value="Coffe maker">Coffe maker, room 3</option>
-            </select><br>
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="maintenance-date">
-            <label for="time">Time:</label>
-            <input type="time" id="time"><br>
-            <label for="note">Note:</label><br>
-            <textarea rows="4" cols="50" name="note" form="usrform"></textarea><br>
-            <input type="submit" value="Submit">
-          </form><br><br>
-        </div>
-
-      <div>
-        <h>See list of past maintenance</h>
-        <table><tr><th>Machine</th><th>Room</th><th>Date</th><th>Time</th><th>By</th><th>Note</th></tr>
-          <tr><th>PCR1</th><th>1</th><th>2021/02/19</th><th>08:15 AM</th><th>Steve Johnsson</th><th>Fixed the machine boss</th></tr>
-          <tr><th>PCR1</th><th>1</th><th>2021/02/15</th><th>04:45 PM</th><th>John Makrsson</th><th>Changed the rotar and blades</th></tr>
-          <tr><th>PCR2</th><th>1</th><th>2021/02/10</th><th>01:15 PM</th><th>margaret Smith </th><th>Changed blinker fluid</th></tr>
-          <tr><th>Shaker</th><th>2</th><th>2021/02/4</th><th>03:30 PM</th><th>Sleve McDichael</th><th>Put in new cables</th></tr>
-          <tr><th>Coffe maker</th><th>3</th><th>2021/01/13</th><th>08:30 AM</th><th>Rey McSriff</th><th>New filter</th></tr>
-
-        </table>
-      </div>
-      -->
-
     </main>
 
   </body>
