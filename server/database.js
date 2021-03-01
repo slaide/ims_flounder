@@ -19,6 +19,25 @@ function connect_server(handle){
 }
 module.exports.connect_server=connect_server
 
+
+/** 
+ * Create global database connection pool
+ */
+function create_global_connection_pool(){
+    let connection_data={
+        host:"localhost",
+        user:"root",
+        password:"",
+        database:"lims",
+        multipleStatements:true,
+        connectionLimit:256
+    }
+
+    var connection=mysql.createPool(connection_data)
+    return connection
+}
+module.exports.connection=create_global_connection_pool();
+
 /** 
  * Create connection to database
  * @param {(connection:mysql.Connection,error:Error)=>void} handle function to be called after attempted connection
@@ -35,7 +54,6 @@ function connect_database(handle){
     var connection=mysql.createConnection(connection_data)
     connection.connect((err)=>handle(connection,err))
 }
-module.exports.connect_database=connect_database
 
 /** 
  * End connection to database
@@ -49,7 +67,6 @@ function disconnect(connection,end_function=(err)=>{
 }){
     connection.end(end_function)
 }
-module.exports.disconnect=disconnect
 
 /** 
  * Connect to database server and (re)create lims database
@@ -130,7 +147,11 @@ function connect_build_database(then,on_error=(conn,err)=>{
                                 console.log("error inserting data into rebuilt database:")
                                 throw err
                             }
-                            then(conn)
+                            disconnect(conn,(error)=>{
+                                if(error) throw error;
+                            })
+
+                            then()
                         })
                     })
                 })

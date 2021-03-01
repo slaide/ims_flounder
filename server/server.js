@@ -40,6 +40,9 @@ const request_handler={
 
     "/shutdown":function(req,res){
         res.end()
+        database.connection.end((error)=>{
+            if(error) throw error;
+        })
         throw({force_shutdown:true})
     }
 }
@@ -81,10 +84,26 @@ function start_server(){
     server.listen(8080,"127.0.0.1",()=>{
         console.log("server started at '127.0.0.1:8080'")
     })
+    
+    /*database.connect_database((connection,error)=>{
+        connection.query(`
+            select @NumUsers := count(*) as NumUsers from user;
+            select @MoreThanOneUser := if(@NumUsers>1,1,0) as MoreThanOneUser;
+            if @MoreThanOneUser=1 then
+                select 'more than one user' as error;
+            end if;
+            select @NumBookings := count(*) as NumBookings from booking;
+        `,(err,results,fields)=>{
+            if(err){
+                console.log(err);
+                throw err;
+            }
+            console.log(results,results[0][0].NumUsers,results[1][0].MoreThanOneUser,results[4][0].NumBookings);
+        })
+    })*/
 }
 
-database.connect_build_database((database_connection)=>{
-    database.disconnect(database_connection)
+database.connect_build_database(()=>{
     start_server()
     return
 })
