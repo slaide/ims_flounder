@@ -1,32 +1,6 @@
 <!DOCTYPE html>
 <html lang="eng">
   <head>
-    <script>
-      function selected_ins(InsID) {
-        //alert(InsID);
-        return false;
-        /*
-        alert(InsID);
-        var data = new FormData();
-        data.append('InsID', domcument.getElementById(""))
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/get_maintenance", true);
-        xhttp.onreadystatechange = function() {
-        var instruments = JSON.parse(this.responseText);
-          if (this.readyState == 4 && this.status == 200) {
-            console.log(instruents.error);
-            return;
-          }
-          document.querySelector('#lmao').innerHTML = "Hello orld";
-          document.querySelector('#see_notes').innerHTML = "Hello orld";
-          let see_notes = document.querySelector("#see_notes");
-          alert("The form was submitted");
-
-        };
-        xhttp.send(JSON.stringify({'InsID': InsID}));*/
-      }
-    </script>
-
     <title>Maintenence</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="./reset.css">
@@ -143,7 +117,30 @@
          xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
         }
 
+        function selected_ins(InsID) {
+        //alert(InsID);
+        //return false;
+        // This part is not done, want to get the form to not redirect first
+        /*
+          alert(InsID);
+          var data = new FormData();
+          data.append('InsID', domcument.getElementById(""))
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/get_maintenance", true);
+          xhttp.onreadystatechange = function() {
+          var instruments = JSON.parse(this.responseText);
+            if (this.readyState == 4 && this.status == 200) {
+              console.log(instruents.error);
+              return false;
+            }
+            document.querySelector('#lmao').innerHTML = "Hello orld";
+            document.querySelector('#see_notes').innerHTML = "Hello orld";
+            let see_notes = document.querySelector("#see_notes");
+            alert("The form was submitted");
 
+          };
+          xhttp.send(JSON.stringify({'InsID': InsID}));*/
+        }
 
         getRooms();
 /*
