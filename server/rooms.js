@@ -61,7 +61,7 @@ function get_instruments_in_room(req,res){
                 return
             }
         }
-        database.connection.query("select Ins_ID,Description from instrument where ?;",{Room_ID:data.RoomID},(error,result,fields)=>{
+        database.connection.query(`select Ins_ID,Description from instrument where Room_ID="${data.RoomID}";`,(error,result,fields)=>{
             if(error){
                 console.log(`error selecting instruments ${error}`)
 
