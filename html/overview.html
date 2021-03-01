@@ -249,6 +249,8 @@
                      } else {
                         //Date for time slot
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
+                        //Start time for time slot
+                        let start_ = addZero(7+j) + ':00:00';
                         //HttpRequest for checking available timeslots
                         //Dont know if it works
                         var xhttp = new XMLHttpRequest();
@@ -257,7 +259,6 @@
                         xhttp.onreadystatechange = function() {
                            if (this.readyState == 4 && this.status == 200) {
                               var available = JSON.parse(this.responseText);
-                              let slotButton = document.querySelector('.slot');
                               if (available.error) {
                                  slotButton.className += " non-available";
                                  slotButton.disabled = "disabled";
@@ -272,13 +273,10 @@
                                  slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
                               }
                            }
-                           let start = booking_date + '-' + addZero(7+j) + ':00:00';
-                           var ssn = localStorage.getItem("ssn");
-                           xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start}));
                         } 
-
-                        //Start time for time slot
-                        let start_ = addZero(7+j) + ':00:00';
+                        let start_timeslot = booking_date + ' ' + start_;
+                        var ssn = localStorage.getItem("ssn");
+                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot}));
                         //Mark non-available slots
                         let today = new Date();
                         if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
