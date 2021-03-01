@@ -74,7 +74,6 @@ function check_timeslot_available(req,res){
         const handles=[
             //handle 1        
             (results)=>{
-                console.log(results)
                 //if timeslot is already occupied, timeslot is not available
                 if(results[0].TimeslotAlreadyReserved){
                     const error_message="timeslot is already occupied"
@@ -83,7 +82,6 @@ function check_timeslot_available(req,res){
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
 
-                    database.disconnect(connection)
                     return false;
                 }
                 return true;
@@ -91,7 +89,6 @@ function check_timeslot_available(req,res){
 
             //handle 2
             (results)=>{
-                console.log(results)
                 //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
                 if(results[0].NumImmunocompromisedInRoom!=0){
                     const error_message="room is already occupied by an immunocompromised person that is not you"
@@ -100,7 +97,6 @@ function check_timeslot_available(req,res){
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
 
-                    database.disconnect(connection)
                     return false;
                 }
                 return true;
@@ -108,7 +104,6 @@ function check_timeslot_available(req,res){
 
             //handle 3
             (results)=>{
-                console.log(results)
                 //if room is full, timeslot is not available
                 if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
                     const error_message="room is already at max capacity at that time"
@@ -117,7 +112,6 @@ function check_timeslot_available(req,res){
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
 
-                    database.disconnect(connection)
                     return false;
                 }
                 //if you are immunocompromised and the room is partially occupied by someone else, timeslot is not available
@@ -128,9 +122,9 @@ function check_timeslot_available(req,res){
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
 
-                    database.disconnect(connection)
-                    return true;
+                    return false;
                 }
+                return true;
             }
         ]
 
@@ -149,7 +143,6 @@ function check_timeslot_available(req,res){
                 && handles[1](results[1])
                 && handles[2](results[2])
             ){
-                console.log("works")
     
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({success:"timeslot is available"}))
