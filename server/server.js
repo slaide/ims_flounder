@@ -30,13 +30,13 @@ const request_handler={
     "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //Finished if Maija is happy
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //Waiting for Linne to solve SSN problem 
-    "/reserve_instrument":reserve_instrument.reserve_instrument, //TODO testing
+    "/reserve_instrument":reserve_instrument.reserve_instrument,
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
     "/add_user":add_user.add_user, //TODO testing
     "/add_room":add_room.add_room, //TODO testing
     "/add_instrument":add_instrument.add_instrument, //TODO testing
     "/get_maintanence":get_maintenance.get_maintenance, //TODO testing
-    "/check_timeslot_available":check_timeslot_available.check_timeslot_available, //TODO testing
+    "/check_timeslot_available":check_timeslot_available.check_timeslot_available,
 
     "/shutdown":function(req,res){
         res.end()
