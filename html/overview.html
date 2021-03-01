@@ -126,7 +126,7 @@
                            let current_date = today.getDate();
                            let current_weekday = today.getDay();
                            //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomID})`);
+                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].InsID}, '${instrument[i].description}', ${RoomID})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -186,6 +186,7 @@
                $("thead").empty();
                $('#change_buttons').empty();
                $('#booking_form').empty();
+               $(".success_message").empty();
                //Title of instrument
                let ins_text = document.querySelector('#info_text');
                   ins_text.innerHTML = "Room " + RoomID + ': ' + ins_desc;
@@ -272,14 +273,13 @@
                                     }
                                     this.className += " active";
                                  })
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${RoomID})`);
                               }
                            }
                         } 
                         let start_timeslot = booking_date + ' ' + start_;
                         var ssn = localStorage.getItem("ssn");
-                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot}));
- 
+                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot})); 
                         slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
                      }
@@ -293,7 +293,7 @@
                   previous_week.setAttribute('class','change_week');
                   let first_date = week_dates[0][2];
                   let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},'${insID}','${ins_desc}',${RoomID})`)
+                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${insID},'${ins_desc}',${RoomID})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
                   change.appendChild(previous_week);
@@ -301,16 +301,17 @@
                   next_week.setAttribute('class','change_week');
                   let last_date = week_dates[6][2];
                   let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},'${insID}','${ins_desc}',${RoomID})`);
+                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${insID},'${ins_desc}',${RoomID})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
                }
 
             //slotID is the start time
-            function show_BookingForm(slotID,date,insID,ins_desc,RoomID) {
+            function show_BookingForm(year,month,date,weekday,slotID,booking_date,insID,ins_desc,RoomID) {
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
+               $(".success_message").empty();
                let booking_form = document.querySelector('#booking_form')
                   booking_form.setAttribute('action','/reserve_instrument'); //FOR SERVER
                   booking_form.setAttribute('method','POST');
@@ -319,7 +320,7 @@
                   date_input.setAttribute('type','hidden');
                   date_input.setAttribute('name','date'); //
                   date_input.setAttribute('id','booking_date');
-                  date_input.setAttribute("value",date);
+                  date_input.setAttribute("value",booking_date);
                   date_input.readOnly = true;
                   booking_form.appendChild(date_input);
                //Label and input for start time
@@ -331,7 +332,7 @@
                   start_time.setAttribute('type','text');
                   start_time.setAttribute('name','start_time'); //
                   start_time.setAttribute('id','start');
-                  start_time.setAttribute("value",`${date} ${addZero(slotID)}:00:00`);
+                  start_time.setAttribute("value",`${booking_date} ${addZero(slotID)}:00:00`);
                   start_time.readOnly = true;
                   booking_form.appendChild(start_time);
                //Label and input for end time
@@ -343,7 +344,7 @@
                   end_time.setAttribute('type','text');
                   end_time.setAttribute('name','end_time'); //
                   end_time.setAttribute('id','end');
-                  end_time.setAttribute('value',`${date} ${addZero(slotID+1)}:00:00`);
+                  end_time.setAttribute('value',`${booking_date} ${addZero(slotID+1)}:00:00`);
                   end_time.readOnly = true;
                   booking_form.appendChild(end_time);
                //Label and input for notes
@@ -373,19 +374,61 @@
                   submit.setAttribute("value","Submit booking");
                   booking_form.appendChild(submit);
 
-               //Successful or unsuccessfull
-               $('#booking_form').submit( function() {
-               var successful = $$RESERVATIONSUCCESS$$;
-               if (successful) {
-                  let schedule = document.querySelector('#schedule');
-                  let success = document.createElement('div');
-                     success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
-                  schedule.appendChild(success);
+               //Successful or unsuccessfull booking
+               function formSubmit(e) {
+                  var url = '/reserve_instrument';
+                  var request = new XMLHttpRequest();
+                  request.open('POST', url, true);
+                  //Successful booking
+                  request.onload = function() {
+                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                     let schedule = document.querySelector('#schedule');
+                     let success = document.createElement('div');
+                     schedule.appendChild(success);
+                        success.setAttribute('class','success_message');
+                     let image = document.createElement('img');
+                        image.setAttribute('src','./success_booking.png');
+                        image.setAttribute('width','50px');
+                        image.setAttribute('height','50px');
+                        image.setAttribute('class','success_image')
+                     success.appendChild(image);
+                     let message = document.createElement('p');
+                        message.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${booking_date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
+                     success.appendChild(message);
+                     }
+                  //Request failed
+                  request.onerror = function() {
+                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                     let schedule = document.querySelector('#schedule');
+                     let success = document.createElement('div');
+                     schedule.appendChild(success);
+                        success.setAttribute('class','success_message');
+                     let image = document.createElement('img');
+                        image.setAttribute('src','./unsuccessful_booking.png');
+                        image.setAttribute('width','50px');
+                        image.setAttribute('height','50px');
+                        image.setAttribute('class','success_image')
+                     success.appendChild(image);
+                     let message = document.createElement('p');
+                        message.innerHTML = "Error when reserving timeslot";
+                     success.appendChild(message);
                   }
-               });
+                  request.send($('#booking_form').serialize());
+                  e.preventDefault();
+               };
 
+               function attachFormSubmitEvent(form){
+                  form.addEventListener("submit", formSubmit);
+               }
 
+               //Call function for form submit
+               attachFormSubmitEvent(document.querySelector('#booking_form'));
+
+               
             }
+
+
+            
 
             getRooms();             
 
