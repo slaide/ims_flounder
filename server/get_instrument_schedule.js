@@ -11,40 +11,27 @@ function get_instrument_schedule(req,res){
         console.log('>>data: ', data)
         console.log('>> ins_id: ',data.insID) 
 
-        database.connect_database((connection,error)=>{
+        database.connection.query("Select Start_Time, End_Time FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
             if(error){
-                console.log(">> error connecting database for schedule of instrument ID",error)
+                console.log("error selecting attributes from booking",error)
                 if(!error.fatal){
-                    database.disconnect(database)
+                    database.disconnect(connection)
                 }
                 return
             }
-            connection.query("Select Start_Time, End_Time FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
-                if(error){
-                    console.log("error selecting attributes from booking",error)
-                    if(!error.fatal){
-                        database.disconnect(connection)
-                    }
-                    return
-                }
-                db_booking=JSON.parse(JSON.stringify(result))  
-                console.log('>> db_booking: ', db_booking)
+            db_booking=JSON.parse(JSON.stringify(result))  
+            console.log('>> db_booking: ', db_booking)
 
-                //Q: Waiting to see if Maija can work with the result 
-                var ret=[];
-                for(item of db_booking){
-                    var new_booking={}
-                    new_booking.StartTime=utility.format_time(item.Start_Time)
-                    new_booking.EndTime=utility.format_time(item.End_Time)
-                    ret.push(new_booking)
-                }
-                res.writeHeader(200,utility.content.from_filename(".json"))
-                res.end(JSON.stringify(ret))
-                console.log(">> Sent scedule for intrument", data.insID)
-                
-                database.disconnect(connection)
-                console.log('>> Database disconnected')
-            })
+            var ret=[];
+            for(item of db_booking){
+                var new_booking={}
+                new_booking.StartTime=utility.format_time(item.Start_Time)
+                new_booking.EndTime=utility.format_time(item.End_Time)
+                ret.push(new_booking)
+            }
+            res.writeHeader(200,utility.content.from_filename(".json"))
+            res.end(JSON.stringify(ret))
+            console.log(">> Sent scedule for intrument", data.insID)
         })
     }) 
 }
