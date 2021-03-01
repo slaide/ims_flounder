@@ -186,6 +186,7 @@
                $("thead").empty();
                $('#change_buttons').empty();
                $('#booking_form').empty();
+               $(".success_message").empty();
                //Title of instrument
                let ins_text = document.querySelector('#info_text');
                   ins_text.innerHTML = "Room " + RoomID + ': ' + ins_desc;
@@ -272,7 +273,7 @@
                                     }
                                     this.className += " active";
                                  })
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${RoomID})`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${RoomID})`);
                               }
                            }
                         } 
@@ -307,9 +308,10 @@
                }
 
             //slotID is the start time
-            function show_BookingForm(slotID,date,insID,ins_desc,RoomID) {
+            function show_BookingForm(year,month,date,weekday,slotID,booking_date,insID,ins_desc,RoomID) {
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
+               $(".success_message").empty();
                let booking_form = document.querySelector('#booking_form')
                   booking_form.setAttribute('action','/reserve_instrument'); //FOR SERVER
                   booking_form.setAttribute('method','POST');
@@ -318,7 +320,7 @@
                   date_input.setAttribute('type','hidden');
                   date_input.setAttribute('name','date'); //
                   date_input.setAttribute('id','booking_date');
-                  date_input.setAttribute("value",date);
+                  date_input.setAttribute("value",booking_date);
                   date_input.readOnly = true;
                   booking_form.appendChild(date_input);
                //Label and input for start time
@@ -330,7 +332,7 @@
                   start_time.setAttribute('type','text');
                   start_time.setAttribute('name','start_time'); //
                   start_time.setAttribute('id','start');
-                  start_time.setAttribute("value",`${date} ${addZero(slotID)}:00:00`);
+                  start_time.setAttribute("value",`${booking_date} ${addZero(slotID)}:00:00`);
                   start_time.readOnly = true;
                   booking_form.appendChild(start_time);
                //Label and input for end time
@@ -342,7 +344,7 @@
                   end_time.setAttribute('type','text');
                   end_time.setAttribute('name','end_time'); //
                   end_time.setAttribute('id','end');
-                  end_time.setAttribute('value',`${date} ${addZero(slotID+1)}:00:00`);
+                  end_time.setAttribute('value',`${booking_date} ${addZero(slotID+1)}:00:00`);
                   end_time.readOnly = true;
                   booking_form.appendChild(end_time);
                //Label and input for notes
@@ -372,30 +374,53 @@
                   submit.setAttribute("value","Submit booking");
                   booking_form.appendChild(submit);
 
-               
-               attachFormSubmitEvent(document.querySelector('#booking_form'));
                //Successful or unsuccessfull booking
                function formSubmit(e) {
-                  var url = 'reserve_instrument';
+                  var url = '/reserve_instrument';
                   var request = new XMLHttpRequest();
                   request.open('POST', url, true);
+                  //Successful booking
                   request.onload = function() {
-                     console.log(JSON.parse(this.responseText));
+                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
                      let schedule = document.querySelector('#schedule');
                      let success = document.createElement('div');
-                        success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
                      schedule.appendChild(success);
+                        success.setAttribute('class','success_message');
+                     let image = document.createElement('img');
+                        image.setAttribute('src','./success_booking.png');
+                        image.setAttribute('width','50px');
+                        image.setAttribute('height','50px');
+                        image.setAttribute('class','success_image')
+                     success.appendChild(image);
+                     let message = document.createElement('p');
+                        message.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${booking_date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
+                        success.appendChild(message);
                      }
+                  //Request failed
                   request.onerror = function() {
-                     console.log(JSON.parse(this.responseText).error);
+                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                     let schedule = document.querySelector('#schedule');
+                     let success = document.createElement('div');
+                     let image = document.createElement('img');
+                        image.setAttribute('src','./unsuccessful_booking.png');
+                        image.setAttribute('width','50px');
+                        image.setAttribute('height','50px');
+                        image.setAttribute('class','success_image')
+                     success.appendChild(image);
+                     let message = document.createElement('p');
+                        message.innerHTML = "Error when reserving timeslot";
+                     success.appendChild(message);
                   }
-                  request.send(new FormData(e.target));
+                  request.send($('#booking_form').serialize());
                   e.preventDefault();
                };
 
                function attachFormSubmitEvent(form){
                   form.addEventListener("submit", formSubmit);
                }
+
+               //Call function for form submit
+               attachFormSubmitEvent(document.querySelector('#booking_form'));
 
                
             }
