@@ -37,6 +37,8 @@ function check_timeslot_available(req,res){
                     return
                 }
             }
+
+            //make sure date format is correct
             try{
                 const start_time_date=new Date(data.start_time)
                 if(!start_time_date) throw "invalid date format"
@@ -52,8 +54,13 @@ function check_timeslot_available(req,res){
             }
 
             //check if the instrument is already occupied in this timeframe
-            const query="select * from booking where ? and timediff(Start_Time,?)=0";
-            connection.query(query,[{Ins_ID:data.ins_id},data.start_time],(error,results,fields)=>{
+            const query=`
+                select count(*) as TimeslotAlreadyReserved 
+                from booking 
+                where Ins_ID=${data.ins_id} 
+                and timediff(Start_Time,"${data.start_time}")=0
+            `;
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     const error_message="error checking for timeslot availability (slot occupied): "+error.sqlMessage
                     console.log(error_message)
@@ -67,7 +74,7 @@ function check_timeslot_available(req,res){
 
                     return
                 }
-                if(results.length!=0){
+                if(results[0].TimeslotAlreadyReserved){
                     const error_message="timeslot is already occupied"
                     console.log(error_message)//,": ",data)
 
@@ -79,15 +86,18 @@ function check_timeslot_available(req,res){
                 }
                 //select all bookings in the same room in this timeframe, of users that are immunocompromised
                 //check if this number is 0 (allow further checks) or 1 (disallow)
-                const query=`select * from booking
-                join user on user.SSN=booking.SSN
-                join instrument on instrument.Ins_ID=booking.Ins_ID
-                join room on room.Room_ID=instrument.Room_ID
-                where timediff(Start_Time,?)=0
-                and user.Immunocompromised=1
-                and not user.SSN=? #not be self
-                and room.Room_ID in (select Room_ID from instrument where ?)`
-                connection.query(query,[data.start_time,data.ssn,{"instrument.Ins_ID":data.ins_id}],(error,results,fields)=>{
+                const query=`
+                    select count(*) as NumImmunocompromisedInRoom
+                    from booking
+                    join user on user.SSN=booking.SSN
+                    join instrument on instrument.Ins_ID=booking.Ins_ID
+                    join room on room.Room_ID=instrument.Room_ID
+                    where timediff(Start_Time,"${data.start_time}")=0
+                    and user.Immunocompromised=1
+                    and not user.SSN=${data.ssn} #not be self
+                    and room.Room_ID in (select Room_ID from instrument where instrument.Ins_ID=${data.ins_id})
+                `;
+                connection.query(query,(error,results,fields)=>{
                     if(error){
                         const error_message="error checking for timeslot availability (immunocompromised in room): "+error.sqlMessage
                         console.log(error_message)
@@ -102,7 +112,7 @@ function check_timeslot_available(req,res){
                         return
                     }
                     //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
-                    if(results.length!=0){
+                    if(results[0].NumImmunocompromisedInRoom!=0){
                         const error_message="room is already occupied by an immunocompromised person that is not you"
                         console.log(error_message)//,": ",data)
     
@@ -117,16 +127,20 @@ function check_timeslot_available(req,res){
                     //if so, allow, otherwise disallow
                     //also, if the user themself is immunocompromised, check if the room is empty
                     //if empty, allow, else disallow
-                    const query=`select room.Capacity as RoomCapacity, count(distinct user.SSN) as NumberPeopleInRoom,(select Immunocompromised from user where ?) as YouAreImmunoCompromised
-                    from booking join user on booking.SSN=user.SSN
-                    join instrument on booking.Ins_ID=instrument.Ins_ID
-                    join room on instrument.Room_ID=room.Room_ID
-                    where instrument.Room_ID in (
-                        select Room_ID from instrument where ?
-                    )
-                    and timediff(Start_Time,?)=0
-                    and not ?`
-                    connection.query(query,[{SSN:data.ssn},{Ins_ID:data.ins_id},data.start_time,{"user.SSN":data.ssn}],(error,results,fields)=>{
+                    const query=`
+                        select room.Capacity as RoomCapacity,
+                            count(distinct user.SSN) as NumberPeopleInRoom,
+                            (select Immunocompromised from user where user.SSN=${data.ssn}) as YouAreImmunoCompromised
+                        from booking join user on booking.SSN=user.SSN
+                        join instrument on booking.Ins_ID=instrument.Ins_ID
+                        join room on instrument.Room_ID=room.Room_ID
+                        where instrument.Room_ID in (
+                            select Room_ID from instrument where instrument.Ins_ID=${data.ins_id}
+                        )
+                        and timediff(Start_Time,"${data.start_time}")=0
+                        and not user.SSN=${data.ssn}
+                    `;
+                    connection.query(query,(error,results,fields)=>{
                         if(error){
                             const error_message="error checking for timeslot availability (complex check): "+error.sqlMessage
                             console.log(error_message)//,": ",data)
@@ -138,16 +152,6 @@ function check_timeslot_available(req,res){
                             res.writeHeader(200,utility.content.json)
                             res.end(JSON.stringify({error:error_message}))
 
-                            return
-                        }
-                        if(results.length!=1){
-                            const error_message="timeslot availability check did not work (query did not work. yell at patrick)"
-                            console.log(error_message,": ",data)
-
-                            res.writeHeader(200,utility.content.json)
-                            res.end(JSON.stringify({error:error_message}))
-
-                            database.disconnect(connection)
                             return
                         }
                         //check if this number is equal to the capacity
