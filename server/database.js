@@ -10,7 +10,8 @@ function connect_server(handle){
     let connection_data={
         host:"localhost",
         user:"root",
-        password:""
+        password:"",
+        multipleStatements:true
     }
 
     var connection=mysql.createConnection(connection_data)
@@ -27,7 +28,8 @@ function connect_database(handle){
         host:"localhost",
         user:"root",
         password:"",
-        database:"lims"
+        database:"lims",
+        multipleStatements:true
     }
 
     var connection=mysql.createConnection(connection_data)
@@ -116,32 +118,20 @@ function connect_build_database(then,on_error=(conn,err)=>{
                             "../database/ins_maintenance.sql"
                         ]
 
-                        var done=0
-                        var max_done=0
-
+                        var long_file="";
                         for(file of sql_files){
+                            //remove collate values that npms mysql module just cannot play nice with for some reason
                             const file_content=fs.readFileSync(file,utility.encoding.utf8).replace("COLLATE utf8mb4_0900_ai_ci","").replace("COLLATE=utf8mb4_0900_ai_ci","")
-
-                            const single_queries=file_content.split(";")
-                            max_done+=single_queries.length
-
-                            for(i in single_queries){
-                                conn.query(single_queries[i],(err,res,fields)=>{
-                                    if(err){
-                                        //ignore empty queries from weird split behaviour
-                                        if(err.code!="ER_EMPTY_QUERY"){
-                                            console.log("error inserting data into rebuilt database:")
-                                            throw err
-                                        }
-                                    }
-                                    done+=1;
-                                    if(done==max_done){
-                                        then(conn)
-                                        return
-                                    }
-                                })
-                            }
+                            long_file+=file_content
                         }
+
+                        conn.query(long_file,(err,res,fields)=>{
+                            if(err){
+                                console.log("error inserting data into rebuilt database:")
+                                throw err
+                            }
+                            then(conn)
+                        })
                     })
                 })
             })
