@@ -37,59 +37,10 @@ function check_timeslot_available(req,res,insert_data=null){
             res.end(JSON.stringify({error:error_message}))
 
             return
-        }   
-
-        var start_insert="";
-        var insert_statement="";
-        var end_insert="";
-
-        if(insert_data){
-            start_insert="start transaction;";
-            insert_statement=
-                `if (@TimeslotAlreadyReserved = 0)
-                and (@NumImmunocompromisedInRoom = 0)
-                and (@RoomCapacity > @NumberPeopleInRoom)
-                and ((@YouAreImmunoCompromised = 0) or (@NumberPeopleInRoom = 0))
-                then
-                    insert into booking(Start_time, End_time, Status, SSN, Ins_ID, Note) 
-                    values("${insert_data.start_time}","${insert_data.end_time}",'booked',"${insert_data.ssn}","${insert_data.ins_id}","${insert_data.notes}");
-                end if;`
-            end_insert="commit;"
         }
 
         const query=`
-            ${start_insert}
-            #query 1
-            select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved 
-            from booking 
-            where Ins_ID="${data.ins_id}"
-            and timediff(Start_Time,"${data.start_time}")=0;
-
-            #query 2
-            select @NumImmunocompromisedInRoom := count(*) as NumImmunocompromisedInRoom
-            from booking
-            join user on user.SSN=booking.SSN
-            join instrument on instrument.Ins_ID=booking.Ins_ID
-            join room on room.Room_ID=instrument.Room_ID
-            where timediff(Start_Time,"${data.start_time}")=0
-            and user.Immunocompromised=1
-            and not user.SSN="${data.ssn}" #not be self
-            and room.Room_ID in (select Room_ID from instrument where instrument.Ins_ID="${data.ins_id}");
-
-            #query 3
-            select @RoomCapacity := room.Capacity as RoomCapacity,
-                @NumberPeopleInRoom := count(distinct user.SSN) as NumberPeopleInRoom,
-                @YouAreImmunoCompromised := (select Immunocompromised from user where user.SSN="${data.ssn}") as YouAreImmunoCompromised
-            from booking join user on booking.SSN=user.SSN
-            join instrument on booking.Ins_ID=instrument.Ins_ID
-            join room on instrument.Room_ID=room.Room_ID
-            where instrument.Room_ID in (
-                select Room_ID from instrument where instrument.Ins_ID="${data.ins_id}"
-            )
-            and timediff(Start_Time,"${data.start_time}")=0
-            and not user.SSN="${data.ssn}";
-            ${insert_statement}
-            ${end_insert}
+            call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${(!!insert_data)?1:0});
         `;
 
         const handles=[
@@ -111,7 +62,7 @@ function check_timeslot_available(req,res,insert_data=null){
             //handle 2
             (results)=>{
                 //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
-                if(results[0].NumImmunocompromisedInRoom!=0){
+                if(results[0].NumImmunocompromisedInRoom>0){
                     const error_message="room is already occupied by an immunocompromised person that is not you"
                     console.log(error_message)//,": ",data)
 
@@ -160,15 +111,14 @@ function check_timeslot_available(req,res,insert_data=null){
                 return
             }
 
-            const result_offset=0+!!insert_data
             if(
-                handles[0](results[0+result_offset])
-                && handles[1](results[1+result_offset])
-                && handles[2](results[2+result_offset])
+                handles[0](results[0])
+                && handles[1](results[1])
+                && handles[2](results[2])
             ){
-                if(insert_data && results[results.length-2].affectedRows!=1){
+                if(insert_data && results[3].affectedRows!=1){
                     const error_message="inserting new booking failed";
-                    console.log(error_message,results[results.length-2])
+                    console.log(error_message,results[4])
         
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))

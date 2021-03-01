@@ -33,10 +33,83 @@ function create_global_connection_pool(){
         connectionLimit:256
     }
 
+    const check_timeslot_available_definition=`
+        create procedure check_timeslot_available(start_time datetime,end_time datetime,ssn int,ins_id int,notes varchar(40), insert_data boolean)
+        begin
+            if insert_data then
+                start transaction;
+            end if;
+
+            #query 1
+            select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved
+            from booking 
+            where booking.Ins_ID = ins_id
+            and timediff(booking.Start_Time,start_time) = 0;
+
+            #query 2
+            select @NumImmunocompromisedInRoom := count(*) as NumImmunocompromisedInRoom
+            from booking
+            join user on user.SSN=booking.SSN
+            join instrument on instrument.Ins_ID=booking.Ins_ID
+            join room on room.Room_ID=instrument.Room_ID
+            where timediff(booking.Start_Time,start_time)=0
+            and user.Immunocompromised=1
+            and not user.SSN=ssn #not be self
+            and room.Room_ID in (select instrument.Room_ID from instrument where instrument.Ins_ID=ins_id);
+
+            #query 3
+            select @RoomCapacity := room.Capacity as RoomCapacity,
+                @NumberPeopleInRoom := count(distinct user.SSN) as NumberPeopleInRoom,
+                @YouAreImmunoCompromised := (select user.Immunocompromised from user where user.SSN=ssn) as YouAreImmunoCompromised
+            from booking join user on booking.SSN=user.SSN
+            join instrument on booking.Ins_ID=instrument.Ins_ID
+            join room on instrument.Room_ID=room.Room_ID
+            where instrument.Room_ID in (
+                select instrument.Room_ID from instrument where instrument.Ins_ID=ins_id
+            )
+            and timediff(booking.Start_Time,start_time)=0
+            and not user.SSN=ssn;
+
+            if insert_data then
+
+                if (@TimeslotAlreadyReserved = 0)
+                and (@NumImmunocompromisedInRoom = 0)
+                and 
+                (
+                    (
+                        (@YouAreImmunoCompromised = 0) #if you are not immunocompromised, there needs to be enough space for you in the room
+                        and (@RoomCapacity > @NumberPeopleInRoom)
+                    )
+                    or 
+                    ( #if you are immunocompromised, you need to be the only the one in the room
+                        (@YouAreImmunoCompromised = 1)
+                        and (@NumberPeopleInRoom = 0)
+                    )
+                    or 
+                    (
+                        @NumberPeopleInRoom = 0 #capacity is null because noone has anything to do with this room at the time
+                    )
+                )
+                then
+                    insert into booking(Start_Time, End_Time, Status, SSN, Ins_ID, Note) 
+                    values(start_time,end_time,'booked',ssn,ins_id,notes);
+                else
+                    select "something fucked up" as Message;
+                end if;
+                commit;
+            end if;
+        end;`
+
     var connection=mysql.createPool(connection_data)
+
+    //connection.on("connection",(conn)=>{
+        connection.query(check_timeslot_available_definition,(error)=>{
+            if (error) throw error;
+        })
+    //})
+
     return connection
 }
-module.exports.connection=create_global_connection_pool();
 
 /** 
  * Create connection to database
@@ -151,6 +224,7 @@ function connect_build_database(then,on_error=(conn,err)=>{
                                 if(error) throw error;
                             })
 
+                            module.exports.connection=create_global_connection_pool();
                             then()
                         })
                     })
