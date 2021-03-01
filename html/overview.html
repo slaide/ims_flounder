@@ -259,7 +259,9 @@
                         xhttp.onreadystatechange = function() {
                            if (this.readyState == 4 && this.status == 200) {
                               var available = JSON.parse(this.responseText);
-                              if (available.error) {
+                              let today = new Date();
+                              //Mark non-available slots
+                              if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
                                  slotButton.className += " non-available";
                                  slotButton.disabled = "disabled";
                               } else {
@@ -277,11 +279,7 @@
                         let start_timeslot = booking_date + ' ' + start_;
                         var ssn = localStorage.getItem("ssn");
                         xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot}));
-                        //Mark non-available slots
-                        let today = new Date();
-                        if ((week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
-                           slotButton.className = "slot non-available";
-                        } 
+ 
                         slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
                      }
