@@ -45,16 +45,15 @@ function check_timeslot_available(req,res,insert_data=null){
 
         if(insert_data){
             start_insert="start transaction;";
-            insert_statement=`
-                if (@TimeslotAlreadyReserved = 0)
-                and (@NumImmunocompromisedInRoom=0)
+            insert_statement=
+                `if (@TimeslotAlreadyReserved = 0)
+                and (@NumImmunocompromisedInRoom = 0)
                 and (@RoomCapacity > @NumberPeopleInRoom)
                 and ((@YouAreImmunoCompromised = 0) or (@NumberPeopleInRoom = 0))
                 then
                     insert into booking(Start_time, End_time, Status, SSN, Ins_ID, Note) 
                     values("${insert_data.start_time}","${insert_data.end_time}",'booked',"${insert_data.ssn}","${insert_data.ins_id}","${insert_data.notes}");
-                end if;
-                `
+                end if;`
             end_insert="commit;"
         }
 
