@@ -1,6 +1,5 @@
 const utility=require("./utility.js")
 const database=require("./database")
-const mysql=require("mysql")
 const fs=require("fs")
 const { Console } = require("console")
 
@@ -25,14 +24,11 @@ function check_login_data(req,res){
                 with_email=overview_string.replace("$$EMAIL$$", `"${db_data[0].Email}"`)
                 res.end(with_email.replace("$$SSN$$", `"${db_data[0].SSN}"`))
                 console.log('>> overview.html file sent back to client')
-
-                console.log('>> Database disconnected')
             }
             else{
                 console.log(">> No match found, login unsuccesfull")
                 res.end(fs.readFileSync("../html/index.html",utility.encoding.utf8).replace("$$LOGINSUCCESS$$", "true"))
                 console.log('>> index.html file sent back to client with LOGINSUCCESS=true')
-                console.log('>> Database disconnected') 
             }
         })  
     })
