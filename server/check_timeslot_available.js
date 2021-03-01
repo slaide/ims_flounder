@@ -52,7 +52,7 @@ function check_timeslot_available(req,res,insert_data=null){
                 and ((@YouAreImmunoCompromised = 0) or (@NumberPeopleInRoom = 0))
                 then
                     insert into booking(Start_time, End_time, Status, SSN, Ins_ID, Note) 
-                    values("${insert_data.start_time}","${insert_data.end_time}",'booked',${insert_data.ssn},${insert_data.ins_id},"${insert_data.notes}");
+                    values("${insert_data.start_time}","${insert_data.end_time}",'booked',"${insert_data.ssn}","${insert_data.ins_id}","${insert_data.notes}");
                 end if;
                 `
             end_insert="commit;"
@@ -63,7 +63,7 @@ function check_timeslot_available(req,res,insert_data=null){
             #query 1
             select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved 
             from booking 
-            where Ins_ID=${data.ins_id} 
+            where Ins_ID="${data.ins_id}"
             and timediff(Start_Time,"${data.start_time}")=0;
 
             #query 2
@@ -74,27 +74,24 @@ function check_timeslot_available(req,res,insert_data=null){
             join room on room.Room_ID=instrument.Room_ID
             where timediff(Start_Time,"${data.start_time}")=0
             and user.Immunocompromised=1
-            and not user.SSN=${data.ssn} #not be self
-            and room.Room_ID in (select Room_ID from instrument where instrument.Ins_ID=${data.ins_id});
+            and not user.SSN="${data.ssn}" #not be self
+            and room.Room_ID in (select Room_ID from instrument where instrument.Ins_ID="${data.ins_id}");
 
             #query 3
             select @RoomCapacity := room.Capacity as RoomCapacity,
                 @NumberPeopleInRoom := count(distinct user.SSN) as NumberPeopleInRoom,
-                @YouAreImmunoCompromised := (select Immunocompromised from user where user.SSN=${data.ssn}) as YouAreImmunoCompromised
+                @YouAreImmunoCompromised := (select Immunocompromised from user where user.SSN="${data.ssn}") as YouAreImmunoCompromised
             from booking join user on booking.SSN=user.SSN
             join instrument on booking.Ins_ID=instrument.Ins_ID
             join room on instrument.Room_ID=room.Room_ID
             where instrument.Room_ID in (
-                select Room_ID from instrument where instrument.Ins_ID=${data.ins_id}
+                select Room_ID from instrument where instrument.Ins_ID="${data.ins_id}"
             )
             and timediff(Start_Time,"${data.start_time}")=0
-            and not user.SSN=${data.ssn};
+            and not user.SSN="${data.ssn}";
             ${insert_statement}
             ${end_insert}
         `;
-        if(insert_data){
-            console.log(query)
-        }
 
         const handles=[
             //handle 1        
