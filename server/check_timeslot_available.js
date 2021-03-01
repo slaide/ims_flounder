@@ -37,6 +37,19 @@ function check_timeslot_available(req,res){
                     return
                 }
             }
+            try{
+                const start_time_date=new Date(data.start_time)
+                if(!start_time_date) throw "invalid date format"
+            }catch(e){
+                const error_message="start_time has invalid date/time format "+data.start_time+" ("+e+")"
+                console.log(error_message)//,": ",data)
+
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
+
+                database.disconnect(connection)
+                return
+            }
 
             //check if the instrument is already occupied in this timeframe
             const query="select * from booking where ? and timediff(Start_Time,?)=0";
@@ -126,7 +139,7 @@ function check_timeslot_available(req,res){
 
                             return
                         }
-                        if(results.length==0){
+                        if(results.length>1){
                             const error_message="timeslot availability check did not work (query did not work. yell at patrick)"
                             console.log(error_message,": ",data)
 
@@ -136,35 +149,38 @@ function check_timeslot_available(req,res){
                             database.disconnect(connection)
                             return
                         }
-                        //check if this number is equal to the capacity
-                        //if so, disallow, otherwise allow
-                        if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
-                            const error_message="room is already at max capacity at that time"
-                            console.log(error_message)//,": ",data)
+                        //if no data overlaps the current timeslot, nothing is returned (no overlapping data also means that reserving the timeslot is acceptable under all circumstances) (special rights are checked so that the user cannot see/interact with something he is not allowed to do so with)
+                        if(results.length==1){
+                            //check if this number is equal to the capacity
+                            //if so, disallow, otherwise allow
+                            if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
+                                const error_message="room is already at max capacity at that time"
+                                console.log(error_message)//,": ",data)
 
-                            res.writeHeader(200,utility.content.json)
-                            res.end(JSON.stringify({error:error_message}))
+                                res.writeHeader(200,utility.content.json)
+                                res.end(JSON.stringify({error:error_message}))
 
-                            database.disconnect(connection)
-                            return
-                        }
-                        //also, if the user themself is immunocompromised, check if the room is empty
-                        //if empty, allow, else disallow
-                        if(results[0].YouAreImmunoCompromised && results[0].NumberPeopleInRoom>0){
-                            const error_message="room is already at occupied at that time"
-                            console.log(error_message)//,": ",data)
+                                database.disconnect(connection)
+                                return
+                            }
+                            //also, if the user themself is immunocompromised, check if the room is empty
+                            //if empty, allow, else disallow
+                            if(results[0].YouAreImmunoCompromised && results[0].NumberPeopleInRoom>0){
+                                const error_message="room is already at occupied at that time"
+                                console.log(error_message)//,": ",data)
 
-                            res.writeHeader(200,utility.content.json)
-                            res.end(JSON.stringify({error:error_message}))
+                                res.writeHeader(200,utility.content.json)
+                                res.end(JSON.stringify({error:error_message}))
 
-                            database.disconnect(connection)
-                            return
+                                database.disconnect(connection)
+                                return
+                            }
                         }
                         
                         database.disconnect(connection)
 
                         res.writeHeader(200,utility.content.json)
-                        res.end(JSON.stringify({error:"function not fully implemented"}))
+                        res.end(JSON.stringify({success:"timeslot is available"}))
                     })
                 })
             })
@@ -172,3 +188,15 @@ function check_timeslot_available(req,res){
     })
 }
 module.exports.check_timeslot_available=check_timeslot_available
+
+/*
+select count(*) as NumberPeopleInRoom, room.Capacity as RoomCapacity, user.Immunocompromised as YouAreImmunocompromised
+                    from booking join user on booking.SSN=user.SSN
+                    join instrument on booking.Ins_ID=instrument.Ins_ID
+                    join room on instrument.Room_ID=room.Room_ID
+                    where instrument.Room_ID in (
+                        select Room_ID from instrument where Ins_ID=1450238774
+                    ) and timediff(Start_Time,"2021-03-02 17:00:00")=0
+                     group by user.SSN
+
+                     */
