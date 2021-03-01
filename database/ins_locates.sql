@@ -12,7 +12,7 @@ CREATE TABLE ins_locates (
   Room_ID int NOT NULL,
   Ins_ID int NOT NULL,
   Ins_location_ID int NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO ins_locates (Start_time_Date, End_time_Date, Room_ID, Ins_ID, Ins_location_ID) VALUES
 ('2021-01-16 09:00:00', '2021-03-22 10:00:00', 1, 3, 1),
@@ -26,11 +26,18 @@ INSERT INTO ins_locates (Start_time_Date, End_time_Date, Room_ID, Ins_ID, Ins_lo
 
 
 ALTER TABLE ins_locates
-  ADD PRIMARY KEY (Ins_location_ID);
+  ADD PRIMARY KEY (Ins_location_ID),
+  ADD KEY Ins_ID (Ins_ID),
+  ADD KEY Room_ID (Room_ID);
 
 
 ALTER TABLE ins_locates
   MODIFY Ins_location_ID int NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE ins_locates
+  ADD CONSTRAINT ins_locates_ibfk_1 FOREIGN KEY (Ins_ID) REFERENCES instrument (Ins_ID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT ins_locates_ibfk_2 FOREIGN KEY (Room_ID) REFERENCES room (Room_ID) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
