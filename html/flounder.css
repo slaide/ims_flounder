@@ -263,7 +263,18 @@ input {
    background-color: #1EBA67;
 }
 
-/**/
+/*Style for the submission message*/
+.success_image {
+   margin-bottom: 0.7rem;
+} 
+
+.success_message p {
+   line-height: 1.6rem;
+   margin-bottom: 1.2rem;
+   font-size: 1rem;
+}
+
+/*My schedule page*/
 .sched {
    margin: 1rem;
    float: left;

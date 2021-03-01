@@ -394,13 +394,15 @@
                      success.appendChild(image);
                      let message = document.createElement('p');
                         message.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${booking_date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
-                        success.appendChild(message);
+                     success.appendChild(message);
                      }
                   //Request failed
                   request.onerror = function() {
                      calendar(year,month,date,weekday,insID,ins_desc,RoomID);
                      let schedule = document.querySelector('#schedule');
                      let success = document.createElement('div');
+                     schedule.appendChild(success);
+                        success.setAttribute('class','success_message');
                      let image = document.createElement('img');
                         image.setAttribute('src','./unsuccessful_booking.png');
                         image.setAttribute('width','50px');
