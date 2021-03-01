@@ -126,7 +126,7 @@
                            let current_date = today.getDate();
                            let current_weekday = today.getDay();
                            //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, '${instrument[i].InsID}', '${instrument[i].description}', ${RoomID})`);
+                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].InsID}, '${instrument[i].description}', ${RoomID})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -272,14 +272,13 @@
                                     }
                                     this.className += " active";
                                  })
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', '${insID}', '${ins_desc}')`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${RoomID})`);
                               }
                            }
                         } 
                         let start_timeslot = booking_date + ' ' + start_;
                         var ssn = localStorage.getItem("ssn");
-                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot}));
- 
+                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot})); 
                         slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
                      }
@@ -293,7 +292,7 @@
                   previous_week.setAttribute('class','change_week');
                   let first_date = week_dates[0][2];
                   let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},'${insID}','${ins_desc}',${RoomID})`)
+                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${insID},'${ins_desc}',${RoomID})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
                   change.appendChild(previous_week);
@@ -301,7 +300,7 @@
                   next_week.setAttribute('class','change_week');
                   let last_date = week_dates[6][2];
                   let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},'${insID}','${ins_desc}',${RoomID})`);
+                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${insID},'${ins_desc}',${RoomID})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
@@ -373,19 +372,36 @@
                   submit.setAttribute("value","Submit booking");
                   booking_form.appendChild(submit);
 
-               //Successful or unsuccessfull
-               $('#booking_form').submit( function() {
-               var successful = $$RESERVATIONSUCCESS$$;
-               if (successful) {
-                  let schedule = document.querySelector('#schedule');
-                  let success = document.createElement('div');
-                     success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successfull <br> Date: ${date}, Start time: ${addZero(slotID)}:00, End time: ${addZero(slotID+1)}:00`;
-                  schedule.appendChild(success);
+               
+               attachFormSubmitEvent(document.querySelector('#booking_form'));
+               //Successful or unsuccessfull booking
+               function formSubmit(e) {
+                  var url = 'reserve_instrument';
+                  var request = new XMLHttpRequest();
+                  request.open('POST', url, true);
+                  request.onload = function() {
+                     console.log(JSON.parse(this.responseText));
+                     let schedule = document.querySelector('#schedule');
+                     let success = document.createElement('div');
+                        success.innerHTML = `Your reservation of ${ins_desc} in Room ${RoomID} was successful <br> Date: ${date} <br> Time: ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
+                     schedule.appendChild(success);
+                     }
+                  request.onerror = function() {
+                     console.log(JSON.parse(this.responseText).error);
                   }
-               });
+                  request.send(new FormData(e.target));
+                  e.preventDefault();
+               };
 
+               function attachFormSubmitEvent(form){
+                  form.addEventListener("submit", formSubmit);
+               }
 
+               
             }
+
+
+            
 
             getRooms();             
 
