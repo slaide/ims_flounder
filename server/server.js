@@ -7,7 +7,7 @@ const rooms=require("./rooms.js")
 const get_instrument_schedule=require("./get_instrument_schedule")
 const get_personal_schedule=require("./get_personal_schedule")
 const reserve_instrument=require("./reserve_instrument")
-const revoke_instrument_reservation=require("./revoke_instrument_reservation")
+const revoke_reservation=require("./revoke_reservation")
 const add_user=require("./add_user")
 const add_room=require("./add_room")
 const add_instrument=require("./add_instrument")
@@ -32,7 +32,7 @@ const request_handler={
     "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //Finished if Maija is happy
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
     "/reserve_instrument":reserve_instrument.reserve_instrument,
-    "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
+    "/revoke_reservation":revoke_reservation.revoke_reservation, //TODO testing
     "/add_user":add_user.add_user, //TODO testing
     "/add_room":add_room.add_room, //TODO testing
     "/add_instrument":add_instrument.add_instrument, //TODO testing
