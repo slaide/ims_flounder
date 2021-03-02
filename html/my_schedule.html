@@ -33,6 +33,7 @@
                </select>
                <br>
             <button type="submit" value="submit" id="revoke_submit">Revoke</button>
+            <div id="revoke_message"></div>
             </form>
          </div>
               <script>
@@ -74,7 +75,10 @@
                         listItem = document.createElement('li');
 
                         // Add the item
-                        listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + '<br> Instrument: ' + bookings[i].Description + '<br> Start: ' + bookings[i].StartTime + '<br> End: ' + bookings[i].EndTime;
+                        listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + 
+                        '<br> Instrument: ' + bookings[i].Description + 
+                        '<br> Start: ' + new Date(bookings[i].StartTime).toLocaleDateString() + ' ' + new Date(bookings[i].StartTime).toLocaleTimeString() + 
+                        '<br> End: ' + new Date(bookings[i].EndTime).toLocaleDateString() + ' ' + new Date(bookings[i].EndTime).toLocaleTimeString();
 
                         // Add listItem to the listElement
                         list.appendChild(listItem);
@@ -110,7 +114,6 @@
                      }
 
                      //var form = document.getElementById("revoke");
-                     //Will this return the specific id? 
                      document.getElementById("revoke_submit").addEventListener("click", function () {
                      revokebooking(booking_alt);
                   });
@@ -128,18 +131,21 @@
             xhttp.open("POST", "/revoke_instrument_reservation", true);
             xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-               var bookings = JSON.parse(this.responseText);
+               var response = JSON.parse(this.responseText);
 
                //Error handling
-               if (bookings.error) {
-                  console.log(bookings.error)
+               if (response.error) {
+                  console.log(response.error)
                   return;
+               }
+               else {
+                  document.getElementById("revoke_message").innerHTML = "Revoke successful!"
                }
                
             }
          };
          //Send request and info to server
-         xhttp.send(JSON.stringify({'bookingID': bookingID}));
+         xhttp.send(JSON.stringify({'booking_id': bookingID, 'ssn':SSN}));
       }
 
                getBookings(); 
