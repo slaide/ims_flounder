@@ -73,6 +73,7 @@
                         for (let i = 0; i < bookings.length; i++) {
                         // create an item for each one
                         listItem = document.createElement('li');
+                        listItem.classList.add('book_list');
 
                         // Add the item
                         listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + 
