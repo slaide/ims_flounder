@@ -13,6 +13,7 @@ const add_room=require("./add_room")
 const add_instrument=require("./add_instrument")
 const get_maintenance=require("./get_maintenance")
 const check_timeslot_available=require("./check_timeslot_available")
+const add_maintenance=require("./add_maintenance")
 
 /**
  * central object that routes client requests
@@ -29,7 +30,7 @@ const request_handler={
     "/get_rooms":rooms.get_rooms,
     "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //Finished if Maija is happy
-    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //Waiting for Linne to solve SSN problem 
+    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
     "/reserve_instrument":reserve_instrument.reserve_instrument,
     "/revoke_instrument_reservation":revoke_instrument_reservation.revoke_instrument_reservation, //TODO testing
     "/add_user":add_user.add_user, //TODO testing
@@ -37,6 +38,7 @@ const request_handler={
     "/add_instrument":add_instrument.add_instrument, //TODO testing
     "/get_maintanence":get_maintenance.get_maintenance, //TODO testing
     "/check_timeslot_available":check_timeslot_available.check_timeslot_available,
+    "/add_maintenance":add_maintenance.add_maintenance, //TODO testing
 
     "/shutdown":function(req,res){
         res.end()

@@ -13,7 +13,6 @@ function get_maintenance(req,res) {
         var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
             
         database.connection.query(sql, [data.InsID], (error, result)=> {
-            //Q: remove errors? 
             if(error){
                 console.log("error selecting attributes from ins_maintenance",error)
                 if(!error.fatal){

@@ -6,7 +6,6 @@ const database=require("./database.js")
 //return schedule for this instrument
 //schedule=list of reserved timeslots with start- and end-time, and username
 function get_instrument_schedule(req,res){
-
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data)
         console.log('>> ins_id: ',data.insID) 

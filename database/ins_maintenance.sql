@@ -16,7 +16,8 @@ CREATE TABLE ins_maintenance (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO ins_maintenance (`DateTime`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
-('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 1, 1);
+('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 1, 1),
+('2021-01-29 10:00:00', 'Working', 'fixed the filter ', 762324167, 5, 2);
 
 
 ALTER TABLE ins_maintenance

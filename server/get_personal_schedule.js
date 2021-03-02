@@ -12,7 +12,6 @@ function get_personal_schedule(req,res){
         var sql="SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID WHERE booking.SSN = ?" 
 
         database.connection.query(sql, [data.SSN], (error, result)=> {
-            //Q: remove errors? 
             if(error){
                 console.log("error selecting attributes",error)
                 if(!error.fatal){
@@ -28,7 +27,6 @@ function get_personal_schedule(req,res){
             for(item of db_booking){
                 ret.push({BookingID:item.Booking_ID, StartTime:item.Start_Time, EndTime:item.End_Time, Description:item.Description})
             }
-            console.log('>>ret:', ret) 
             res.writeHeader(200,utility.content.from_filename(".json"))
             res.end(JSON.stringify(ret))
             console.log(">> Sent scedule for user", data.SSN) 
