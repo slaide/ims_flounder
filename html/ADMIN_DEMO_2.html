@@ -10,13 +10,59 @@
   </head>
 
 
-<body>
-    <h3>Add objects to database:</h3>
- <button onclick="document.location='ADD_NEW_USER_ADMIN.html'">Add a new user</button> <br> 
- <button onclick="document.location='ADD_NEW_INSTRUMENT_ADMIN.html'">Add a new instrument</button> <br>
+    <body>
+        
+        <h1>Add objects to database:</h1>
+        <button onclick="document.location='ADD_NEW_USER_ADMIN.html'">Add a new user</button> <br> 
+        <button onclick="document.location='ADD_NEW_INSTRUMENT_ADMIN.html'">Add a new instrument</button> <br>
+        <button onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new room</button> 
 
- <button onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new room</button> 
- </body>
+        <div class="remove_room"></div>
+
+        <script>
+            //Function for displaying rooms
+            function getRooms() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/get_rooms", true);
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var rooms = JSON.parse(this.responseText);
+                        if (rooms.error) {
+                            console.log(rooms.error);
+                        return;
+                        }
+                        //Create form for removing room, action: /remove_room
+                        let cont = document.querySelector('.remove_room');
+                        let form = document.createElement('form');
+                            form.setAttribute("action","/remove_room");
+                            form.setAttribute("method","POST");
+                        cont.appendChild(form);
+                        let select_room = document.createElement('select');
+                            select_room.setAttribute("name","RoomID");
+                        form.appendChild(select_room);
+                        for (let i = 0; i < rooms.length; i++) {
+                            let option = document.createElement('option');
+                                option.setAttribute("value",`${rooms[i].RoomID}`);
+                                option.innerHTML = `Room ${rooms[i].RoomID}`;
+                            select_room.appendChild(option);
+                        }
+                        let submit = document.createElement('input');
+                            submit.setAttribute('type','submit');
+                            submit.setAttribute('value','Remove room');
+                        form.appendChild(submit);
+                    }
+                }
+                var ssn = localStorage.getItem("ssn");
+                xhttp.send(JSON.stringify({'ssn': ssn}));
+            }
+
+            getRooms();
+
+
+        </script>
+
+
+    </body>
 
 
 </html>
