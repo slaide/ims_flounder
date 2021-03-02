@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="eng">
     <head>
-        <title>My schedule</title>
+        <title>My Bookings</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="./reset.css">
         <link rel="stylesheet" type="text/css" href="./flounder.css">
@@ -14,14 +14,14 @@
             <img src="./favicon.ico" width="256" height="256">
             <ul>
                <a href="./overview.html"><li>Book an instrument</li></a>
-               <a href="#"><li>My Schedule</li></a>
+               <a href="#"><li>My Bookings</li></a>
                <a href="#"><li>Administrator</li></a>
                <a href="./maintenance.html"><li>Maintenance</li></a>
             </ul>
          </nav>
 
             <div class="grid sched">
-            <h1 class="overview_title">My Schedule</h1>
+            <h1 class="overview_title">My Bookings</h1>
             <div id="my_schedule"></div>
             </div>
 
@@ -74,7 +74,7 @@
                         listItem = document.createElement('li');
 
                         // Add the item
-                        listItem.innerHTML = 'Instrument: ' + bookings[i].Description + '<br> Start Time: ' + bookings[i].StartTime + '<br> End Time: ' + bookings[i].EndTime;
+                        listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + '<br> Instrument: ' + bookings[i].Description + '<br> Start: ' + bookings[i].StartTime + '<br> End: ' + bookings[i].EndTime;
 
                         // Add listItem to the listElement
                         list.appendChild(listItem);
@@ -105,7 +105,7 @@
                //Adding each booking to menu
                for (let i = 0; i < bookings.length; i++) {
                   let booking_alt = document.createElement('option');
-                  booking_alt.innerHTML = bookings[i].Description; //Display bookingID instead
+                  booking_alt.innerHTML = bookings[i].BookingID; 
                   menu.appendChild(booking_alt);
                      }
 
