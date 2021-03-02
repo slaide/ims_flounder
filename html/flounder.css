@@ -303,3 +303,12 @@ input {
    padding: 0.25rem 0.5rem;
    margin: 1rem;
 }
+
+.book_list{
+   background: white;
+   margin-top: 1rem;
+   margin-left: 28%;
+   padding: 0.5rem 1rem;
+   border-radius: 10px;
+   width:40%;
+}
