@@ -329,6 +329,7 @@
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
+
                }
 
             //slotID is the start time
@@ -336,6 +337,7 @@
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
                $(".success_message").empty();
+               document.querySelector("#booking_form").addEventListener("submit", formSubmit);
                let booking_form = document.querySelector('#booking_form')
                   booking_form.setAttribute('action','/reserve_instrument'); //FOR SERVER
                   booking_form.setAttribute('method','POST');
@@ -417,7 +419,7 @@
                         image.setAttribute('class','success_image')
                      success.appendChild(image);
                      let message = document.createElement('p');
-                        message.innerHTML = `Your reservation was successful`;
+                        message.innerHTML = `Your reservation was successful <br> ${booking_date} <br> ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
                      success.appendChild(message);
                      }
                   //Request failed
@@ -439,17 +441,11 @@
                   }
                   request.send($('#booking_form').serialize());
                   e.preventDefault();
-               };
-
-               function attachFormSubmitEvent(form){
-                  form.addEventListener("submit", formSubmit);
-               }
-
-               //Call function for form submit
-               attachFormSubmitEvent(document.querySelector('#booking_form'));
-
+                  document.querySelector("#booking_form").removeEventListener("submit", formSubmit);    
+               }; 
                
             }
+               
 
 
             
