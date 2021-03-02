@@ -28,11 +28,11 @@
             <div class="grid book">
             <h1>Revoke a booking</h1>
             <label for="bookings">Choose a booking:</label>
-            <form id="revoke">
-               <select name="bookings" id="booking_menu">
+            <form id="revoke" onsubmit="revokeBooking(submit)">
+               <select name="bookings" id="booking_menu" > 
                </select>
                <br>
-            <button type="submit" value="submit" id="revoke_submit">Revoke</button>
+            <button id="revoke_submit" type ="submit" value="submit">Revoke</button>
             <div id="revoke_message"></div>
             </form>
          </div>
@@ -113,10 +113,9 @@
                   menu.appendChild(booking_alt);
                      }
 
-                     //var form = document.getElementById("revoke");
-                     document.getElementById("revoke_submit").addEventListener("click", function () {
-                     revokebooking(booking_alt);
-                  });
+                  //document.getElementById("revoke_submit").addEventListener("click", function () {
+                  //revokebooking();
+                  //});
                }
 
 
