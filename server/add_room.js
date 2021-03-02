@@ -14,7 +14,7 @@ function add_room(req,res){
         //make sure all of the expected data is here and defined
         for(attribute of "Room_ID, Room_code, Area, Building_code, Capacity, Class".split(", ")){
             if(!data[attribute]){
-                const error_message="request is missing the attribute '"+attribute+"'"
+                const error_message=`request is missing the attribute '${attribute}'`
                 console.log(error_message)
 
                 res.writeHeader(200,utility.content.json)
