@@ -60,7 +60,6 @@ input {
 }
 
 /*Navigation menu style*/
-/*Can be improved..!!*/
 .menu {
    background-color: #413d3e;
    position: sticky;
@@ -77,6 +76,7 @@ input {
    color: #ffffff;
    font-family: 'Poppins','Helvetica',sans-serif;
    font-size: 1.1rem;
+   text-transform: capitalize;
 }
 
 .menu img {
