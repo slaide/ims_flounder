@@ -17,8 +17,6 @@
          <ul id="menu_list">
             <a href="#"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Bookings</li></a>
-            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
-            <a href="./maintenance.html"><li>Maintenance</li></a>
          </ul>
       </nav>
       
@@ -63,7 +61,10 @@
                }
             }
 
-            if (admin) {
+            console.log(localStorage.getItem("admin"));
+            console.log(localStorage.getItem("ssn"));
+
+            if (localStorage.getItem("admin")) {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
                   link.setAttribute('href','ADMIN_DEMO_2.html');
@@ -73,7 +74,7 @@
                   link.appendChild(li);
             }
 
-            if (main) {
+            if (localStorage.getItem("main")) {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
                   link.setAttribute('href','maintenance.html');
