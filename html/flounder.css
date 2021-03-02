@@ -286,3 +286,20 @@ input {
    float: left;
    width: 30%;
 }
+
+#revoke_submit {
+   background-color: #20658C;
+   color: #E8F4F2;
+   border-radius: 10px;
+   border: none;
+   padding: 0.5rem 1rem;
+}
+
+#booking_menu {
+   color:#014770;
+   background-color:white;
+   border-radius: 10px;
+   border-color: #014770;
+   padding: 0.25rem 0.5rem;
+   margin: 1rem;
+}
