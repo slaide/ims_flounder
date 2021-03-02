@@ -20,10 +20,10 @@ INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Room_ID) VALUE
 (3, 'Pipette 3000', 3940, '2020-12-30', 1),
 (4, 'Pipette', 2016, '2021-01-24', 3),
 (5, 'Mass spec 2000', 1244, '2021-01-24', 1),
-(6, 'Workbech ', 5656, '2021-02-03', 2),
-(7, 'Workbech ', 4096, '2020-12-01', 3),
-(8, 'Workbech ', 2687, '2021-02-01', 1),
-(9, 'Workbech ', 3487, '2020-12-14', 1);
+(6, 'Workbench ', 5656, '2021-02-03', 2),
+(7, 'Workbench ', 4096, '2020-12-01', 3),
+(8, 'Workbench ', 2687, '2021-02-01', 1),
+(9, 'Workbench ', 3487, '2020-12-14', 1);
 
 
 ALTER TABLE instrument
