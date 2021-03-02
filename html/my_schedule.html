@@ -15,7 +15,7 @@
             <ul>
                <a href="./overview.html"><li>Book an instrument</li></a>
                <a href="#"><li>My Bookings</li></a>
-               <a href="#"><li>Administrator</li></a>
+               <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
                <a href="./maintenance.html"><li>Maintenance</li></a>
             </ul>
          </nav>
@@ -110,7 +110,7 @@
                //Adding each booking to menu
                for (let i = 0; i < bookings.length; i++) {
                   let booking_alt = document.createElement('option');
-                  booking_alt.innerHTML = bookings[i].BookingID; 
+                  booking_alt.innerHTML = "Booking number " + bookings[i].BookingID; 
                   menu.appendChild(booking_alt);
                      }
 
