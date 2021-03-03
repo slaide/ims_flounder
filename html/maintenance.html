@@ -18,7 +18,6 @@
          <ul id="manu_list">
             <a href="./overview.html"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Schedule</li></a>
-            <a href="#"><li>Administrator</li></a>
             <a href="./maintenance.html"><li>Maintenance</li></a>
          </ul>
       </nav>
@@ -256,9 +255,9 @@
             } else if(this.status == 200){
               alert("error2");
             } else if(this.readyState == 4) {
-              //alert("error3");
+              alert("error3");
             } else {
-              //alert("error4");
+              alert("error4");
             }
           };
           xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
