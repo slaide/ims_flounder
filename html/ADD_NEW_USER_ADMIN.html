@@ -12,16 +12,36 @@
 
     <body>
 
-
         <nav class="menu">
             <img src="./favicon.ico" width="256" height="256">
-            <ul>
-            <a href="./overview.html"><li>Book an instrument</li></a>
-            <a href="./my_schedule.html"><li>My Schedule</li></a>
-            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
-            <a href="./maintenance.html"><li>Maintenance</li></a>
+            <ul id="menu_list">
+               <a href="./overview.html"><li>Book an instrument</li></a>
+               <a href="./my_schedule.html"><li>My Bookings</li></a>
+               <a href="#"><li>Administrator</li></a>
             </ul>
+            <a id="log_out" href="#" onclick="logOut()">Log out</a>
         </nav>
+
+        <script>
+            if (localStorage.getItem("main")==="1") {
+                    let menu_list = document.querySelector('#menu_list');
+                    let link = document.createElement('a');
+            link.setAttribute('href','maintenance.html');
+            menu_list.appendChild(link);
+            let li = document.createElement('li');
+                li.innerHTML = "Maintenance";
+                link.appendChild(li);
+            }
+
+            //Log out function
+            function logOut() {
+                localStorage.removeItem("ssn");
+                localStorage.removeItem("email");
+                localStorage.removeItem("admin");
+                localStorage.removeItem("main");
+                window.location.replace("index.html");
+            }
+        </script>
 
         <form action="/add_user" method="POST"> 
             <br><h2>Please provide the following information:</h2>
