@@ -18,7 +18,12 @@ function get_personal_schedule(req,res){
 
         database.connection.query(sql, [data.SSN], (error, result)=> {
             if(error){
-                console.log("error selecting attributes",error)
+                const error_message="error selecting attributes: '"+error+"'"
+                console.log(error_message)
+
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
+
                 if(!error.fatal){
                 database.disconnect(connection)
                 }
