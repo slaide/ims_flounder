@@ -1,10 +1,14 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
 
-//send schedule for a single instrument:
-//client input: some instrument's id
-//return schedule for this instrument
-//schedule=list of reserved timeslots with start- and end-time, and username
+/**
+ * Retrives and sends all bookings for a specific instrument
+ * currently expects client data: Ins_ID
+ * currently responds with: string with bookings, error(?) 
+ * @param {Request} req Request object with client data
+ * @param {Response} res Response object
+ **/
+
 function get_instrument_schedule(req,res){
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data)
@@ -30,7 +34,7 @@ function get_instrument_schedule(req,res){
             }
             res.writeHeader(200,utility.content.from_filename(".json"))
             res.end(JSON.stringify(ret))
-            console.log(">> Sent scedule for intrument", data.insID)
+            console.log(">> Sent schedule for intrument", data.insID)
         })
     }) 
 }

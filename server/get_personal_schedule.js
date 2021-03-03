@@ -1,9 +1,14 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
 
-//send personal schedule:
-//combine all reservations for a single user into one schedule
-//For Linnéa my_scheduel.html
+/**
+ * sends personal schedule for a user 
+ * currently expects client data: SSN
+ * currently responds with: string with bookings, error(?) 
+ * @param {Request} req Request object with client data
+ * @param {Response} res Response object
+ **/
+
 function get_personal_schedule(req,res){
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data)

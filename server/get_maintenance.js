@@ -1,9 +1,13 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
 
-///get maintanance function 
-//function returns maintanance from ins_maintaenance in database
-//for a specific ins_ID 
+/**
+ * Retrives and sends all maintenance data for a specific instrument
+ * currently expects client data: Ins_ID
+ * currently responds with: string with mainenance data error (?) 
+ * @param {Request} req Request object with client data
+ * @param {Response} res Response object
+ **/
 function get_maintenance(req,res) {
          
     utility.parse_data(req,(data)=>{
@@ -27,7 +31,6 @@ function get_maintenance(req,res) {
             for(item of db_maintenance){
                 ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
             }   
-            //console.log('>>ret:', ret) 
             res.writeHeader(200,utility.content.from_filename(".json"))
             res.end(JSON.stringify(ret))
             console.log(">> Sent maintenance") 

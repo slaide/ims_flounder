@@ -3,14 +3,20 @@ const database=require("./database")
 const fs=require("fs")
 const { Console } = require("console")
 
+/**
+ * Function to check login data matches to data in database
+ * currently expects client data: Email and Password
+ * currently responds with: successful/unsuccesful login, error? 
+ * @param {Request} req Request object with client data
+ * @param {Response} res Response object
+ **/
+
 function check_login_data(req,res){
     //parse login data from req
     console.log(">> check_login_data function")
     utility.parse_data(req,(user_data)=>{
-        console.log('>> user_data: ',user_data)   //user_data.password, user_data.email is a string 
+        console.log('>> user_data: ',user_data)
         
-        //var sql="SELECT Email, Password, SSN, Admin, Maintenance FROM user WHERE Email = ?"
-        //Check maintenance spelling and name in user.sql when added
         database.connection.query("SELECT Email, Password, SSN, Maintenance, Admin FROM user WHERE Email = ?", [user_data.email], (error, result)=> {
             if(error){
                 console.log("error selecting attributes user",error)
@@ -34,7 +40,7 @@ function check_login_data(req,res){
                 string=string.replace("$$SSN$$", `"${db_data[0].SSN}"`)
                 //Add Admin to locale storage     
                 string=string.replace("$$ADMIN$$", `"${db_data[0].Admin}"`)
-
+                //Add Maintenance to local storage and send file to client
                 res.end(string.replace("$$MAINTENANCE$$", `"${db_data[0].Maintenance}"`))
 
                 console.log('>> overview.html file sent back to client')
