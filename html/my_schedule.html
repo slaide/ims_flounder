@@ -28,7 +28,7 @@
             <div class="grid book">
             <h1>Revoke a booking</h1>
             <label for="bookings">Choose a booking:</label>
-            <form id="revoke" onsubmit="revokeBooking(submit)">
+            <form id="revoke"  action="javascript:revokeBooking(sumbit)">
                <select name="bookings" id="booking_menu" > 
                </select>
                <br>
@@ -111,6 +111,7 @@
                for (let i = 0; i < bookings.length; i++) {
                   let booking_alt = document.createElement('option');
                   booking_alt.innerHTML = "Booking number " + bookings[i].BookingID; 
+                  booking_alt.value = bookings[i].BookingID;
                   menu.appendChild(booking_alt);
                      }
 
@@ -128,7 +129,7 @@
             function revokeBooking(bookingID) {
             //XML request to server
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "/revoke_instrument_reservation", true);
+            xhttp.open("POST", "/revoke_reservation", true);
             xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                var response = JSON.parse(this.responseText);
