@@ -34,7 +34,7 @@ function add_maintenance(req,res){
         for(var i=1;i<add_user_data.length;i++){
             query_placeholders+=",?"
         }
-        console.log(query_placeholders,add_user_data)
+        
         //insert into booking values(...);
         //insert into booking(SSN,notes,...) values(...);
         //look into do maintenance_ID and Exist attribute
