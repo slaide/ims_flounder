@@ -1,5 +1,6 @@
 const http=require("http")
 const fs=require("fs")
+const url=require("url")
 const utility=require("./utility.js")
 const database=require("./database.js")
 const login=require("./login.js")
@@ -46,13 +47,25 @@ const request_handler={
             if(error) throw error;
         })
         throw({force_shutdown:true})
+    },
+    "/get_log":function(req,res){
+        utility.parse_data(req,data=>{
+            utility.log("start log output","important")
+            utility.get_log_for_level(data.level)
+            utility.log("end log output","important")
+
+            res.writeHeader(200,utility.content.json)
+            res.end("{}")
+        })
     }
 }
 
 const server=http.createServer((req,res)=>{
     try{
         //check if url is known to server
-        const handler=request_handler[req.url]
+        const path=new url.parse(req.url)
+
+        const handler=request_handler[path.pathname]
         if(handler){
             handler(req,res)
             return
@@ -61,7 +74,7 @@ const server=http.createServer((req,res)=>{
             //check if url is a static file, send the file if so
             if(!utility.send_static_data(req,res)){
                 //otherwise send 404
-                console.log(req.url, " could not be found.")
+                utility.log(`${req.path} could not be found.`)
                 res.writeHeader(404,utility.content.html)
                 res.end(fs.readFileSync("../html/404.html",utility.encoding.utf8))
             }
@@ -70,12 +83,12 @@ const server=http.createServer((req,res)=>{
     }catch(e){
         //force_shutdown is set on graceful shutdown request
         if(!e.force_shutdown){
-            console.log(e)
+            utility.log(e,"error")
         //every other throw is fatal
         }else{
-            console.log("closing web server.")
+            utility.log("closing web server.","important")
             server.close(()=>{
-                console.log("server closed.")
+                utility.log("server closed.","important")
             })
             return
         }
@@ -84,7 +97,7 @@ const server=http.createServer((req,res)=>{
 
 function start_server(){
     server.listen(8080,"127.0.0.1",()=>{
-        console.log("server started at '127.0.0.1:8080'")
+        utility.log("server started at '127.0.0.1:8080'","important")
     })
 }
 

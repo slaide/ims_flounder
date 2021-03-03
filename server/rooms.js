@@ -12,7 +12,7 @@ function get_rooms(req,res){
     utility.parse_data(req,(data)=>{
         if(!data.ssn){
             const error_message="ssn missing in request data for room list request"
-            console.log(error_message)
+            utility.log(error_message)
 
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error_message}))
@@ -21,7 +21,7 @@ function get_rooms(req,res){
         database.connection.query("select Room_ID from room where strcmp(Class,(select Special_rights from User where SSN=?))>=0;",[data.ssn],(error,result,fields)=>{
             if(error){
                 const error_message="error selecting rooms"
-                console.log(error_message,error)
+                utility.log(`${error_message} ${error}`,"error")
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -34,7 +34,7 @@ function get_rooms(req,res){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
 
-            console.log("sent room list to user ",data.ssn)
+            utility.log(`sent room list to user ${data.ssn}`)
         })
     })
 }
@@ -53,7 +53,7 @@ function get_instruments_in_room(req,res){
         for(attribute of "RoomID ssn".split(" ")){
             if(!data[attribute]){
                 const error_message=`request is missing the attribute '${attribute}'`
-                console.log(error_message)
+                utility.log(`${error_message}`)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -63,7 +63,7 @@ function get_instruments_in_room(req,res){
         }
         database.connection.query(`select Ins_ID,Description from instrument where Room_ID="${data.RoomID}";`,(error,result,fields)=>{
             if(error){
-                console.log(`error selecting instruments ${error}`)
+                utility.log(`error selecting instruments ${error}`,"error")
 
                 return
             }
@@ -74,7 +74,7 @@ function get_instruments_in_room(req,res){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
 
-            console.log(`sent instruments for room ${data.RoomID} requested by user ${data.ssn}`)
+            utility.log(`sent instruments for room ${data.RoomID} requested by user ${data.ssn}`)
         })
     })
 }

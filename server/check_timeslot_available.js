@@ -15,8 +15,8 @@ function check_timeslot_available(req,res,insert_data=null){
         //make sure all of the expected data is here and defined
         for(attribute of "ins_id start_time ssn".split(" ")){
             if(!data[attribute]){
-                const error_message="request is missing the attribute '"+attribute+"'"
-                console.log(error_message)
+                const error_message=`request is missing the attribute '${attribute}'`
+                utility.log(`${error_message}`)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -30,8 +30,8 @@ function check_timeslot_available(req,res,insert_data=null){
             const start_time_date=new Date(data.start_time)
             if(!start_time_date) throw "invalid date format"
         }catch(e){
-            const error_message="start_time has invalid date/time format "+data.start_time+" ("+e+")"
-            console.log(error_message)//,": ",data)
+            const error_message=`start_time has invalid date/time format ${data.start_time}`
+            utility.log(`${error_message} ${data.start_time}`)
 
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error_message}))
@@ -43,13 +43,15 @@ function check_timeslot_available(req,res,insert_data=null){
             call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${(!!insert_data)?1:0});
         `;
 
+        var global_results={};
+
         const handles=[
             //handle 1        
             (results)=>{
                 //if timeslot is already occupied, timeslot is not available
                 if(results[0].TimeslotAlreadyReserved){
                     const error_message="timeslot is already occupied"
-                    console.log(error_message)//,": ",data)
+                    utility.log(`${error_message}`)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -64,7 +66,7 @@ function check_timeslot_available(req,res,insert_data=null){
                 //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
                 if(results[0].NumImmunocompromisedInRoom>0){
                     const error_message="room is already occupied by an immunocompromised person that is not you"
-                    console.log(error_message)//,": ",data)
+                    utility.log(`${error_message}`)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -79,7 +81,7 @@ function check_timeslot_available(req,res,insert_data=null){
                 //if room is full, timeslot is not available
                 if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
                     const error_message="room is already at max capacity at that time"
-                    console.log(error_message)//,": ",data)
+                    utility.log(`${error_message}`)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -89,7 +91,7 @@ function check_timeslot_available(req,res,insert_data=null){
                 //if you are immunocompromised and the room is partially occupied by someone else, timeslot is not available
                 if(results[0].YouAreImmunoCompromised && results[0].NumberPeopleInRoom>0){
                     const error_message="room is already at occupied at that time"
-                    console.log(error_message)//,": ",data)
+                    utility.log(`${error_message}`)
 
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
@@ -101,9 +103,10 @@ function check_timeslot_available(req,res,insert_data=null){
         ]
 
         database.connection.query(query,(error,results,fields)=>{
+            global_results=results;
             if(error){
                 const error_message="timeslot availability check query failed";
-                console.log(error_message,error)
+                utility.log(`${error_message} ${error}`,"error")
     
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -116,15 +119,18 @@ function check_timeslot_available(req,res,insert_data=null){
                 && handles[1](results[1])
                 && handles[2](results[2])
             ){
-                if(insert_data && results[3].affectedRows!=1){
+                if(insert_data && results[results.length-1].affectedRows!=1){
+                    utility.log(`${results}`,"error")
+
                     const error_message="inserting new booking failed";
-                    console.log(error_message,results[4])
+                    console.log(error_message,results[results.length-1])
         
                     res.writeHeader(200,utility.content.json)
                     res.end(JSON.stringify({error:error_message}))
         
                     return
                 }
+
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({success:"timeslot is available"}))
             }

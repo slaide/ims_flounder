@@ -36,9 +36,7 @@ function create_global_connection_pool(){
     const check_timeslot_available_definition=`
         create procedure check_timeslot_available(start_time datetime,end_time datetime,ssn int,ins_id int,notes varchar(40), insert_data boolean)
         begin
-            if insert_data then
-                start transaction;
-            end if;
+            start transaction;
 
             #query 1
             select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved
@@ -71,7 +69,7 @@ function create_global_connection_pool(){
             and not user.SSN=ssn;
 
             if insert_data then
-
+            
                 if (@TimeslotAlreadyReserved = 0)
                 and (@NumImmunocompromisedInRoom = 0)
                 and 
@@ -91,22 +89,29 @@ function create_global_connection_pool(){
                     )
                 )
                 then
+
+                    select @TimeslotAlreadyReserved as TimeslotAlreadyReserved, @NumImmunocompromisedInRoom as NumImmunocompromisedInRoom, @RoomCapacity as RoomCapacity, @NumberPeopleInRoom as NumberPeopleInRoom, @YouAreImmunoCompromised as YouAreImmunoCompromised, @YouAreImmunoCompromised as YouAreImmunoCompromised;
+                
                     insert into booking(Start_Time, End_Time, Status, SSN, Ins_ID, Note) 
                     values(start_time,end_time,'booked',ssn,ins_id,notes);
                 else
+                    rollback;
                     select "something fucked up" as Message;
                 end if;
-                commit;
             end if;
-        end;`
+            commit;
+        end;
+    `;
 
     var connection=mysql.createPool(connection_data)
 
-    //connection.on("connection",(conn)=>{
-        connection.query(check_timeslot_available_definition,(error)=>{
-            if (error) throw error;
-        })
-    //})
+    //procedures are stored per database, not connection
+    connection.query(check_timeslot_available_definition,(error)=>{
+        if (error) throw error;
+    })
+    connection.query("set autocommit=0;",(error)=>{
+        if (error) throw error;
+    })
 
     return connection
 }
@@ -147,7 +152,7 @@ function disconnect(connection,end_function=(err)=>{
  * @param {(connection:mysql.Connection,error:Error)=>bool} on_error Function called with error, if any. Return 'true' if function should be aborted after on_error call
  */
 function connect_build_database(then,on_error=(conn,err)=>{
-    console.log(err)
+    utility.log(err,"error")
     if(!err.fatal){
         disconnect(conn)
     }
@@ -158,10 +163,10 @@ function connect_build_database(then,on_error=(conn,err)=>{
         if(err){
             //print custom error message when database is not running
             if(err.code=="ECONNREFUSED"){
-                console.log("error: database connection refused. please start the database server.")
+                utility.log("database connection refused. please start the database server.","error")
                 return
             }
-            console.log("error on connect for rebuild:")
+            utility.log("error on connect for rebuild:","error")
             if(on_error(conn,err)){
                 return
             }
@@ -170,7 +175,7 @@ function connect_build_database(then,on_error=(conn,err)=>{
             if(err){
                 //ignore the database not existing (e.g. after fresh server install. we delete all of the data here, so the data not existing prior does not matter)
                 if(!err.code=="ER_DB_DROP_EXISTS"){
-                    console.log("error on drop:")
+                    utility.log("error on drop:","error")
                     if(on_error(conn,err)){
                         return
                     }
@@ -178,21 +183,21 @@ function connect_build_database(then,on_error=(conn,err)=>{
             }
             conn.query("create database lims",(err,res,fields)=>{
                 if(err){
-                    console.log("error on create:")
+                    utility.log("error on create:","error")
                     if(on_error(conn,err)){
                         return
                     }
                 }
                 disconnect(conn,(err)=>{
                     if(err){
-                        cnsole.log("disconnect after database creation failed.")
+                        utility.log("disconnect after database creation failed.","error")
                         if(on_error(conn,err)){
                             return
                         }
                     }
                     connect_database((conn,err)=>{
                         if(err){
-                            console.log("connection to database failed.")
+                            utility.log("connection to database failed.","error")
                             if(on_error(conn,err)){
                                 return
                             }
@@ -217,7 +222,7 @@ function connect_build_database(then,on_error=(conn,err)=>{
 
                         conn.query(long_file,(err,res,fields)=>{
                             if(err){
-                                console.log("error inserting data into rebuilt database:")
+                                utility.log("error inserting data into rebuilt database:","error")
                                 throw err
                             }
                             disconnect(conn,(error)=>{

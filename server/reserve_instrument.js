@@ -14,8 +14,8 @@ function reserve_instrument(req,res){
         //make sure all of the expected data is here and defined
         for(attribute of "ins_id date start_time end_time ssn".split(" ")){
             if(!data[attribute]){
-                const error_message="request is missing the attribute '"+attribute+"'"
-                console.log(error_message)
+                const error_message=`request is missing the attribute '${attribute}'`
+                utility.log(`${error_message}`)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))

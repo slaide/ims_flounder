@@ -24,7 +24,7 @@ function send_static_data(req,res){
         res.writeHeader(200,header)
         res.end(data)
 
-        console.log(req.url, "was sent.")
+        log(`${req.url} was sent.`)
         return true
     }
 
@@ -118,7 +118,9 @@ function parse_data(req,then){
             }
         })
     }else{
-        var params=new url.URLSearchParams(req.url)
+        var params=new url.parse(req.url)
+        params=new url.URLSearchParams(params.query)
+        
         var ret={method:"GET"}
         params.forEach((value,key,searchparams)=>{
             ret[key]=value
@@ -157,11 +159,22 @@ module.exports.remove_special_chars=remove_special_chars
 const log_levels=["activity","important","error"]
 var global_log_level=1;
 
+module.exports.set_global_log_level=function(new_log_level){
+    if(new_log_level<0 || new_log_level>log_levels.length){
+        throw `new log level must be in range! ${new_log_level}`
+    }
+    global_log_level=new_log_level
+}
+
 var log_messages={};
 for(ll of log_levels){
     log_messages[ll]=[];
 }
 
+/**
+ * remove special characters from keys and values of an object
+ * @param {Object} obj - object of which the special characters will be stripped
+ */
 function log(text,log_level="activity"){
     if(!log_levels.includes(log_level)){
         throw `log_level ${log_level} not found`
@@ -170,8 +183,20 @@ function log(text,log_level="activity"){
     const new_log_message={time:format_time(new Date()),message:text}
     log_messages[log_level].push(new_log_message)
 
-    if(global_log_level>=log_levels.indexOf(log_level)){
-        console.log(`${new_log_message.time} ${log_level}: ${text}`)
+    if(global_log_level<=log_levels.indexOf(log_level)){
+        console.log(`${new_log_message.time} ${log_level}: ${new_log_message.message}`)
     }
 }
 module.exports.log=log
+
+module.exports.get_log_for_level=function(get_log_level){
+    if(get_log_level<0 || get_log_level>log_levels.length){
+        throw `log level must be in range! ${new_log_level}`
+    }
+
+    var get_log_level=log_levels[get_log_level]
+
+    for(log of log_messages[get_log_level]){
+        console.log(`oldlog: ${log.time} ${get_log_level}: ${log.message}`)
+    }
+}
