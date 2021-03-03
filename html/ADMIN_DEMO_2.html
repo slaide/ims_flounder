@@ -20,6 +20,7 @@
                <a href="./my_schedule.html"><li>My Bookings</li></a>
                <a href="#"><li>Administrator</li></a>
             </ul>
+            <a id="log_out" href="#" onclick="logOut()">Log out</a>
         </nav>
 
         <main>
@@ -32,6 +33,7 @@
             </div>
 
             <div class="remove_room"></div>
+            <div class="remove_ins"></div>
 
             <script>
                 //Add maintenance navigering if maintenance personell
@@ -44,6 +46,18 @@
                     li.innerHTML = "Maintenance";
                     link.appendChild(li);
                 }
+
+                //Log out function
+                function logOut() {
+                    localStorage.removeItem("ssn");
+                    localStorage.removeItem("email");
+                    localStorage.removeItem("admin");
+                    localStorage.removeItem("main");
+                        if (!localStorage.getItem("ssn")) {
+                            window.location.replace("index.html");
+                    }
+                }
+
                 //Function for displaying rooms
                 function getRooms() {
                     var xhttp = new XMLHttpRequest();
@@ -80,7 +94,63 @@
                     xhttp.send(JSON.stringify({"ssn": ssn}));
                 }
 
+                function getRoomsForIns() {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var rooms = JSON.parse(this.responseText);
+                            if (rooms.error) {
+                                console.log(rooms.error);
+                            return;
+                            }
+                            let remove_ins = document.querySelector(".remove_ins");
+                            let form = document.createElement('form');
+                                form.setAttribute("action","/remove_instrument");
+                                form.setAttribute("method","POST");
+                            remove_ins.appendChild(form);
+                            let select = document.createElement("select");
+                                select.setAttribute("name", "ins_id");
+                            form.appendChild(select);
+                            for (let i = 0; i < rooms.length; i++) {
+                                displayIns(rooms[i].RoomID, select);
+                            }
+                            let submit = document.createElement("input");
+                                submit.setAttribute('type','submit');
+                                submit.setAttribute('value','Remove instrument');
+                            form.appendChild(submit);
+                        }
+                    }
+                    var ssn = localStorage.getItem("ssn");
+                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                }
+
+                function displayIns(RoomID, select) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST", "/get_instruments_in_room", true);
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var instrument = JSON.parse(this.responseText);
+                            if (instrument.error) {
+                                console.log(instrument.error);
+                                return;
+                            }
+                            for (let i = 0; i < instrument.length; i++) {
+                                let option = document.createElement("option");
+                                    option.setAttribute('class','ins_option');
+                                    option.setAttribute('value', `${instrument[i].InsID}`);
+                                    option.innerHTML = `Room ${RoomID}: ${instrument[i].description}`;
+                                select.appendChild(option);
+
+                            }
+                        }
+                    }
+                    var ssn = localStorage.getItem("ssn");
+                    xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
+                    
+                }
                 getRooms();
+                getRoomsForIns();
 
 
             </script>
