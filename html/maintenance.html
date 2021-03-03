@@ -28,21 +28,27 @@
       <div id="select_ins">
         <h1>Select instrument</h1>
         <p id="test"><p>
-        <form>
-          <select id="instrument_menu" onsubmit="show_maintanance()" name="instrument_menu">
+        <!--form action="javascript:test_print(this);" id="lmaolmao"-->
+          <select id="instrument_menu"  onChange="javascript:test_print(this);" name="instrument_menu">
           </select>
-          <input type="submit" value="select">
-        </form>
+          <!--button type="submit">Submit me!</button-->
+        <!--  <input type="submit" value="select">  -->
+        <!--/form-->
+
+      <!--div id="maintenance_form">
+        <h1>Maintenance form</h1>
+        <form id="form">
+          
+        </form-->
+
+      </div>
+      <!--iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe-->
       <div id="maintenance_overview">
         <h1>Maintanence overview</h1>
-        <div id="leave_note">
-          <h2>Leave note</h2>
-        </div>
         <div id="see_notes">
           <table id="notes_table">
             <tr>
               <th>Date</th>
-              <th>Time</th>
               <th>Status</th>
               <th>Notes</th>
               <!-- <td>object</td>-->
@@ -79,7 +85,7 @@
                   }
                   let ins_menu = document.querySelector("#instrument_menu");
                   for (let i = 0; i < rooms.length; i++) {
-                     populateMenu(rooms[i].RoomID);
+                    populateMenu(rooms[i].RoomID);
                      //let room_alt = document.createElement('option');
                      //room_alt.innerHTML = 'Room ' + rooms[i].RoomID;
                      //ins_menu.appendChild(room_alt);
@@ -96,70 +102,120 @@
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/get_instruments_in_room", true);
             xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-               var instruments = JSON.parse(this.responseText);
-               if (instruments.error) {
+              if (this.readyState == 4 && this.status == 200) {
+                var instruments = JSON.parse(this.responseText);
+                if (instruments.error) {
                   console.log(instruments.error);
                   return;
-               }
-               document.querySelector('#lmao').innerHTML = instruments.length;
-               let ins_menu = document.querySelector("#instrument_menu");
-               for (let i = 0; i < instruments.length; i++) {
+                }
+                document.querySelector('#lmao').innerHTML = instruments.length;
+                let ins_menu = document.querySelector("#instrument_menu");
+                for (let i = 0; i < instruments.length; i++) {
                   let ins_alt = document.createElement('option');
                   //alert(instruments[i].InsID);
-                  ins_alt.className = instruments[i].InsID;
+                  //ins_alt.className = instruments[i].InsID;
+                  ins_alt.setAttribute("value", instruments[i].InsID);
                   ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
-                  //show_maintanance(instruments[i].InsID);
+                  show_maintanance(instruments[i].InsID);
                   }
             }
          };
          xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
         }
 
+        function selected_ins(InsID) {
+          add_maintanance(InsID);
+        }
+
+        function add_maintanance(InsID) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/add_maintanance", true);
+          
+        }
+
         function show_maintanance(InsID) {
         //alert(InsID);
         //return false;
         // This part is not done, want to get the form to not redirect first
-        /*
-          alert(InsID);
-          var data = new FormData();
-          data.append('InsID', domcument.getElementById(""))
+          //var data = new FormData();
+          //data.append('InsID', domcument.getElementById(""))
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/get_maintenance", true);
           xhttp.onreadystatechange = function() {
-          var instruments = JSON.parse(this.responseText);
+            //alert("Enter function");  //This runs like 19 times
             if (this.readyState == 4 && this.status == 200) {
-              console.log(instruents.error);
-              return false;
-            }
-            document.querySelector('#lmao').innerHTML = "Hello orld";
-            document.querySelector('#see_notes').innerHTML = "Hello orld";
-            let see_notes = document.querySelector("#see_notes");
-            alert("The form was submitted");
+              alert("we're in");
+              var instrument_notes = JSON.parse(this.responseText);
+              if (instrument.error) {
+                console.log(instruents.error);
+                //alert("Error");
+                return false;
+              }
+              let table_element = document.querySelector("#notes_table");
+              table_element.innerHTML = "";
+              let table_header = document.createElement("tr");
+              let table_header_time = document.createElement("th");
+              table_header_time.innerHTML = "Date & Time";
+              let table_header_status = document.createElement("th");
+              table_header_status.innerHTML = "Status";
+              let table_header_note = document.createElement("th");
+              table_header_note.innerHTML = "Notes";
+              table_header.appendChild(table_header_time);
+              table_header.appendChild(table_header_status);
+              table_header.appendChild(table_header_note);
+              table_element.appendChild(table_header);
+//              for (int i = 0; i < instrument_notes.length; i++) {
 
+//              }
+              alert("The form was submitted");
+              alert(instrument);
+            } 
+            else if(this.status == 200){
+              alert("error2");
+            } else if(this.readyState == 4) {
+              //alert("error3");
+            } else {
+              //alert("error4");
+            }
           };
-          xhttp.send(JSON.stringify({'InsID': InsID}));*/
+          xhttp.send(JSON.stringify({'InsID': InsID}));
+        }
+
+        function test_print(in_str) {
+          var ins_IDXX = in_str[in_str.selectedIndex].value;
+          document.querySelector('#lmao').innerHTML = ins_IDXX;
+
+          let table_element = document.querySelector("#notes_table");
+          table_element.innerHTML = "";
+          let table_header = document.createElement("tr");
+          let table_header_time = document.createElement("th");
+          table_header_time.innerHTML = "Date & Time";
+          let table_header_status = document.createElement("th");
+          table_header_status.innerHTML = "Status";
+          let table_header_note = document.createElement("th");
+          table_header_note.innerHTML = "Notes";
+          table_header.appendChild(table_header_time);
+          table_header.appendChild(table_header_status);
+          table_header.appendChild(table_header_note);
+          table_element.appendChild(table_header);
+
+          let table_entry = document.createElement("tr");
+          let table_time = document.createElement("th");
+          table_time.innerHTML = "2021/03/03 00:20";
+          let table_status = document.createElement("th");
+          table_status.innerHTML = "Working";
+          let table_note = document.createElement("th");
+          table_note.innerHTML = "Added a new lamp, all is working";
+          table_entry.appendChild(table_time);
+          table_entry.appendChild(table_status);
+          table_entry.appendChild(table_note);
+          table_element.appendChild(table_entry);
+
         }
 
         getRooms();
-/*
-        function getNotes(Ins_ID) {
-          var xhttp = new XMLHttpRequest();
-          xhttp.open("POST", "/get_maintenance", true);
-          xhttp.onreadystatechange = function() {
-            if (this.readState == 4 && this.status == 200) {
-              var maintenance_notes = JSON.parse(this.responseText);
-              if (maintenance_notes.error) {
-                console.log(booking.error);
-                return;
-              }
-              let 
-            }
-            if (maintenance.error)
-          }
-        }
-*/
+
         //hello_world();
       </script>
     </main>
