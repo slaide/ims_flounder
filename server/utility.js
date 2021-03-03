@@ -134,7 +134,7 @@ module.exports.parse_data=parse_data
  * @param {Date} date - date object to be formatted in compatible format
  */
 function format_time(date){
-    return new Date(date).toLocaleString("en-US",{timezone:"Europe/Stockholm"})
+    return new Date(date).toLocaleString("se-SE",{timezone:"Sweden"})
 }
 module.exports.format_time=format_time
 
@@ -154,9 +154,24 @@ function remove_special_chars(obj){
 }
 module.exports.remove_special_chars=remove_special_chars
 
-function log(text,log_level){
-    switch(log_level){
-        case "error":
-        case "activity"
+const log_levels=["activity","important","error"]
+var global_log_level=1;
+
+var log_messages={};
+for(ll of log_levels){
+    log_messages[ll]=[];
+}
+
+function log(text,log_level="activity"){
+    if(!log_levels.includes(log_level)){
+        throw `log_level ${log_level} not found`
+    }
+    
+    const new_log_message={time:format_time(new Date()),message:text}
+    log_messages[log_level].push(new_log_message)
+
+    if(global_log_level>=log_levels.indexOf(log_level)){
+        console.log(`${new_log_message.time} ${log_level}: ${text}`)
     }
 }
+module.exports.log=log
