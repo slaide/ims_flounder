@@ -104,7 +104,7 @@
 
                //Error handling
                if (bookings.error) {
-                  console.log(bookings.error)
+                  console.log("an error occured on the server:", bookings.error);
                   return;
                }
 
@@ -140,7 +140,8 @@
 
                //Error handling
                if (response.error) {
-                  console.log(response.error)
+                  console.log("an error occured on the server: " + response.error)
+                  document.getElementById("revoke_message").innerHTML = "Server error"
                   return;
                }
                else {
