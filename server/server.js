@@ -14,6 +14,10 @@ const add_instrument=require("./add_instrument")
 const get_maintenance=require("./get_maintenance")
 const check_timeslot_available=require("./check_timeslot_available")
 const add_maintenance=require("./add_maintenance")
+const remove_instrument=require("./remove_instrument")
+const remove_room=require("./remove_room")
+const remove_user=require("./remove_user")
+const get_users=require("./get_users")
 
 /**
  * central object that routes client requests
@@ -38,6 +42,12 @@ const request_handler={
     "/get_maintenance":get_maintenance.get_maintenance, //TODO testing
     "/check_timeslot_available":check_timeslot_available.check_timeslot_available,
     "/add_maintenance":add_maintenance.add_maintenance, //TODO testing
+    
+    "/remove_instrument":remove_instrument.remove_instrument, // TODO write
+    "/remove_room":remove_room.remove_room, // TODO write
+    "/remove_user":remove_user.remove_user, // TODO write 
+
+    "/get_users":get_users.get_users, //TODO write
 
     "/shutdown":function(req,res){
         res.end()
