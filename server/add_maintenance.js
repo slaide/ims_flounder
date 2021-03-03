@@ -33,7 +33,9 @@ function add_maintenance(req,res){
         for(var i=1;i<add_user_data.length;i++){
             query_placeholders+=",'?'"
         }
-        //
+        //insert into booking values(...);
+        //insert into booking(SSN,notes,...) values(...);
+        //look into do maintenance_ID and Exist attribute
         database.connection.query(`insert into maintenance_ID values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
             if(error){
                 const error_message="failed to add maintenance because "+error

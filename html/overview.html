@@ -18,7 +18,7 @@
             <a href="#"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Bookings</li></a>
          </ul>
-         <a id="log_out" href="#" onclick="logOut()">Log out</a>
+         <a id="log_out" onclick="logOut()">Log out</a>
       </nav>
       
       <main id="overview_cont">
@@ -87,14 +87,15 @@
                   link.appendChild(li);
             }
 
+            //Log out function
             function logOut() {
                localStorage.removeItem("ssn");
                localStorage.removeItem("email");
                localStorage.removeItem("admin");
                localStorage.removeItem("main");
-               if (!localStorage.getItem("ssn")) {
-                  window.location.replace("index.html");
-            }
+                  if (!localStorage.getItem("ssn")) {
+                     window.location.replace("index.html");
+               }
             } 
 
             //Function for retrieving room data and displaying it

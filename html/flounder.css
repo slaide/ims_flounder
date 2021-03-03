@@ -89,11 +89,19 @@ input {
 
 #log_out {
    float: right;
-   padding: 1.2rem;
+   padding: 0.6rem 0.9rem;
+   margin: 0.6rem;
+   background-color: #F2CB57;
+   border-radius: 5px;
+   font-size: 0.9rem;
+}
+
+#log_out:hover {
+   background-color: #F2AC57;
 }
 
 .menu ul {
-   display: inline;
+   display: inline-block;
 }
 
 /*Grid display for the overview page*/
@@ -326,5 +334,16 @@ input {
 #revoke_message {
    padding: 0.5rem 1rem;
    font-size: 14px;
+}
+
+.book_list_expired{
+   background: rgb(173, 173, 173);
+   margin-top: 1rem;
+   margin-left: 28%;
+   padding: 0.5rem 1rem;
+   border-radius: 10px;
+   width:40%;
+   line-height: 150%;
+   color:white;
 }
 
