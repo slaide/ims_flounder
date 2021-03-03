@@ -5,6 +5,7 @@
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <link rel="stylesheet" type="text/css" href="./admin.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     </head>
@@ -23,53 +24,58 @@
         </nav>
 
         <form action="/add_user" method="POST"> 
-            <h2>Please provide the following information:</h2>
+            <br><h2>Please provide the following information:</h2>
 
 
-            <br><label for="First_name">First name:</label>
-            <input type="text" name="First_name"> 
+            <br><label for="first_name">First name:</label>
+            <input type="text" name="first_name"> 
 
 
-            <br><label for="Password">Password:</label>
-            <input type="text" name="Password"> 
+            <br><label for="password">Password:</label>
+            <input type="text" name="password"> 
 
             <br><label for="email">E-mail:</label>
             <input type="email" name="email" required><br>
 
 
 
-            <br><br><label for="Last_name">Last name:</label>
-            <input type="text" name="Last_name">
+            <br><label for="last_name">Last name:</label>
+            <input type="text" name="last_name">
 
-            <br><br><label for="Phone_number">Phone number:</label>
-            <input type="text" name="Phone_number">
-
-
-            <br><br><label for="SSN">SSN:</label>
-            <input type="text" name="SSN">
+            <br><br><label for="phone_number">Phone number:</label>
+            <input type="text" name="phone_number">
 
 
-            <h3>Special Rights:</h3>
-            <input type="checkbox" name="top" value="A">
-            <label for="top">A</label><br> 
-            <input type="checkbox" name="middle" value="B">
-            <label for="middle"> B</label><br>
-            <input type="checkbox" name="low" value="C">
-            <label for="low">C</label><br>
-            <input type="checkbox" name="none" value="none">
-            <label for="none">None</label><br>
-
-            <h3>Administrator</h3>
-            <input type="checkbox" name="yes" value="yes">
-            <label for="yes">Yes</label><br> 
-            <input type="checkbox" name="no" value="no">
-            <label for="no">No</label><br>
+            <br><br><label for="ssn">SSN:</label>
+            <input type="text" name="ssn">
 
 
-            <br><label for="Immunocompromised">Immunocompromised:</label>
-            <input type="text" name="Immunocompromised">
+            <br><br><label for="special_rights">Special rights:</label>
+            <select name="special_rights" id="special_rights">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
 
-            <br><br><input type="submit" value="Add User">
+
+            <br><br><label for="admin">Administrator:</label>
+            <select name="admin" id="admin">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+
+            <br><br><label for="maintenance">Maintenance:</label>
+            <select name="maintenance" id="maintenance">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+
+
+            <br><br><label for="immunocompromised">Immunocompromised:</label>
+            <select name="immunocompromised" id="immunocompromised">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
 
             <br><input class="button" type="submit" value="Confirm">
 

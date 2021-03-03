@@ -5,6 +5,7 @@
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <link rel="stylesheet" type="text/css" href="./admin.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
    </head>
@@ -22,23 +23,20 @@
       </nav>
 
       <form action="/add_instrument" method="POST"> 
-         <h2>Please provide the following information:</h2>
+         <br><h2>Please provide the following information:</h2>
 
 
-         <br><label for="Ins_id">Instrument ID:</label>
-         <input type="text" name="Ins_id">
+         <br><label for="serial">Serial number:</label>
+         <input type="text" name="serial">
 
-         <br><label for="Serial">Serial number:</label>
-         <input type="text" name="Serial">
+         <br><label for="room_ID">Room ID:</label>
+         <input type="text" name="room_ID">
 
-         <br><label for="Room_ID">Room ID:</label>
-         <input type="text" name="Room_ID">
+         <br><label for="description">Description:</label>
+         <input type="text" name="description">
 
-         <br><label for="Description">Description:</label>
-         <input type="text" name="Description">
-
-         <br><label for="Proc_date">Procurement date:</label>
-         <input type="text" name="Proc_date">
+         <br><label for="proc_date">Procurement date:</label>
+         <input type="text" name="proc_date">
 
          <br><input class="button" type="submit" value="Confirm">
       </form>

@@ -5,6 +5,7 @@
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <link rel="stylesheet" type="text/css" href="./admin.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     </head>
@@ -24,32 +25,27 @@
 
         <form action="/add_room" method="POST"> 
 
-            <h2>Please provide the following information:</h2>
+            <br><h2>Please provide the following information:</h2>
 
-            <br><label for="Room_id">Room ID:</label>
-            <input type="text" name="Room_ID">
+            <br><label for="room_id">Room ID:</label>
+            <input type="text" name="room_ID">
 
-            <br><br><label for="Area">Area:</label>
-            <input type="text" name="Area">
+            <br><br><label for="area">Area:</label>
+            <input type="text" name="area">
 
-            <br><br><label for="Capacity">Capacity:</label>
-            <input type="text" name="Capacity">
+            <br><br><label for="capacity">Capacity:</label>
+            <input type="text" name="capacity">
 
-            <br><br><label for="Building_code">Building code:</label>
-            <input type="text" name="Building_code">
+            <br><br><label for="building_code">Building code:</label>
+            <input type="text" name="building_code">
 
-            <br><br><label for="Room_code">Room code:</label>
-            <input type="text" name="Room_code">
 
-            <h3>Class:</h3>
-            <input type="radio" name="top" value="A">
-            <label for="top">A</label><br> 
-            <input type="radio" name="middle" value="B">
-            <label for="middle"> B</label><br>
-            <input type="radio" name="low" value="C">
-            <label for="low">C</label><br>
-            <input type="radio" name="none" value="none">
-            <label for="none">None</label><br>
+            <br><br><label for="class">Room class:</label>
+            <select name="class" id="class">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
 
             <br><input class="button" type="submit" value="Confirm">
         </form>
