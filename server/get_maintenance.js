@@ -14,7 +14,7 @@ function get_maintenance(req,res) {
         console.log('>>data: ', data) 
         console.log('>> ins_id: ',data.InsID)
         
-        var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ?"
+        var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ? and Exist =1"
             
         database.connection.query(sql, [data.InsID], (error, result)=> {
             if(error){

@@ -38,6 +38,10 @@ function create_global_connection_pool(){
         begin
             start transaction;
 
+            select @InstrumentExists := count(*) as InstrumentExists
+            from instrument
+            where instrument.Ins_ID=ins_id;
+
             #query 1
             select @TimeslotAlreadyReserved := count(*) as TimeslotAlreadyReserved
             from booking 
@@ -70,7 +74,8 @@ function create_global_connection_pool(){
 
             if insert_data then
             
-                if (@TimeslotAlreadyReserved = 0)
+                if (@InstrumentExists = 1)
+                and (@TimeslotAlreadyReserved = 0)
                 and (@NumImmunocompromisedInRoom = 0)
                 and 
                 (

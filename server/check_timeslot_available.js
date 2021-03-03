@@ -46,6 +46,21 @@ function check_timeslot_available(req,res,insert_data=null){
         var global_results={};
 
         const handles=[
+            //handle 0     
+            (results)=>{
+                //if timeslot is already occupied, timeslot is not available
+                if(results[0].InstrumentExists===0){
+                    const error_message="instrument does not exist anymore"
+                    utility.log(`${error_message}`)
+
+                    res.writeHeader(200,utility.content.json)
+                    res.end(JSON.stringify({error:error_message}))
+
+                    return false;
+                }
+                return true;
+            },
+            
             //handle 1        
             (results)=>{
                 //if timeslot is already occupied, timeslot is not available
@@ -118,6 +133,7 @@ function check_timeslot_available(req,res,insert_data=null){
                 handles[0](results[0])
                 && handles[1](results[1])
                 && handles[2](results[2])
+                && handles[3](results[3])
             ){
                 if(insert_data && results[results.length-1].affectedRows!=1){
                     utility.log(`${results}`,"error")

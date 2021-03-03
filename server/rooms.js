@@ -18,7 +18,7 @@ function get_rooms(req,res){
             res.end(JSON.stringify({error:error_message}))
             return
         }
-        database.connection.query("select Room_ID from room where strcmp(Class,(select Special_rights from User where SSN=?))>=0;",[data.ssn],(error,result,fields)=>{
+        database.connection.query("select Room_ID from room where strcmp(Class,(select Special_rights from User where SSN=?))>=0 and Exist=1;",[data.ssn],(error,result,fields)=>{
             if(error){
                 const error_message="error selecting rooms"
                 utility.log(`${error_message} ${error}`,"error")
@@ -61,7 +61,7 @@ function get_instruments_in_room(req,res){
                 return
             }
         }
-        database.connection.query(`select Ins_ID,Description from instrument where Room_ID="${data.RoomID}";`,(error,result,fields)=>{
+        database.connection.query(`select Ins_ID,Description from instrument where Room_ID="${data.RoomID}" and Exist=1;`,(error,result,fields)=>{
             if(error){
                 utility.log(`error selecting instruments ${error}`,"error")
 

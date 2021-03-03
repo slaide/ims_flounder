@@ -1,6 +1,7 @@
 const utility=require("./utility.js")
 const database=require("./database")
 const fs=require("fs")
+const pbkdf2=require("pbkdf2")
 const { Console } = require("console")
 
 /**
@@ -17,7 +18,7 @@ function check_login_data(req,res){
     utility.parse_data(req,(user_data)=>{
         console.log('>> user_data: ',user_data)
         
-        database.connection.query("SELECT Email, Password, SSN, Maintenance, Admin FROM user WHERE Email = ?", [user_data.email], (error, result)=> {
+        database.connection.query("SELECT Email, Password, SSN, Maintenance, Admin FROM user WHERE Email = ? and Exist=1", [user_data.email], (error, result)=> {
             if(error){
                 console.log("error selecting attributes user",error)
                 if(!error.fatal){
