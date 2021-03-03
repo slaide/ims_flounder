@@ -15,10 +15,10 @@
     <!--Navigation menu for users-->
     <nav class="menu">
          <img src="./favicon.ico" width="256" height="256">
-         <ul id="manu_list">
+         <ul id="menu_list">
             <a href="./overview.html"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Schedule</li></a>
-            <a href="./maintenance.html"><li>Maintenance</li></a>
+            <a id="log_out" onclick="logOut()">Log out</a>
          </ul>
       </nav>
     
@@ -77,7 +77,26 @@
                   li.innerHTML = "Administrator";
                   link.appendChild(li);
             }
+          if (localStorage.getItem("main")==="1") {
+               let menu_list = document.querySelector('#menu_list');
+               let link = document.createElement('a');
+                  link.setAttribute('href','maintenance.html');
+                  menu_list.appendChild(link);
+               let li = document.createElement('li');
+                  li.innerHTML = "Maintenance";
+                  link.appendChild(li);
+            }
           
+          function logOut() {
+               localStorage.removeItem("ssn");
+               localStorage.removeItem("email");
+               localStorage.removeItem("admin");
+               localStorage.removeItem("main");
+                  if (!localStorage.getItem("ssn")) {
+                     window.location.replace("index.html");
+               }
+            }
+
          function hello_world() {
          document.querySelector('#lmao').innerHTML = "hello world";
          //  let ins_menu = document.querySelector('#lmao');
@@ -193,6 +212,7 @@
 
         function add_maintenance(InsID) {
           let date = document.getElementById("form_date").value;
+          date = date.replace('T', ' ');
           let status = document.getElementById("form_status").value;
           let note = document.getElementById("form_note").value;
           //alert(InsID);
@@ -200,15 +220,19 @@
           
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/add_maintenance", true);
-          xhttp.onreadystatechange() = function() {
+          xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               var maintenance_for_ins = JSON.parse(this.responseText);
               if (maintenance_for_ins.error) {
                 console.log(maintenance_for_ins.error);
                 return;
               }
+              //alert("working?");
+            } else {
+              //alert("!!!");
             }
           };
+          //alert("calling");
           xhttp.send(JSON.stringify({'DateTime': date, 'Status': status, 'Notes': note, 'SSN': ssn, 'Ins_ID': InsID}));
         }
 
@@ -253,11 +277,11 @@
               alert("The form was submitted");
               alert(instrument);
             } else if(this.status == 200){
-              alert("error2");
+              //alert("error2");
             } else if(this.readyState == 4) {
-              alert("error3");
+              //alert("error3");
             } else {
-              alert("error4");
+              //alert("error4");
             }
           };
           xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
