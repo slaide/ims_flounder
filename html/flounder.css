@@ -336,3 +336,14 @@ input {
    font-size: 14px;
 }
 
+.book_list_expired{
+   background: rgb(173, 173, 173);
+   margin-top: 1rem;
+   margin-left: 28%;
+   padding: 0.5rem 1rem;
+   border-radius: 10px;
+   width:40%;
+   line-height: 150%;
+   color:white;
+}
+
