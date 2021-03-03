@@ -1,45 +1,57 @@
 <!DOCTYPE html>
- <body>
+<html lang="eng">
     <head>
-        <title>Administrator page</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="./reset.css">
-        <link rel="stylesheet" type="text/css" href="./flounder.css">
-        <link rel="stylesheet" type="text/css" href="./admin.css">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+      <title>Add new room</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="./reset.css">
+      <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     </head>
 
-<form action="/add_room.js" method="POST"> 
 
-    <h2>Please provide the following information:</h2>
+    <body>
 
-    <br><label for="Room_id">Room ID:</label>
-    <input type="text" name="Room_ID">
+        <nav class="menu">
+            <img src="./favicon.ico" width="256" height="256">
+            <ul>
+            <a href="./overview.html"><li>Book an instrument</li></a>
+            <a href="./my_schedule.html"><li>My Schedule</li></a>
+            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
+            <a href="./maintenance.html"><li>Maintenance</li></a>
+            </ul>
+        </nav>
 
-    <br><br><label for="Room_code">Room code:</label>
-    <input type="text" name="Room_code">
+        <form action="/add_room" method="POST"> 
 
-    <br><br><label for="Area">Area:</label>
-    <input type="text" name="Area">
+            <h2>Please provide the following information:</h2>
 
-    <br><br><label for="Capacity">Capacity:</label>
-    <input type="text" name="Capacity">
+            <br><label for="Room_id">Room ID:</label>
+            <input type="text" name="Room_ID">
 
-    <br><br><label for="Building_code">Building code:</label>
-    <input type="text" name="Building_code">
+            <br><br><label for="Area">Area:</label>
+            <input type="text" name="Area">
 
-    <h3>Class:</h3>
-    <input type="radio" name="top" value="A">
-    <label for="top">A</label><br> 
-    <input type="radio" name="middle" value="B">
-    <label for="middle"> B</label><br>
-    <input type="radio" name="low" value="C">
-    <label for="low">C</label><br>
-    <input type="radio" name="none" value="none">
-    <label for="none">None</label><br>
-</form>
+            <br><br><label for="Capacity">Capacity:</label>
+            <input type="text" name="Capacity">
 
+            <br><br><label for="Building_code">Building code:</label>
+            <input type="text" name="Building_code">
 
+            <br><br><label for="Room_code">Room code:</label>
+            <input type="text" name="Room_code">
 
- </body>
+            <h3>Class:</h3>
+            <input type="radio" name="top" value="A">
+            <label for="top">A</label><br> 
+            <input type="radio" name="middle" value="B">
+            <label for="middle"> B</label><br>
+            <input type="radio" name="low" value="C">
+            <label for="low">C</label><br>
+            <input type="radio" name="none" value="none">
+            <label for="none">None</label><br>
+
+            <br><input class="button" type="submit" value="Confirm">
+        </form>
+    </body>
+ </html>

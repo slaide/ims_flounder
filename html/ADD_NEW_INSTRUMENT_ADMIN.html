@@ -1,33 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="eng">
    <head>
-      <title>Administrator page</title>
+      <title>Add new instrument</title>
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
       <link rel="stylesheet" type="text/css" href="./flounder.css">
-      <link rel="stylesheet" type="text/css" href="./admin.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
    </head>
 
- <form action="/add_instrument.js" method="POST"> 
-    <h2>Please provide the following information:</h2>
+   <body>
+
+      <nav class="menu">
+         <img src="./favicon.ico" width="256" height="256">
+         <ul>
+            <a href="./overview.html"><li>Book an instrument</li></a>
+            <a href="./my_schedule.html"><li>My Schedule</li></a>
+            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
+            <a href="./maintenance.html"><li>Maintenance</li></a>
+         </ul>
+      </nav>
+
+      <form action="/add_instrument" method="POST"> 
+         <h2>Please provide the following information:</h2>
 
 
-    <br><label for="Ins_id">Instrument ID:</label>
-    <input type="text" name="Ins_id">
+         <br><label for="Ins_id">Instrument ID:</label>
+         <input type="text" name="Ins_id">
 
-    <br><label for="Serial_num">Serial number:</label>
-    <input type="text" name="Serial_num">
+         <br><label for="Serial">Serial number:</label>
+         <input type="text" name="Serial">
 
-    <br><label for="Desc">Description:</label>
-    <input type="text" name="Desc">
+         <br><label for="Room_ID">Room ID:</label>
+         <input type="text" name="Room_ID">
 
-    <br><label for="Ins_id">Instrument ID:</label>
-    <input type="text" name="Ins_id">
+         <br><label for="Description">Description:</label>
+         <input type="text" name="Description">
 
-    <br><label for="Notes">Notes:</label>
-    <input type="text" name="Notes">
- </form>
+         <br><label for="Proc_date">Procurement date:</label>
+         <input type="text" name="Proc_date">
 
+         <br><input class="button" type="submit" value="Confirm">
+      </form>
+   </body>
 </html>
