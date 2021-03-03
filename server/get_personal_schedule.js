@@ -23,10 +23,6 @@ function get_personal_schedule(req,res){
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
-
-                if(!error.fatal){
-                database.disconnect(connection)
-                }
                 return
             }
             console.log(">>result:", result)
