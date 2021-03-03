@@ -314,7 +314,29 @@ input {
    line-height: 150%;
 }
 
+.book_list_expired{
+   background: rgb(189, 188, 188);
+   margin-top: 1rem;
+   margin-left: 28%;
+   padding: 0.5rem 1rem;
+   border-radius: 10px;
+   width:40%;
+   line-height: 150%;
+   color: white;
+}
+
+
 #revoke_message {
    padding: 0.5rem 1rem;
    font-size: 14px;
+}
+
+#logout {
+   background: none; 
+   color: white; 
+   display: inline-block;
+   padding: 1.2rem 2rem;
+   border: none;
+   font-family: 'Poppins', Arial, Helvetica, sans-serif;
+   font-size: 1.1rem;
 }
