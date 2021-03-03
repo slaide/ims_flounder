@@ -3,18 +3,17 @@ const database=require("./database.js")
 
 /**
  * Add a new instrument to the system
- * currently expects client data: ssn, first_name, last_name, password, admin, phone_number, email, special_rights, immunocompromised
- * currently responds with: error/success
+ * currently expects client data: Description,Serial,Proc_date,Room_ID
+ * currently responds with: json error/success
  * @param {Request} req Request object with client data
  * @param {Response} res Response object
  */
 function add_instrument(req,res){
-    throw "unimplemented because specifications are missing"
-
     utility.parse_data(req,(data)=>{
         var add_user_data=[]
         //make sure all of the expected data is here and defined
-        for(attribute of "ssn first_name last_name password admin phone_number email special_rights immunocompromised".split(" ")){
+        const attributes="Description,Serial,Proc_date,Room_ID";
+        for(attribute of attributes.split(",")){
             if(!data[attribute]){
                 const error_message="request is missing the attribute '"+attribute+"'"
                 console.log(error_message)
@@ -34,7 +33,7 @@ function add_instrument(req,res){
             query_placeholders+=",'?'"
         }
         //make sure a user only revokes their own bookings?
-        connection.query(`insert into instrument values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
+        connection.query(`insert into instrument${attributes} values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
             if(error){
                 const error_message="failed to add instrument because "+error
                 console.log(error_message)
