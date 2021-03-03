@@ -1,65 +1,90 @@
 <!DOCTYPE html>
 <html> 
     <head>
-        <title>Room overview</title>
+        <title>Administrator page</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="./reset.css">
         <link rel="stylesheet" type="text/css" href="./flounder.css">
+        <link rel="stylesheet" type="text/css" href="./admin.css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  </head>
+    </head>
 
 
     <body>
+
+        <nav class="menu">
+            <img src="./favicon.ico" width="256" height="256">
+            <ul id="menu_list">
+               <a href="./overview.html"><li>Book an instrument</li></a>
+               <a href="./my_schedule.html"><li>My Bookings</li></a>
+               <a href="#"><li>Administrator</li></a>
+            </ul>
+        </nav>
+
+        <main>
         
-        <h1>Add objects to database:</h1>
-        <button onclick="document.location='ADD_NEW_USER_ADMIN.html'">Add a new user</button> <br> 
-        <button onclick="document.location='ADD_NEW_INSTRUMENT_ADMIN.html'">Add a new instrument</button> <br>
-        <button onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new room</button> 
+            <div id="button_container">
+                <h1>Add objects to database</h1>
+                <button class="add_button" onclick="document.location='ADD_NEW_USER_ADMIN.html'">Add a new <strong>user</strong></button>
+                <button class="add_button" onclick="document.location='ADD_NEW_INSTRUMENT_ADMIN.html'">Add a new <strong>instrument</strong></button>
+                <button class="add_button" onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new <strong>room</strong></button> 
+            </div>
 
-        <div class="remove_room"></div>
+            <div class="remove_room"></div>
 
-        <script>
-            //Function for displaying rooms
-            function getRooms() {
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "/get_rooms", true);
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var rooms = JSON.parse(this.responseText);
-                        if (rooms.error) {
-                            console.log(rooms.error);
-                        return;
-                        }
-                        //Create form for removing room, action: /remove_room
-                        let cont = document.querySelector('.remove_room');
-                        let form = document.createElement('form');
-                            form.setAttribute("action","/remove_room");
-                            form.setAttribute("method","POST");
-                        cont.appendChild(form);
-                        let select_room = document.createElement('select');
-                            select_room.setAttribute("name","RoomID");
-                        form.appendChild(select_room);
-                        for (let i = 0; i < rooms.length; i++) {
-                            let option = document.createElement('option');
-                                option.setAttribute("value",`${rooms[i].RoomID}`);
-                                option.innerHTML = `Room ${rooms[i].RoomID}`;
-                            select_room.appendChild(option);
-                        }
-                        let submit = document.createElement('input');
-                            submit.setAttribute('type','submit');
-                            submit.setAttribute('value','Remove room');
-                        form.appendChild(submit);
-                    }
+            <script>
+                //Add maintenance navigering if maintenance personell
+                if (localStorage.getItem("main")==="1") {
+                let menu_list = document.querySelector('#menu_list');
+                let link = document.createElement('a');
+                    link.setAttribute('href','maintenance.html');
+                    menu_list.appendChild(link);
+                let li = document.createElement('li');
+                    li.innerHTML = "Maintenance";
+                    link.appendChild(li);
                 }
-                var ssn = localStorage.getItem("ssn");
-                xhttp.send(JSON.stringify({'ssn': ssn}));
-            }
+                //Function for displaying rooms
+                function getRooms() {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var rooms = JSON.parse(this.responseText);
+                            if (rooms.error) {
+                                console.log(rooms.error);
+                            return;
+                            }
+                            //Create form for removing room, action: /remove_room
+                            let cont = document.querySelector('.remove_room');
+                            let form = document.createElement('form');
+                                form.setAttribute("action","/remove_room");
+                                form.setAttribute("method","POST");
+                            cont.appendChild(form);
+                            let select_room = document.createElement('select');
+                                select_room.setAttribute("name","RoomID");
+                            form.appendChild(select_room);
+                            for (let i = 0; i < rooms.length; i++) {
+                                let option = document.createElement('option');
+                                    option.setAttribute("value",`${rooms[i].RoomID}`);
+                                    option.innerHTML = `Room ${rooms[i].RoomID}`;
+                                select_room.appendChild(option);
+                            }
+                            let submit = document.createElement('input');
+                                submit.setAttribute('type','submit');
+                                submit.setAttribute('value','Remove room');
+                            form.appendChild(submit);
+                        }
+                    }
+                    var ssn = localStorage.getItem("ssn");
+                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                }
 
-            getRooms();
+                getRooms();
 
 
-        </script>
+            </script>
+        </main>
 
 
     </body>

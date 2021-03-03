@@ -45,27 +45,28 @@
 
             //Email and SSN storage
             if (!localStorage.getItem("ssn")) {
-
-               if (typeof(Storage) !== "undefined") {
-                  var ssn = $$SSN$$;
-                  var email = $$EMAIL$$;
-                  var admin = $$ADMIN$$;
-                  var main = $$MAINTENANCE$$;
-                  localStorage.setItem("ssn", ssn);
-                  localStorage.setItem("email", email);
-                  localStorage.setItem("admin", admin);
-                  localStorage.setItem("main", main);
-               } else {
-                  //would probably look terrible without style added... oh well hope it never happens
-                  document.querySelector('#overview_cont').innerHTML = "Sorry, your web browser does not support web storage."
-               }
+               var ssn = $$SSN$$;
+               localStorage.setItem("ssn", ssn);
+            }
+            if (!localStorage.getItem("email")) {
+               var email = $$EMAIL$$;
+               localStorage.setItem("email", email);
+            }
+            if (!localStorage.getItem("admin")) {
+               var admin = $$ADMIN$$;
+               localStorage.setItem("admin", admin);
+            }
+            if (!localStorage.getItem("main")) {
+               var main = $$MAINTENANCE$$;
+               localStorage.setItem("main", main);
             }
 
             console.log(localStorage.getItem("admin"));
             console.log(localStorage.getItem("main"));
             console.log(localStorage.getItem("ssn"));
+            console.log(localStorage.getItem("email"));
 
-            if (localStorage.getItem("admin")) {
+            if (localStorage.getItem("admin")==="1") {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
                   link.setAttribute('href','ADMIN_DEMO_2.html');
@@ -75,13 +76,14 @@
                   link.appendChild(li);
             }
 
-            if (localStorage.getItem("main")) {
+            if (localStorage.getItem("main")==="1") {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
                   link.setAttribute('href','maintenance.html');
                   menu_list.appendChild(link);
                let li = document.createElement('li');
                   li.innerHTML = "Maintenance";
+                  link.appendChild(li);
             }
 
             //Function for retrieving room data and displaying it

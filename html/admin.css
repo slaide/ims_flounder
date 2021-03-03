@@ -1,0 +1,25 @@
+#button_container, .remove_room {
+   background-color: #ffffffb6;
+   margin: 1rem;
+   border-radius: 10px;
+   padding: 0.8rem;
+}
+
+.add_button {
+   font-family: 'Poppins','Helvetica',sans-serif;
+   font-size: 0.9rem;
+   background-color: #20658C;
+   color: #E8F4F2;
+   border-radius: 10px;
+   border: none;
+   padding: 0.5rem 1rem;
+   margin: 0.5rem;
+}
+
+strong {
+   font-style: italic;
+}
+
+.add_button:hover {
+   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
