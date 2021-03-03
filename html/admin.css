@@ -49,14 +49,19 @@ strong {
 .remove_room option, .remove_ins option, .remove_ins select, .remove_room select{
    font-family: 'Poopins','Helvetica',sans-serif;
    padding: 0.3rem;
-   border: 1px #014770 solid;
-   color: #014770;
+   border: 1px #262223 solid;
+   color:#262223;
    border-radius: 10px;
    width: 40%;
    display: block;
    margin: auto;
    margin-top: 0.8rem;
    outline: none;
+}
+
+.remove_room input[type=submit], .remove_ins input[type=submit] {
+   background-color: #F2AC57;
+   color: #ffffff;
 }
 
 
