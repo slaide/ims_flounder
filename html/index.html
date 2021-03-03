@@ -35,6 +35,10 @@
          window.alert('Wrong login data');
       }
 
+      if (localStorage.getItem("ssn")) {
+         window.location.replace("overview.html");
+      }
+
    </script>
 
    </body>
