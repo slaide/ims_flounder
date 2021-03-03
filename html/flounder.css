@@ -89,8 +89,8 @@ input {
 
 #log_out {
    float: right;
-   padding: 0.6rem;
-   margin: 0.7rem;
+   padding: 0.6rem 0.9rem;
+   margin: 0.6rem;
    background-color: #F2CB57;
    border-radius: 5px;
    font-size: 0.9rem;
@@ -101,7 +101,7 @@ input {
 }
 
 .menu ul {
-   display: inline;
+   display: inline-block;
 }
 
 /*Grid display for the overview page*/
