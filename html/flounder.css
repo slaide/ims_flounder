@@ -313,3 +313,8 @@ input {
    width:40%;
    line-height: 150%;
 }
+
+#revoke_message {
+   padding: 0.5rem 1rem;
+   font-size: 14px;
+}
