@@ -17,7 +17,7 @@ const add_maintenance=require("./add_maintenance")
 const remove_instrument=require("./remove_instrument")
 const remove_room=require("./remove_room")
 const remove_user=require("./remove_user")
-const get_users=require("./get_users")
+//const get_users=require("./get_users")
 
 /**
  * central object that routes client requests
@@ -47,7 +47,7 @@ const request_handler={
     "/remove_room":remove_room.remove_room, // TODO write
     "/remove_user":remove_user.remove_user, // TODO write 
 
-    "/get_users":get_users.get_users, //TODO write
+    //"/get_users":get_users.get_users, //TODO write
 
     "/shutdown":function(req,res){
         res.end()
