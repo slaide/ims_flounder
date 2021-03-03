@@ -11,13 +11,14 @@ CREATE TABLE room (
   Area int NOT NULL,
   Building_code int NOT NULL,
   Capacity int NOT NULL,
-  Class varchar(40) NOT NULL
+  Class varchar(40) NOT NULL,
+  Exist tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO room (Room_ID, `Area`, Building_code, Capacity, Class) VALUES
-(1, 1374, 201, 5, 'C'),
-(2, 1374, 201, 3, 'B'),
-(3, 1374, 201, 2, 'A');
+INSERT INTO room (Room_ID, `Area`, Building_code, Capacity, Class, Exist) VALUES
+(1, 1374, 201, 5, 'C', 1),
+(2, 1374, 201, 3, 'B', 1),
+(3, 1374, 201, 2, 'A', 1);
 
 
 ALTER TABLE room
