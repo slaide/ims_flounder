@@ -14,7 +14,8 @@ function add_maintenance(req,res){
         var add_user_data=[]
         //make sure all of the expected data is here and defined
         //Q: How to do with maintenance ID since it will autogenerate? 
-        for(attribute of "DateTime, Status, Notes, SSN, Ins_ID".split(", ")){
+        const attributes="DateTime, Status, Notes, SSN, Ins_ID"
+        for(attribute of attributes.split(", ")){
             if(!data[attribute]){
                 const error_message="request is missing the attribute '"+attribute+"'"
                 console.log(error_message)
@@ -29,14 +30,15 @@ function add_maintenance(req,res){
         }
 
         //create the placeholder questionsmarks with comma seperation for the sql query (so the number of question marks stays consistent with the number of values inserted)
-        var query_placeholders="'?'"
+        var query_placeholders="?"
         for(var i=1;i<add_user_data.length;i++){
-            query_placeholders+=",'?'"
+            query_placeholders+=",?"
         }
+        console.log(query_placeholders,add_user_data)
         //insert into booking values(...);
         //insert into booking(SSN,notes,...) values(...);
         //look into do maintenance_ID and Exist attribute
-        database.connection.query(`insert into maintenance_ID values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
+        database.connection.query(`insert into ins_maintenance(${attributes}) values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
             if(error){
                 const error_message="failed to add maintenance because "+error
                 console.log(error_message)

@@ -14,7 +14,7 @@ function get_maintenance(req,res) {
         console.log('>>data: ', data) 
         console.log('>> ins_id: ',data.InsID)
         
-        var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance WHERE Ins_ID = ? and Exist =1"
+        var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID WHERE ins_maintenance.Ins_ID = ? and instrument.Exist =1"
             
         database.connection.query(sql, [data.InsID], (error, result)=> {
             if(error){
@@ -37,7 +37,6 @@ function get_maintenance(req,res) {
             res.end(JSON.stringify(ret))
             console.log(">> Sent maintenance") 
                 
-            database.disconnect(connection)
             console.log('>> Database disconnected') 
         })
     })

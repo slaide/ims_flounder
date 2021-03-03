@@ -35,7 +35,7 @@ const request_handler={
     "/add_user":add_user.add_user, //TODO testing
     "/add_room":add_room.add_room, //TODO testing
     "/add_instrument":add_instrument.add_instrument, //TODO testing
-    "/get_maintanence":get_maintenance.get_maintenance, //TODO testing
+    "/get_maintenance":get_maintenance.get_maintenance, //TODO testing
     "/check_timeslot_available":check_timeslot_available.check_timeslot_available,
     "/add_maintenance":add_maintenance.add_maintenance, //TODO testing
 
