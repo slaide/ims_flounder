@@ -1,11 +1,12 @@
-#button_container, .remove_room {
+/*ADD options style*/
+#button_container, .remove_room, .remove_ins {
    background-color: #ffffffb6;
    margin: 1rem;
    border-radius: 10px;
    padding: 0.8rem;
 }
 
-.add_button {
+.add_button, .remove_room input[type=submit], .remove_ins input[type=submit] {
    font-family: 'Poppins','Helvetica',sans-serif;
    font-size: 0.9rem;
    background-color: #20658C;
@@ -21,6 +22,41 @@ strong {
    font-style: italic;
 }
 
-.add_button:hover {
+.add_button:hover, .remove_room input[type=submit]:hover, .remove_ins input[type=submit]:hover {
    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
+
+/*Remove rooms and instrument display*/
+#remove_container {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+}
+
+.remove_room, .remove_ins {
+   margin: 0;
+}
+
+.remove_ins {
+   margin-left: 0.5rem;
+   margin-right: 1rem;
+}
+
+.remove_room {
+   margin-right: 0.5rem;
+   margin-left: 1rem;
+}
+
+.remove_room option, .remove_ins option, .remove_ins select, .remove_room select{
+   font-family: 'Poopins','Helvetica',sans-serif;
+   padding: 0.3rem;
+   border: 1px #014770 solid;
+   color: #014770;
+   border-radius: 10px;
+   width: 40%;
+   display: block;
+   margin: auto;
+   margin-top: 0.8rem;
+}
+
+
+
