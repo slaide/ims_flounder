@@ -153,3 +153,10 @@ function remove_special_chars(obj){
     return ret_obj
 }
 module.exports.remove_special_chars=remove_special_chars
+
+function log(text,log_level){
+    switch(log_level){
+        case "error":
+        case "activity"
+    }
+}
