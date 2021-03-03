@@ -16,10 +16,12 @@ function get_instrument_schedule(req,res){
 
         database.connection.query("Select Start_Time, End_Time FROM booking WHERE Ins_ID = ?", [data.insID], (error, result)=> {
             if(error){
-                console.log("error selecting attributes from booking",error)
-                if(!error.fatal){
-                    database.disconnect(connection)
-                }
+                const error_message="error selecting attributes: '"+error+"'"
+                console.log(error_message)
+
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
+
                 return
             }
             db_booking=JSON.parse(JSON.stringify(result))  
