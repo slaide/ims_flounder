@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="./flounder.css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
         <body>
          <!--Navigation menu for users-->
@@ -28,11 +29,11 @@
             <div class="grid book">
             <h1>Revoke a booking</h1>
             <label for="bookings">Choose a booking:</label>
-            <form id="revoke"  action="javascript:revokeBooking(sumbit)">
-               <select name="bookings" id="booking_menu" > 
+            <form id="revoke"  onsubmit="revokeBooking(); return false" action="...">
+               <select name="booking_id" id="booking_menu" > 
                </select>
                <br>
-            <button id="revoke_submit" type ="submit" value="submit">Revoke</button>
+            <button id="revoke_submit" type ="submit">Revoke</button>
             <div id="revoke_message"></div>
             </form>
          </div>
@@ -52,11 +53,10 @@
 
                         //Error handling
                         if (bookings.error) {
-                           console.log(error);
+                           console.log("an error occured on the server:", bookings.error);
                            return;
                         }
-                        
-                        //Dunno?? 
+                        else {
                         let schedule = document.querySelector('#my_schedule');
                         
                         //Container element for list
@@ -71,6 +71,8 @@
                         container.appendChild(list); 
                         
                         for (let i = 0; i < bookings.length; i++) {
+                          // if (new Date(bookings[i].StartTime).getFullYear() === today.getFullYear() && new Date(bookings[i].StartTime).getMonth() === today.getMonth() && new Date(bookings[i].StartTime).getDate() === today.getDate()) {
+
                         // create an item for each one
                         listItem = document.createElement('li');
                         listItem.classList.add('book_list');
@@ -78,13 +80,15 @@
                         // Add the item
                         listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + 
                         '<br> Instrument: ' + bookings[i].Description + 
-                        '<br> Start: ' + new Date(bookings[i].StartTime).toLocaleDateString() + ' ' + new Date(bookings[i].StartTime).toLocaleTimeString() + 
-                        '<br> End: ' + new Date(bookings[i].EndTime).toLocaleDateString() + ' ' + new Date(bookings[i].EndTime).toLocaleTimeString();
+                        '<br> Start: ' + new Date(bookings[i].StartTime).toLocaleDateString() + ' ' + new Date(bookings[i].StartTime).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'}) + 
+                        '<br> End: ' + new Date(bookings[i].EndTime).toLocaleDateString() + ' ' + new Date(bookings[i].EndTime).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
 
                         // Add listItem to the listElement
                         list.appendChild(listItem);
+                         //}
                         }
-                     }  
+                     }
+                     }
                   };
                   //Send request and info to server 
                   xhttp.send(JSON.stringify({'SSN': SSN}));
@@ -126,7 +130,7 @@
                xhttp.send(JSON.stringify({'SSN': SSN}));
          }
 
-            function revokeBooking(bookingID) {
+            function revokeBooking() {
             //XML request to server
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/revoke_reservation", true);
@@ -146,9 +150,10 @@
             }
          };
          //Send request and info to server
-         xhttp.send(JSON.stringify({'booking_id': bookingID, 'ssn':SSN}));
+         xhttp.send($("#revoke").serialize() + '&ssn=' + localStorage.getItem("ssn"));
       }
 
+               console.log(document.querySelector("#myform"))
                getBookings(); 
                populateMenu(); 
 
