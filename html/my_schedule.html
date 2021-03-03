@@ -71,7 +71,7 @@
                         container.appendChild(list); 
                         
                         for (let i = 0; i < bookings.length; i++) {
-                          // if (new Date(bookings[i].StartTime).getFullYear() === today.getFullYear() && new Date(bookings[i].StartTime).getMonth() === today.getMonth() && new Date(bookings[i].StartTime).getDate() === today.getDate()) {
+                         //if () {
 
                         // create an item for each one
                         listItem = document.createElement('li');
@@ -145,6 +145,7 @@
                   return;
                }
                else {
+                  location.reload();
                   document.getElementById("revoke_message").innerHTML = "Revoke successful!"
                }
                
@@ -153,8 +154,6 @@
          //Send request and info to server
          xhttp.send($("#revoke").serialize() + '&ssn=' + localStorage.getItem("ssn"));
       }
-
-               console.log(document.querySelector("#myform"))
                getBookings(); 
                populateMenu(); 
 
