@@ -24,10 +24,10 @@ function revoke_reservation(req,res){
         }
 
         //make sure a user only revokes their own bookings?
-        database.connection.query("delete from booking where BookingID=? and SSN=?;",[data.booking_id,data.ssn],(error,results,fields)=>{
+        database.connection.query("delete from booking where Booking_ID=? and SSN=?;",[data.booking_id,data.ssn],(error,results,fields)=>{
             if(error){
                 const error_message="failed to delete booking"
-                console.log(error_message)
+                console.log(error_message,error)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -35,7 +35,7 @@ function revoke_reservation(req,res){
             }
             if (results.affectedRows!=1){
                 const error_message="failed to remove the booking. maybe it was removed already?"
-                console.log(error_message)
+                console.log(error_message,data.booking_id,data.ssn)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
