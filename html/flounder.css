@@ -129,7 +129,7 @@ input {
    margin: 1rem 1rem 1rem 0.5rem;
 }
 
-.grid h1, #button_container h1 {
+.grid h1, #button_container h1, .remove_ins h1, .remove_room h1 {
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
