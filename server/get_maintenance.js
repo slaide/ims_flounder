@@ -18,10 +18,12 @@ function get_maintenance(req,res) {
             
         database.connection.query(sql, [data.InsID], (error, result)=> {
             if(error){
-                console.log("error selecting attributes from ins_maintenance",error)
-                if(!error.fatal){
-                    database.disconnect(connection)
-                }
+                const error_message="error selecting attributes: '"+error+"'"
+                console.log(error_message)
+
+                res.writeHeader(200,utility.content.json)
+                res.end(JSON.stringify({error:error_message}))
+
                 return
             }
             db_maintenance=JSON.parse(JSON.stringify(result))  
