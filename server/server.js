@@ -47,7 +47,7 @@ const request_handler={
     "/remove_room":remove_room.remove_room, // TODO write
     "/remove_user":remove_user.remove_user, // TODO write 
 
-    "/get_users":get_users.get_users, //TODO write
+    //"/get_users":get_users.get_users, //TODO write
 
     "/shutdown":function(req,res){
         res.end()
