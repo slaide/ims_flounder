@@ -5,7 +5,6 @@ const utility=require("./utility.js")
 const database=require("./database.js")
 const login=require("./login.js")
 const rooms=require("./rooms.js")
-const get_instrument_schedule=require("./get_instrument_schedule")
 const get_personal_schedule=require("./get_personal_schedule")
 const reserve_instrument=require("./reserve_instrument")
 const revoke_reservation=require("./revoke_reservation")
@@ -30,7 +29,6 @@ const request_handler={
 
     "/get_rooms":rooms.get_rooms,
     "/get_instruments_in_room":rooms.get_instruments_in_room,
-    "/get_instrument_schedule":get_instrument_schedule.get_instrument_schedule, //Finished if Maija is happy
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
     "/reserve_instrument":reserve_instrument.reserve_instrument,
     "/revoke_reservation":revoke_reservation.revoke_reservation, //TODO testing
