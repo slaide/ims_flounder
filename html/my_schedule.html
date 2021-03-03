@@ -18,6 +18,7 @@
                <a href="#"><li>My Bookings</li></a>
                <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>
                <a href="./maintenance.html"><li>Maintenance</li></a>
+               <a href="#" onclick="logOut()"><li>Log out</li></a>
             </ul>
          </nav>
 
@@ -41,6 +42,13 @@
 
                //SSN from storage
                var SSN = localStorage.getItem("ssn");
+
+               //Todays date
+               var today = new Date();
+                  let current_year = today.getFullYear();
+                  let current_month = today.getMonth();
+                  let current_date = today.getDate();
+                  let current_weekday = today.getDay();
 
                function getBookings() {
 
@@ -70,9 +78,12 @@
                         schedule.appendChild(container);
                         container.appendChild(list); 
                         
-                        for (let i = 0; i < bookings.length; i++) {
-                         //if () {
 
+                        for (let i = 0; i < bookings.length; i++) {
+                        var start = new Date(bookings[i].StartTime);
+
+                        //Show upcoming bookings
+                        if (start.toLocaleDateString() > today.toLocaleDateString() || start.toLocaleDateString() === today.toLocaleDateString() && start.toLocaleTimeString() > today.toLocaleTimeString() ) {
                         // create an item for each one
                         listItem = document.createElement('li');
                         listItem.classList.add('book_list');
@@ -80,12 +91,26 @@
                         // Add the item
                         listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + 
                         '<br> Instrument: ' + bookings[i].Description + 
-                        '<br> Start: ' + new Date(bookings[i].StartTime).toLocaleDateString() + ' ' + new Date(bookings[i].StartTime).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'}) + 
+                        '<br> Start: ' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'}) + 
                         '<br> End: ' + new Date(bookings[i].EndTime).toLocaleDateString() + ' ' + new Date(bookings[i].EndTime).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
 
                         // Add listItem to the listElement
                         list.appendChild(listItem);
-                         //}
+                        }
+
+                        //Show expired bookings
+                        else {
+                        listItem = document.createElement('li');
+                        listItem.classList.add('book_list_expired');
+
+                        // Add the item
+                        listItem.innerHTML = 'Booking Number: ' + bookings[i].BookingID + 
+                        '<br> Instrument: ' + bookings[i].Description + 
+                        '<br> Start: ' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'}) + 
+                        '<br> End: ' + new Date(bookings[i].EndTime).toLocaleDateString() + ' ' + new Date(bookings[i].EndTime).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
+
+                        list.appendChild(listItem);
+                        }
                         }
                      }
                      }
@@ -113,11 +138,14 @@
 
                //Adding each booking to menu
                for (let i = 0; i < bookings.length; i++) {
+                  var start = new Date(bookings[i].StartTime);
+                  if (start.toLocaleDateString() > today.toLocaleDateString() || start.toLocaleDateString() === today.toLocaleDateString() && start.toLocaleTimeString() > today.toLocaleTimeString() ) {
                   let booking_alt = document.createElement('option');
                   booking_alt.innerHTML = "Booking number " + bookings[i].BookingID; 
                   booking_alt.value = bookings[i].BookingID;
                   menu.appendChild(booking_alt);
                      }
+                  }
 
                   //document.getElementById("revoke_submit").addEventListener("click", function () {
                   //revokebooking();
@@ -153,6 +181,16 @@
          };
          //Send request and info to server
          xhttp.send($("#revoke").serialize() + '&ssn=' + localStorage.getItem("ssn"));
+      }
+
+      function logOut() {
+         localStorage.removeItem("ssn");
+         localStorage.removeItem("email");
+         localStorage.removeItem("admin");
+         localStorage.removeItem("main");
+         if (!localStorage.getItem("ssn")) {
+            window.location.replace("index.html");
+       }
       }
                getBookings(); 
                populateMenu(); 
