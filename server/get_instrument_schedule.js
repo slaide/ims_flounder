@@ -2,6 +2,9 @@ const utility=require("./utility.js")
 const database=require("./database.js")
 
 /**
+ * 
+ * -----------------FUNCTION NOT IN USE--------------------------
+ * 
  * Retrives and sends all bookings for a specific instrument
  * currently expects client data: Ins_ID
  * currently responds with: string with bookings, error(?) 
