@@ -87,6 +87,15 @@ input {
    margin-top: 0.2rem;
 }
 
+#log_out {
+   float: right;
+   padding: 0.5rem;
+}
+
+.menu ul {
+   display: inline;
+}
+
 /*Grid display for the overview page*/
 #overview_cont{
    display: grid;
@@ -112,7 +121,7 @@ input {
    margin: 1rem 1rem 1rem 0.5rem;
 }
 
-.grid h1 {
+.grid h1, #button_container h1 {
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
@@ -318,3 +327,4 @@ input {
    padding: 0.5rem 1rem;
    font-size: 14px;
 }
+
