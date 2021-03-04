@@ -210,12 +210,15 @@
                             if (users.error) {
                                 console.log(users.error);
                             }
+                            console.log(users);
                         }
                     }
+                    xhttp.send();
                 }
 
                 getRooms();
                 getRoomsForIns();
+                getUsers();
 
 
             </script>
