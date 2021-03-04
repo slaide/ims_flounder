@@ -106,7 +106,7 @@
                   let ins_alt = document.createElement('option');
                   //alert(instruments[i].InsID);
                   //ins_alt.className = instruments[i].InsID;
-                  ins_alt.setAttribute("value", instruments[i].Ins_ID);
+                  ins_alt.setAttribute("value", instruments[i].InsID);
                   ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
                   //show_maintanance(instruments[i].InsID);
@@ -117,7 +117,7 @@
         }
 
         function selected_ins(InsID_input) {
-          var Ins_ID = InsID_input[InsID_input.selectedIndex].value;
+          var InsID = InsID_input[InsID_input.selectedIndex].value;
           
           let form_div = document.querySelector("#maintenance_form_div");
           form_div.innerHTML = "";
@@ -126,10 +126,10 @@
           form_title.innerHTML = "Form";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
-          let arg_str = 'javascript:add_maintenance(' + Ins_ID.toString() + ');'
+          let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');'
           form_main.setAttribute('action', arg_str);
 
-          let text_date = document.createElement("h1");
+          let text_date = document.createElement("h2");
           text_date.innerHTML = "Date";
           let input_date = document.createElement("input");
           input_date.setAttribute('type', 'datetime-local');
@@ -169,7 +169,7 @@
           table_notes.setAttribute('id', 'notes_table');
           see_notes_div.appendChild(table_notes);
           //test_print();//Remove when show_mantenance is working
-          show_maintenance(Ins_ID);
+          show_maintenance(InsID);
           //add_maintenance(InsID);
         }
 
@@ -221,16 +221,14 @@
               table_header.appendChild(table_header_status);
               table_header.appendChild(table_header_note);
               table_element.appendChild(table_header);
-              for (let i = 0; i < instrument_notes.length; i++) {
-                //alert("In for loop");
-                
+              for (let i = 0; i < instrument_notes.length; i++) {                
                 let table_entry = document.createElement("tr");
                 let table_time = document.createElement("th");
-                table_time.innerHTML = instrument_notes[i].DateTime; // <----| Change this to response from server
+                table_time.innerHTML = instrument_notes[i].DateTime;
                 let table_status = document.createElement("th");
-                table_status.innerHTML = instrument_notes[i].Status; // <----| Change this to response from server
+                table_status.innerHTML = instrument_notes[i].Status;
                 let table_note = document.createElement("th");
-                table_note.innerHTML = instrument_notes[i].Notes;  // <----| Change this to response
+                table_note.innerHTML = instrument_notes[i].Notes;
                 table_entry.appendChild(table_time);
                 table_entry.appendChild(table_status);
                 table_entry.appendChild(table_note);
