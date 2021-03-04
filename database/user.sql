@@ -22,7 +22,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance, Exist) VALUES
 (762324167, 'Ariel', 'Fin', 'dfr456', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1, 1, 1),
-(882767577, 'Sebastian', 'Carbb', 'cfr789', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1),
+(882767577, 'Sebastian', 'Crabb', 'cfr789', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1),
 (1450238774, 'Eric', 'Prince', 'swq123', 1, 709483940, 'eric.prince@gmail.com', 'A', 0, 1, 1);
 
 
