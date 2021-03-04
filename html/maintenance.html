@@ -106,7 +106,7 @@
                   let ins_alt = document.createElement('option');
                   //alert(instruments[i].InsID);
                   //ins_alt.className = instruments[i].InsID;
-                  ins_alt.setAttribute("value", instruments[i].InsID);
+                  ins_alt.setAttribute("value", instruments[i].Ins_ID);
                   ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
                   //show_maintanance(instruments[i].InsID);
@@ -126,7 +126,7 @@
           form_title.innerHTML = "Form";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
-          let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');'
+          let arg_str = 'javascript:add_maintenance(' + Ins_ID.toString() + ');'
           form_main.setAttribute('action', arg_str);
 
           let text_date = document.createElement("h1");
@@ -245,7 +245,7 @@
               //alert("error4");
             }
           };
-          xhttp.send(JSON.stringify({'InsID': Ins_ID}));
+          xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
         }
 
         function test_print() {
