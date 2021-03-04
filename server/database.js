@@ -785,7 +785,7 @@ const account={
                     error_function({source:"account.set_special_rights",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results.affectedRows!=1){
                     error_function({source:"account.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
                     return
                 }
