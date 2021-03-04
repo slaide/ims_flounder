@@ -271,11 +271,8 @@ const rooms={
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({RoomID:result.Room_ID})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
@@ -330,11 +327,8 @@ const rooms={
                     error_function({source:"rooms.get_admin",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({InsID:result.Ins_ID,description:result.Description})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
@@ -352,11 +346,8 @@ const instruments={
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({InsID:result.Ins_ID,description:result.Description})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
@@ -410,11 +401,8 @@ const instruments={
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({InsID:result.Ins_ID,description:result.Description})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
@@ -586,11 +574,7 @@ const personal_schedule={
                         return
                     }
 
-                    var ret=[];
-                    for(result of results){
-                        ret.push({BookingID:result.Booking_ID, StartTime:result.Start_Time, EndTime:result.End_Time, Description:result.Description})
-                    }
-                    success_function(ret)
+                    success_function(results)
                 })
             })
         }
@@ -609,11 +593,8 @@ const users={
                     error_function({source:"users.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({SSN:result.SSN,First_name:result.First_name,Last_name:result.Last_name,Admin:result.Admin,Phone_number:result.Phone_number,Email:result.Email,Special_rights:result.Special_rights,Immunocompromised:result.Immunocompromised,Maintenance:result.Maintenance})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
@@ -671,11 +652,8 @@ const maintenance={
                     error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                var ret=[]
-                for(result of results){
-                    ret.push({DateTime:result.DateTime,Status:result.Status,Notes:result.Notes,SSN:result.SSN,Ins_ID:result.Ins_ID})
-                }
-                success_function(ret)
+
+                success_function(results)
             })
         }
     },
