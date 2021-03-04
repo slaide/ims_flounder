@@ -11,15 +11,14 @@ const database=require("./database.js")
 
 function add_maintenance(req,res){
     utility.parse_data(req,(data)=>{
-        console.log('data: ', data) //for testing
+
         var add_user_data=[]
-        //make sure all of the expected data is here and defined
-        //Q: How to do with maintenance ID since it will autogenerate? 
+ 
         const attributes="DateTime, Status, Notes, SSN, Ins_ID"
         for(attribute of attributes.split(", ")){
             if(!data[attribute]){
                 const error_message="request is missing the attribute '"+attribute+"'"
-                console.log(error_message)
+                utility.log(`${error_message}`, 'error')
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
@@ -42,7 +41,7 @@ function add_maintenance(req,res){
         database.connection.query(`insert into ins_maintenance(${attributes}) values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
             if(error){
                 const error_message="failed to add maintenance because "+error
-                console.log(error_message)
+                utility.log(`${error_message}`)
 
                 res.writeHeader(200,utility.content.json)
                 res.end(JSON.stringify({error:error_message}))
