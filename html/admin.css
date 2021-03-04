@@ -47,7 +47,7 @@ strong {
 }
 
 .remove_room option, .remove_ins option, .remove_ins select, .remove_room select{
-   /*font-family: 'Poopins','Helvetica',sans-serif;*/
+   font-family: 'Poppins','Helvetica',sans-serif;
    padding: 0.3rem;
    border: 1px #262223 solid;
    color:#262223;
@@ -57,11 +57,55 @@ strong {
    margin: auto;
    margin-top: 0.8rem;
    outline: none;
+   background-color:#f1fcfa;
 }
 
 .remove_room input[type=submit], .remove_ins input[type=submit] {
    background-color: #F2AC57;
    color: #ffffff;
+}
+
+/*Use table style*/
+#user_table {
+   margin: auto;
+   margin-bottom: 1rem;
+   margin-top: 0.5rem;
+   font-size: 0.8rem;
+}
+
+#user_table th, #user_table td {
+   padding: 0.4rem 0.6rem;
+   border: 1px #262223 solid;
+   text-align: left;
+}
+
+#user_table th {
+   padding: 0.8rem 0.6rem;
+}
+
+#user_head {
+   background-color: #20658C;
+   color: #E8F4F2;
+}
+
+#user_table tr:nth-child(even){
+   background-color: #f1fcfa;
+}
+
+.remove_user {
+   font-family: 'Poppins','Helvetica',sans-serif;
+   outline: none;
+   border: none;
+   background-color: #F2AC57;
+   color: #ffffff;
+   padding: 0.2rem;
+   width: 100px;
+   border-radius: 5px;
+   font-size: 0.8rem;
+}
+
+.remove_user:hover {
+   background-color: #262223;
 }
 
 

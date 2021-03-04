@@ -51,6 +51,7 @@
             </div>
 
             <script>
+
                 //Add maintenance navigering if maintenance personell
                 if (localStorage.getItem("main")==="1") {
                 let menu_list = document.querySelector('#menu_list');
@@ -74,7 +75,7 @@
                 //Function for displaying rooms
                 function getRooms() {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
@@ -112,7 +113,7 @@
                                 let remove_container = document.querySelector(".remove_room");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.href = "ADMIN_DEMO_2.html";
+                                    window.location.reload();
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
@@ -130,8 +131,9 @@
 
                 //Retriving all the room again for displaying the instruments
                 function getRoomsForIns() {
+                    //window.location.reload();
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
@@ -165,7 +167,7 @@
                                 let remove_container = document.querySelector(".remove_ins");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.href = "ADMIN_DEMO_2.html";
+                                    window.location.reload();
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
@@ -184,7 +186,7 @@
                 //Displaying instruments inside the rooms
                 function displayIns(RoomID, select) {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_instruments_in_room", true);
+                    xhttp.open("POST", "/get_instruments_in_room_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var instrument = JSON.parse(this.responseText);
@@ -244,11 +246,13 @@
                                     }
                                     tr.appendChild(td);
                                 }
-                                let td = document.createElement('button');
-                                    td.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
-                                    td.setAttribute('class','remove_user');
-                                    td.innerHTML = "remove";
+                                let td = document.createElement('td');
+                                let button = document.createElement('button');
+                                    button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                    button.setAttribute('class','remove_user');
+                                    button.innerHTML = "remove";
                                 tr.appendChild(td);
+                                td.appendChild(button);
                             }
                             let th = document.createElement('th');
                                 th.innerHTML = "Remove user";
