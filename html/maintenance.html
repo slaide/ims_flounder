@@ -18,8 +18,8 @@
          <ul id="menu_list">
             <a href="./overview.html"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Schedule</li></a>
-            <a id="log_out" onclick="logOut()">Log out</a>
          </ul>
+         <a id="log_out" onclick="logOut()">Log out</a>
       </nav>
     
     <main id="whole_page">
@@ -180,7 +180,7 @@
           input_status.setAttribute('id', 'form_status');
 
           let text_note = document.createElement("h1");
-          text_note.innerHTML = "Date";
+          text_note.innerHTML = "Note";
           let input_note = document.createElement("input");
           input_note.setAttribute('type', 'text');
           input_note.setAttribute('id', 'form_note');
@@ -205,14 +205,14 @@
           let table_notes = document.createElement("table");
           table_notes.setAttribute('id', 'notes_table');
           see_notes_div.appendChild(table_notes);
-          test_print();//Remove when show_mantenance is working
+          //test_print();//Remove when show_mantenance is working
           show_maintenance(InsID);
           //add_maintenance(InsID);
         }
 
         function add_maintenance(InsID) {
-          let date = document.getElementById("form_date").value;
-          date = date.replace('T', ' ');
+          let date_obj = document.getElementById("form_date").value;
+          let date = date_obj.replace('T', ' ');
           let status = document.getElementById("form_status").value;
           let note = document.getElementById("form_note").value;
           //alert(InsID);
@@ -227,9 +227,7 @@
                 console.log(maintenance_for_ins.error);
                 return;
               }
-              //alert("working?");
-            } else {
-              //alert("!!!");
+              //show_maintenance(InsID);
             }
           };
           //alert("calling");
@@ -241,7 +239,6 @@
           xhttp.open("POST", "/get_maintenance", true);
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-              alert("we're in");
               var instrument_notes = JSON.parse(this.responseText);
               if (instrument_notes.error) {
                 console.log(instruents.error);
@@ -261,21 +258,22 @@
               table_header.appendChild(table_header_status);
               table_header.appendChild(table_header_note);
               table_element.appendChild(table_header);
-/*              for (int i = 0; i < instrument_notes.length; i++) {
-                  let table_entry = document.createElement("tr");
-                  let table_time = document.createElement("th");
-                  table_time.innerHTML = "2021/03/03 00:20"; // <----| Change this to response from server
-                  let table_status = document.createElement("th");
-                  table_status.innerHTML = "Working";       // <----| Change this to response from server
-                  let table_note = document.createElement("th");
-                  table_note.innerHTML = "Added a new lamp, all is working";  // <----| Change this to response
-                  table_entry.appendChild(table_time);
-                  table_entry.appendChild(table_status);
-                  table_entry.appendChild(table_note);
-                  table_element.appendChild(table_entry);
-              }*/
-              alert("The form was submitted");
-              alert(instrument);
+              for (let i = 0; i < instrument_notes.length; i++) {
+                //alert("In for loop");
+                
+                let table_entry = document.createElement("tr");
+                let table_time = document.createElement("th");
+                table_time.innerHTML = instrument_notes[i].DateTime; // <----| Change this to response from server
+                let table_status = document.createElement("th");
+                table_status.innerHTML = instrument_notes[i].Status; // <----| Change this to response from server
+                let table_note = document.createElement("th");
+                table_note.innerHTML = instrument_notes[i].Notes;  // <----| Change this to response
+                table_entry.appendChild(table_time);
+                table_entry.appendChild(table_status);
+                table_entry.appendChild(table_note);
+                table_element.appendChild(table_entry);
+                  
+              }
             } else if(this.status == 200){
               //alert("error2");
             } else if(this.readyState == 4) {
@@ -284,7 +282,7 @@
               //alert("error4");
             }
           };
-          xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
+          xhttp.send(JSON.stringify({'InsID': Ins_ID}));
         }
 
         function test_print() {
