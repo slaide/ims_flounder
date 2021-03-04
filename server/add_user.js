@@ -12,7 +12,8 @@ function add_user(req,res){
     utility.parse_data(req,(data)=>{
         var add_user_data=[]
         //make sure all of the expected data is here and defined
-        for(attribute of "ssn first_name last_name password admin phone_number email special_rights immunocompromised".split(" ")){
+        const attributes="ssn first_name last_name password admin phone_number email special_rights immunocompromised"
+        for(attribute of attributes.split(" ")){
             if(!data[attribute]){
                 const error_message="request is missing the attribute '"+attribute+"'"
                 console.log(error_message)
@@ -27,12 +28,12 @@ function add_user(req,res){
         }
 
         //create the placeholder questionsmarks with comma seperation for the sql query (so the number of question marks stays consistent with the number of values inserted)
-        var query_placeholders="'?'"
+        var query_placeholders="?"
         for(var i=1;i<add_user_data.length;i++){
-            query_placeholders+=",'?'"
+            query_placeholders+=",?"
         }
         //make sure a user only revokes their own bookings?
-        connection.query(`insert into user values (${query_placeholders});`,add_user_data,(error,results,fields)=>{
+        database.connection.query(`insert into user(${attributes.replace(/\ /gi,",")},Exist) values (${query_placeholders},1);`,add_user_data,(error,results,fields)=>{
             if(error){
                 const error_message="failed to add user because "+error
                 console.log(error_message)
