@@ -74,7 +74,7 @@
                 //Function for displaying rooms
                 function getRooms() {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
@@ -131,7 +131,7 @@
                 //Retriving all the room again for displaying the instruments
                 function getRoomsForIns() {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_rooms", true);
+                    xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
@@ -184,7 +184,7 @@
                 //Displaying instruments inside the rooms
                 function displayIns(RoomID, select) {
                     var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", "/get_instruments_in_room", true);
+                    xhttp.open("POST", "/get_instruments_in_room_admin", true);
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
                             var instrument = JSON.parse(this.responseText);
@@ -244,11 +244,13 @@
                                     }
                                     tr.appendChild(td);
                                 }
-                                let td = document.createElement('button');
-                                    td.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
-                                    td.setAttribute('class','remove_user');
-                                    td.innerHTML = "remove";
+                                let td = document.createElement('td');
+                                let button = document.createElement('button');
+                                    button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                    button.setAttribute('class','remove_user');
+                                    button.innerHTML = "remove";
                                 tr.appendChild(td);
+                                td.appendChild(button);
                             }
                             let th = document.createElement('th');
                                 th.innerHTML = "Remove user";
