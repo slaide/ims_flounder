@@ -114,7 +114,7 @@ function create_global_connection_pool(){
     connection.query(check_timeslot_available_definition,(error)=>{
         if (error) throw error;
     })
-    connection.query("set autocommit=0;",(error)=>{
+    connection.query("set autocommit=1;",(error)=>{
         if (error) throw error;
     })
 
@@ -303,7 +303,7 @@ const rooms={
         const attributes="ssn room_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`update from room where Room_ID=${data.room_id} set Exist=0;`
+            const query=`update room set Exist=0 where Room_ID=${data.room_id};`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
@@ -377,7 +377,7 @@ const instruments={
         const attributes="ssn ins_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`update from instrument where Ins_ID=${data.ins_id} set Exist=0;`
+            const query=`update instrument set Exist=0 where Ins_ID=${data.ins_id};`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
@@ -615,7 +615,7 @@ const users={
         const attributes="ssn ssn_user"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`update from user where SSN=${data.ssn_user} set Exist=0;`
+            const query=`update user set Exist=0 where SSN=${data.ssn_user};`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
