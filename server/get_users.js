@@ -29,7 +29,7 @@ function get_users(req,res) {
         res.writeHeader(200,utility.content.from_filename(".json"))
         res.end(JSON.stringify(ret))
 
-        console.log(">> Sent users") //for testing 
+        utility.log('sent users') 
      }) 
 }
 module.exports.get_users=get_users
