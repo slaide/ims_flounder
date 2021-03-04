@@ -642,14 +642,14 @@ const users={
         const attributes="User_SSN,First_name,Last_name,Password,Admin,Phone_number,Email,Special_rights,Immunocompromised,Maintenance"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
-            const query=`insert into user(SSN,${attributes.slice(1)},Exist) values (${'?'.repeat(sorted_attributes.length)},1)`
+            const query=`insert into user(SSN,${attributes.slice(1)},Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"users.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results.affectedRows!=1){
                     error_function({source:"users.add",message:"did not insert",fatal:true})
                     return
                 }
