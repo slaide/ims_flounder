@@ -29,7 +29,10 @@
    </div>
 
    <script>
-      var wronglogindata=$$LOGINSUCCESS$$
+      var wronglogindata=false;
+      try{
+         wronglogindata=$$LOGINSUCCESS$$
+      }catch(e){}
 
       if (wronglogindata) {
          window.alert('Wrong login data');
