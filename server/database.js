@@ -263,7 +263,6 @@ function check_attributes(data,attributes_string,error_function,delim=" "){
 }
 
 const rooms={
-    //TODO testing
     get:function(data,error_function,success_function){
         const sorted_attributes=check_attributes(data,"ssn",error_function)
         if(sorted_attributes){
@@ -339,7 +338,6 @@ const rooms={
 module.exports.rooms=rooms
 
 const instruments={
-    //TODO testing
     get:function(data,error_function,success_function){
         if(check_attributes(data,"RoomID ssn",error_function)){
             const query=`select * from instrument join room on room.Room_ID = instrument.Room_ID where room.Room_ID="${data.RoomID}" and room.Exist=1 and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;`

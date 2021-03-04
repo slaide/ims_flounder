@@ -29,26 +29,32 @@ const request_handler={
             throw("could not find homepage file? aborting.")
         }
     },
+
     "/login":login.check_login_data,
 
     "/get_rooms":rooms.get_rooms,
-    "/get_instruments_in_room":rooms.get_instruments_in_room,
-    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
-    "/reserve_instrument":reserve_instrument.reserve_instrument,
-    "/revoke_reservation":revoke_reservation.revoke_reservation, //TODO testing
-    "/add_user":add_user.add_user, //TODO testing
     "/add_room":add_room.add_room, //TODO testing
+    "/remove_room":remove_room.remove_room, // TODO write
+
+    "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/add_instrument":add_instrument.add_instrument, //TODO testing
-    "/get_maintenance":get_maintenance.get_maintenance, //TODO testing
+    "/remove_instrument":remove_instrument.remove_instrument, // TODO write
+
+    "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
+
     "/check_timeslot_available":check_timeslot_available.check_timeslot_available,
+
+    "/reserve_instrument":reserve_instrument.reserve_instrument,
+    "/revoke_reservation":revoke_reservation.revoke_reservation,
+
+    "/get_maintenance":get_maintenance.get_maintenance, //TODO testing
     "/add_maintenance":add_maintenance.add_maintenance, //TODO testing
     
-    "/remove_instrument":remove_instrument.remove_instrument, // TODO write
-    "/remove_room":remove_room.remove_room, // TODO write
+    "/get_users":get_users.get_users, //TODO write
+    "/add_user":add_user.add_user, //TODO testing
     "/remove_user":remove_user.remove_user, // TODO write 
 
-    "/get_users":get_users.get_users, //TODO write
-
+    //for backend use only
     "/shutdown":function(req,res){
         res.end()
         database.connection.end((error)=>{
