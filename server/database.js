@@ -775,9 +775,9 @@ const account={
         if(check_attributes(data,"ssn Special_rights",error_function)){
             const query=`
                 update user 
+                set user.Special_rights='${data.Special_rights}'
                 where user.SSN='${data.ssn}'
-                and user.Exist=1
-                set user.Special_rights='${data.Special_rights}';
+                and user.Exist=1;
             `
 
             connection.query(query,(error,results,fields)=>{
