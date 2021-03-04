@@ -266,7 +266,12 @@ const rooms={
     get:function(data,error_function,success_function){
         const sorted_attributes=check_attributes(data,"ssn",error_function)
         if(sorted_attributes){
-            const query=`select * from room where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 and Exist=1;`
+            const query=`
+                select * 
+                from room 
+                where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 
+                and room.Exist=1;
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
@@ -357,7 +362,14 @@ module.exports.rooms=rooms
 const instruments={
     get:function(data,error_function,success_function){
         if(check_attributes(data,"RoomID ssn",error_function)){
-            const query=`select * from instrument join room on room.Room_ID = instrument.Room_ID where room.Room_ID="${data.RoomID}" and room.Exist=1 and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;`
+            const query=`
+                select *
+                from instrument 
+                join room on room.Room_ID = instrument.Room_ID 
+                where room.Room_ID="${data.RoomID}" 
+                and instrument.Exist=1 
+                and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
@@ -644,7 +656,7 @@ const users={
             })
         }
     },
-    //TODO testing
+    //TODO testing, allow users with future bookings to be removed?
     remove:function(data,error_function,success_function){
         const attributes="ssn ssn_user"
         const sorted_attributes=check_attributes(data,attributes,error_function)
@@ -671,7 +683,12 @@ const maintenance={
     //TODO make sure instrument exists? also testing
     get:function(data,error_function,success_function){
         if(check_attributes(data,"Ins_ID",error_function)){
-            const query=`select * from booking where Ins_ID="${data.RoomID}";`
+            const query=`
+                SELECT DateTime, Status, Notes
+                FROM ins_maintenance
+                join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID
+                WHERE ins_maintenance.Ins_ID = ${data.Ins_ID} and instrument.Exist =1
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
