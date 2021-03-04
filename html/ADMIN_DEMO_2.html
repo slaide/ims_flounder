@@ -221,28 +221,56 @@
                             let table_head = document.querySelector("#user_head");
                             //Number of users are the length of users array
                             for (let i = 0; i < users.length; i++) {
+                                //Create one table row for each user
                                 let tr = document.createElement('tr');
                                 table_body.appendChild(tr);
-                                for (element in users[i]) {
+                                //Access all keys for a user
+                                for (key in users[i]) {
+                                    //Create table heads
                                     if (i === 0) {
                                         let th = document.createElement('th');
-                                            th.innerHTML = element;
+                                            th.innerHTML = key;
                                         table_head.appendChild(th);
                                     }
+                                    //Fill table rows with table data
                                     let td = document.createElement('td');
-                                    if (users[i][element] === 1) {
+                                    if (users[i][key] === 1) {
                                         td.innerHTML = "Yes";
-                                    } else if (users[i][element] === 0) {
+                                    } else if (users[i][key] === 0) {
                                         td.innerHTML = "No";
                                     } else {
-                                        td.innerHTML = users[i][element];
+                                        td.innerHTML = users[i][key];
                                     }
-                                        tr.appendChild(td);
+                                    tr.appendChild(td);
                                 }
+                                let td = document.createElement('button');
+                                    td.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                    td.setAttribute('class','remove_user');
+                                    td.innerHTML = "remove";
+                                tr.appendChild(td);
                             }
+                            let th = document.createElement('th');
+                                th.innerHTML = "Remove user";
+                            table_head.appendChild(th);
                         }
                     }
                     xhttp.send();
+                }
+
+                function removeUser(ssn) {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST","/remove_user",true);
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var response = JSON.parse(this.responseText);
+                            if(response.error) {
+                                console.log(response.error);
+                            } else {
+                                window.location.href = "ADMIN_DEMO_2.html";
+                            }
+                        }
+                    }
+                    xhttp.send(JSON.stringify({"ssn": ssn}));
                 }
 
                 getRooms();
