@@ -26,7 +26,7 @@ function get_users(req,res) {
         var ret=[];
         for(item of db_user){
             //Q: Isn't it unsafe to show password? 
-            ret.push({SSN: item.SSN, FirstName:item.First_name, LastName:Last_name, Password:item.Password, Admin:item.Admin, Phone:item.Phone_number, Email:item.Email, SpecRight:item.Special_rights, Immun:item.Immunocompromised, Maintenance:item.Maintenance})
+            ret.push({SSN: item.SSN, FirstName:item.First_name, LastName:item.Last_name, Password:item.Password, Admin:item.Admin, Phone:item.Phone_number, Email:item.Email, SpecRight:item.Special_rights, Immun:item.Immunocompromised, Maintenance:item.Maintenance})
         }   
         res.writeHeader(200,utility.content.from_filename(".json"))
         res.end(JSON.stringify(ret))
