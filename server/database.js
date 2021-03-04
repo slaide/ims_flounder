@@ -777,7 +777,7 @@ const account={
                 update user 
                 where user.SSN='${data.ssn}'
                 and user.Exist=1
-                set user.Special_rights=${data.Special_rights};
+                set user.Special_rights='${data.Special_rights}';
             `
 
             connection.query(query,(error,results,fields)=>{
