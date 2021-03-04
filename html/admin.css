@@ -1,5 +1,5 @@
 /*ADD options style*/
-#button_container, .remove_room, .remove_ins {
+#button_container, .remove_room, .remove_ins, #user_display {
    background-color: #ffffffb6;
    margin: 1rem;
    border-radius: 10px;

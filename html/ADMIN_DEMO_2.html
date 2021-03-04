@@ -42,6 +42,13 @@
                 </div>
             </div>
 
+            <div id="user_display">
+                <table id="user_table">
+                    <thead id="user_head"></thead>
+                    <tbody id="user_body"></tbody>
+                </table>
+            </div>
+
             <script>
                 //Add maintenance navigering if maintenance personell
                 if (localStorage.getItem("main")==="1") {
@@ -210,7 +217,29 @@
                             if (users.error) {
                                 console.log(users.error);
                             }
-                            console.log(users);
+                            let table_body = document.querySelector("#user_body");
+                            let table_head = document.querySelector("#user_head");
+                            //Number of users are the length of users array
+                            for (let i = 0; i < users.length; i++) {
+                                let tr = document.createElement('tr');
+                                table_body.appendChild(tr);
+                                for (element in users[i]) {
+                                    if (i === 0) {
+                                        let th = document.createElement('th');
+                                            th.innerHTML = element;
+                                        table_head.appendChild(th);
+                                    }
+                                    let td = document.createElement('td');
+                                    if (users[i][element] === 1) {
+                                        td.innerHTML = "Yes";
+                                    } else if (users[i][element] === 0) {
+                                        td.innerHTML = "No";
+                                    } else {
+                                        td.innerHTML = users[i][element];
+                                    }
+                                        tr.appendChild(td);
+                                }
+                            }
                         }
                     }
                     xhttp.send();
