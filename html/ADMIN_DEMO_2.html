@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="./admin.css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
 
 
@@ -78,7 +79,9 @@
                             let form = document.createElement('form');
                                 form.setAttribute("action","/remove_room");
                                 form.setAttribute("method","POST");
+                                form.setAttribute('id','remove_room_form');
                             cont.appendChild(form);
+                            form.addEventListener("submit", formSubmit);
                             let select_room = document.createElement('select');
                                 select_room.setAttribute("name","RoomID");
                             form.appendChild(select_room);
@@ -92,6 +95,25 @@
                                 submit.setAttribute('type','submit');
                                 submit.setAttribute('value','Remove room');
                             form.appendChild(submit);
+
+                            //Redirecting to admin page when submitting removal
+                            function formSubmit(e) {
+                                var url = '/remove_room';
+                                var request = new XMLHttpRequest();
+                                request.open('POST', url, true);
+                                let remove_container = document.querySelector(".remove_room");
+                                let message = document.createElement('p');
+                                request.onload = function () {
+                                    window.location.href = "ADMIN_DEMO_2.html";
+                                }
+                                request.onerror = function () {
+                                    message.innerHTML = "Request failed";
+                                }
+                                remove_container.appendChild(message);
+                                request.send($('#remove_room_form').serialize());
+                                e.preventDefault();
+                                document.querySelector("#remove_room_form").removeEventListener("submit", formSubmit);
+                            }
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
@@ -113,7 +135,9 @@
                             let form = document.createElement('form');
                                 form.setAttribute("action","/remove_instrument");
                                 form.setAttribute("method","POST");
+                                form.setAttribute("id","remove_ins_form");
                             remove_ins.appendChild(form);
+                            form.addEventListener("submit", formSubmit);
                             let select = document.createElement("select");
                                 select.setAttribute("name", "ins_id");
                             form.appendChild(select);
@@ -124,6 +148,25 @@
                                 submit.setAttribute('type','submit');
                                 submit.setAttribute('value','Remove instrument');
                             form.appendChild(submit);
+
+                            //Redirecting to admin page when submitting removal
+                            function formSubmit(e) {
+                                var url = '/remove_instrument';
+                                var request = new XMLHttpRequest();
+                                request.open('POST', url, true);
+                                let remove_container = document.querySelector(".remove_ins");
+                                let message = document.createElement('p');
+                                request.onload = function () {
+                                    window.location.href = "ADMIN_DEMO_2.html";
+                                }
+                                request.onerror = function () {
+                                    message.innerHTML = "Request failed";
+                                }
+                                remove_container.appendChild(message);
+                                request.send($('#remove_ins_form').serialize());
+                                e.preventDefault();
+                                document.querySelector("#remove_ins_form").removeEventListener("submit", formSubmit);
+                            }
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
@@ -155,7 +198,9 @@
                     xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
                     
                 }
+                
 
+                //Function for displaying user information
                 function getUsers() {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_users", true);
