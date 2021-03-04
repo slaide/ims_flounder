@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html> 
     <head>
-        <title>Administrator page</title>
+        <title>Administrator panel</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="./reset.css">
         <link rel="stylesheet" type="text/css" href="./flounder.css">
@@ -241,6 +241,15 @@
                                         td.innerHTML = "Yes";
                                     } else if (users[i][key] === 0) {
                                         td.innerHTML = "No";
+                                    } else if (key === "SpecRight") {
+                                        let button = document.createElement('button');
+                                            button.setAttribute('onclick',`changeRights(${users[i]["SSN"]})`);
+                                            button.setAttribute('class','change_rights');
+                                        td.innerHTML = users[i][key];
+                                        td.setAttribute('id',`spec_data_${users[i]["SSN"]}`);
+                                        button.innerHTML = "edit";
+                                        tr.appendChild(td);
+                                        td.appendChild(button);
                                     } else {
                                         td.innerHTML = users[i][key];
                                     }
@@ -262,6 +271,7 @@
                     xhttp.send();
                 }
 
+                //Remove user function
                 function removeUser(ssn) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST","/remove_user",true);
@@ -276,6 +286,47 @@
                         }
                     }
                     xhttp.send(JSON.stringify({"ssn": ssn}));
+                }
+
+                //Change special rights function
+                function changeRights(ssn) {
+                    //Create form for filling in the new special right, action: /set_user_rights 
+                    //Sending new special right and ssn
+                    let td = document.querySelector(`#spec_data_${ssn}`);
+                    $(td).empty();
+                    let form = document.createElement('form');
+                        form.setAttribute('class','change_right_form');
+                        form.setAttribute('action','/set_user_rights');
+                        form.setAttribute('method','POST');
+                    td.appendChild(form);
+                    let rights = document.createElement('input');
+                        rights.setAttribute('name','Special_rights');
+                        rights.setAttribute('type','input');
+                    form.appendChild(rights);
+                    let ssn_input = document.createElement('input');
+                        ssn_input.setAttribute('type','hidden');
+                        ssn_input.setAttribute('value',`${ssn}`);
+                        ssn_input.setAttribute('name','ssn');
+                    form.appendChild(ssn_input);
+                    let submit = document.createElement('input');
+                        submit.setAttribute('type','submit');
+                        submit.setAttribute('value','OK');
+                    form.appendChild(submit);
+                    //Redirect after submitting new special right
+                    function formSubmit(e) {
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.open("POST","/set_user_rights",true);
+                        xhttp.onload = function () {
+                            window.location.reload();
+                        }
+                        xhtpp.onerror = function() {
+                            window.alert("Request failed");
+                        }
+                        xhttp.send($('.change_right_form').serialize());
+                        e.preventDefault();
+                        document.querySelector(".change_right_form").removeEventListener("submit", formSubmit);
+                    }
+                    
                 }
 
                 getRooms();
