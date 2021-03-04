@@ -285,17 +285,18 @@ const rooms={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="Room_ID, Room_code, Area, Building_code, Capacity, Class"
+        const attributes="room_ID, area, building_code, capacity, class"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
         if(sorted_attributes){
-            const query=`insert into room(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+
+            const query=`insert into room(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results.affectedRows!=1){
                     error_function({source:"rooms.add",message:"did not insert",fatal:true})
                     return
                 }
