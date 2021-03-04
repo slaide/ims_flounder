@@ -12,11 +12,11 @@ function get_maintenance(req,res) {
          
     utility.parse_data(req,(data)=>{
         console.log('>>data: ', data) 
-        console.log('>> ins_id: ',data.InsID)
+        console.log('>> Ins_ID: ',data.Ins_ID)
         
         var sql ="SELECT DateTime, Status, Notes FROM ins_maintenance join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID WHERE ins_maintenance.Ins_ID = ? and instrument.Exist =1"
             
-        database.connection.query(sql, [data.InsID], (error, result)=> {
+        database.connection.query(sql, [data.Ins_ID], (error, result)=> {
             if(error){
                 const error_message="error selecting attributes: '"+error+"'"
                 console.log(error_message)
@@ -36,8 +36,6 @@ function get_maintenance(req,res) {
             res.writeHeader(200,utility.content.from_filename(".json"))
             res.end(JSON.stringify(ret))
             console.log(">> Sent maintenance") 
-                
-            console.log('>> Database disconnected') 
         })
     })
 }
