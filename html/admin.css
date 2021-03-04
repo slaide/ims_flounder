@@ -69,7 +69,8 @@ strong {
 #user_table {
    margin: auto;
    margin-bottom: 1rem;
-   font-size: 0.9rem;
+   margin-top: 0.5rem;
+   font-size: 0.8rem;
 }
 
 #user_table th, #user_table td {
@@ -100,6 +101,7 @@ strong {
    padding: 0.2rem;
    width: 100px;
    border-radius: 5px;
+   font-size: 0.8rem;
 }
 
 .remove_user:hover {
