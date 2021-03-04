@@ -705,7 +705,10 @@ const maintenance={
         const attributes="DateTime, Status, Notes, SSN, Ins_ID"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
         if(sorted_attributes){
-            const query=`insert into maintenance(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+            const query=`
+                insert into maintenance(${attributes}) 
+                values (${'?'.repeat(sorted_attributes.length)})
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
@@ -723,11 +726,17 @@ const maintenance={
 }
 module.exports.maintenance=maintenance
 
-const login={
+const account={
     //TODO testing
     login:function(data,error_function,success_function){
         if(check_attributes(data,"ssn",error_function)){
-            const query=`select * from user where user.SSN='${data.ssn}' and user.Password=${data.password} and user.Exist=1;`
+            const query=`
+                select * 
+                from user 
+                where user.SSN='${data.ssn}'
+                and user.Password=${data.password} 
+                and user.Exist=1;
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
@@ -742,5 +751,27 @@ const login={
             })
         }
     },
+    set_special_rights(data,error_function,success_function){
+        if(check_attributes(data,"ssn Special_rights",error_function)){
+            const query=`
+                update user 
+                where user.SSN='${data.ssn}'
+                and user.Exist=1
+                set user.Special_rights=${data.Special_rights};
+            `
+
+            connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"account.set_special_rights",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"account.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
+                    return
+                }
+                success_function()
+            })
+        }
+    }
 }
-module.exports.login=login
+module.exports.account=account
