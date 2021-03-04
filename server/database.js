@@ -120,6 +120,8 @@ function create_global_connection_pool(){
 
     return connection
 }
+var connection=null
+module.exports.connection=connection
 
 /** 
  * Create connection to database
@@ -234,7 +236,8 @@ function connect_build_database(then,on_error=(conn,err)=>{
                                 if(error) throw error;
                             })
 
-                            module.exports.connection=create_global_connection_pool();
+                            connection=create_global_connection_pool();
+                            module.exports.connection=connection;
                             then()
                         })
                     })
@@ -266,7 +269,7 @@ const rooms={
         if(sorted_attributes){
             const query=`select * from room where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 and Exist=1;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -283,7 +286,7 @@ const rooms={
         if(sorted_attributes){
             const query=`insert into room(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -303,7 +306,7 @@ const rooms={
         if(sorted_attributes){
             const query=`update from room where Room_ID=${data.room_id} set Exist=0;`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -322,7 +325,7 @@ const rooms={
         if(sorted_attributes){
             const query=`select * from room where Exist=1;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.get_admin",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -338,10 +341,10 @@ module.exports.rooms=rooms
 const instruments={
     //TODO testing
     get:function(data,error_function,success_function){
-        if(check_attributes(data,"RoomID",error_function)){
-            const query=`select * from instrument where Room_ID="${data.RoomID}" and Exist=1 and strcmp(user.Special_Rights,room.Class)>=0;`
+        if(check_attributes(data,"RoomID ssn",error_function)){
+            const query=`select * from instrument join room on room.Room_ID = instrument.Room_ID where room.Room_ID="${data.RoomID}" and room.Exist=1 and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
@@ -358,7 +361,7 @@ const instruments={
         if(sorted_attributes){
             const query=`insert into instrument(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -378,7 +381,7 @@ const instruments={
         if(sorted_attributes){
             const query=`update from instrument where Ins_ID=${data.ins_id} set Exist=0;`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -396,7 +399,7 @@ const instruments={
         if(check_attributes(data,"RoomID",error_function)){
             const query=`select * from instrument where Room_ID="${data.RoomID}" and Exist=1;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
@@ -417,7 +420,7 @@ const bookings={
         if(sorted_attributes){
             const query=`delete from booking where Booking_ID=${data.booking_id}`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"bookings.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -433,7 +436,7 @@ const bookings={
 }
 module.exports.bookings=bookings
 
-function timeslot_available(data,error_function,insert=false){
+function timeslot_available(data,error_function,insert=false,then=null){
     var attributes="ins_id start_time ssn"
     if(insert){
         attributes+=" end_time"
@@ -441,7 +444,7 @@ function timeslot_available(data,error_function,insert=false){
     const sorted_attributes=check_attributes(data,attributes,error_function)
     if(sorted_attributes){
         const query=`
-            call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${(!!insert)?1:0});
+            call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${insert?1:0});
         `;
 
         const handles=[
@@ -511,14 +514,12 @@ function timeslot_available(data,error_function,insert=false){
             }
         ]
 
-        database.connection.query(query,(error,results,fields)=>{
+        connection.query(query,(error,results,fields)=>{
             if(error){
                 const error_message="timeslot availability check query failed";
                 utility.log(`${error_message} ${error}`,"error")
 
                 error_function({source:"timeslot_available.database_query",message:error_message,error:error,fatal:true})
-
-                return
             }
 
             if(
@@ -532,31 +533,24 @@ function timeslot_available(data,error_function,insert=false){
                     utility.log(`${error_message} ${results[results.length-1]}`,"error")
 
                     error_function({source:"timeslot_available.database_query_check",message:error_message,error:results,fatal:false})
-
-                    return false;
+                }else{
+                    then(results);
                 }
-
             }
-
-            return results;
         })
     }
 }
 
 const timeslot={
-    //TODO testing
     check_available:function(data,error_function,success_function){
-        const result=timeslot_available(data,error_function,false)
-        if(result){
-            success_function(result)
-        }
+        timeslot_available(data,error_function,false,(results)=>{
+            success_function(results)
+        })
     },
-    //TODO testing
     book:function(data,error_function,success_function){
-        const result=timeslot_available(data,error_function,true)
-        if(result){
-            success_function(result)
-        }
+        timeslot_available(data,error_function,true,(results)=>{
+            success_function(results)
+        })
     },
 }
 module.exports.timeslot=timeslot
@@ -567,8 +561,8 @@ const personal_schedule={
         if(check_attributes(data,"SSN",error_function)){
             var sql=`SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID join user on user.SSN=booking.SSN WHERE booking.SSN = ${data.SSN} and instrument.Exist=1 and user.Exist=1;`
 
-            database.connection.query(sql, (error, result)=> {
-                database.connection.query(query,(error,results,fields)=>{
+            connection.query(sql, (error, result)=> {
+                connection.query(query,(error,results,fields)=>{
                     if(error){
                         error_function({source:"personal_schedule.get",message:error.sqlMessage,error:error,fatal:true})
                         return
@@ -588,7 +582,7 @@ const users={
         if(check_attributes(data,"ssn",error_function)){
             const query=`select * from user where Exist=1;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"users.get",message:error.sqlMessage,error:error,fatal:true})
                     return
@@ -605,7 +599,7 @@ const users={
         if(sorted_attributes){
             const query=`insert into user(SSN,${attributes.slice(1)},Exist) values (${'?'.repeat(sorted_attributes.length)},1)`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"users.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -625,7 +619,7 @@ const users={
         if(sorted_attributes){
             const query=`update from user where SSN=${data.ssn_user} set Exist=0;`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"users.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -647,7 +641,7 @@ const maintenance={
         if(check_attributes(data,"Ins_ID",error_function)){
             const query=`select * from booking where Ins_ID="${data.RoomID}";`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
                     return
@@ -664,7 +658,7 @@ const maintenance={
         if(sorted_attributes){
             const query=`insert into maintenance(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
 
-            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"maintenance.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -686,7 +680,7 @@ const login={
         if(check_attributes(data,"ssn",error_function)){
             const query=`select * from user where user.SSN='${data.ssn}' and user.Password=${data.password} and user.Exist=1;`
 
-            database.connection.query(query,(error,results,fields)=>{
+            connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
                     return

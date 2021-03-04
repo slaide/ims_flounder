@@ -10,6 +10,7 @@ const database=require("./database.js")
  */
 function get_rooms(req,res){
     utility.parse_data(req,(data)=>{
+        /*
         if(!data.ssn){
             const error_message="ssn missing in request data for room list request"
             utility.log(error_message)
@@ -24,11 +25,28 @@ function get_rooms(req,res){
                 utility.log(`${error_message} ${error}`,"error")
 
                 res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
+                res.end(JSON.stringify({error:error}))
                 return
             }
             var ret=[];
             for(item of result){
+                ret.push({RoomID:item.Room_ID})
+            }
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify(ret))
+
+            utility.log(`sent room list to user ${data.ssn}`)
+        })*/
+
+        database.rooms.get(data,(error)=>{
+            if(error.fatal) throw error
+            utility.log(`error selecting rooms: ${error.message} in ${error.source}`)
+
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error}))
+        },(results)=>{
+            var ret=[];
+            for(item of results){
                 ret.push({RoomID:item.Room_ID})
             }
             res.writeHeader(200,utility.content.json)
@@ -49,6 +67,7 @@ module.exports.get_rooms=get_rooms
  */
 function get_instruments_in_room(req,res){
     utility.parse_data(req,(data)=>{
+        /*
         //make sure all of the expected data is here and defined
         for(attribute of "RoomID ssn".split(" ")){
             if(!data[attribute]){
@@ -75,6 +94,24 @@ function get_instruments_in_room(req,res){
             res.end(JSON.stringify(ret))
 
             utility.log(`sent instruments for room ${data.RoomID} requested by user ${data.ssn}`)
+        })
+        */
+
+        database.instruments.get(data,(error)=>{
+            if(error.fatal) throw error
+            utility.log(`error getting instruments in room: ${error.message} in ${error.source}`)
+
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error}))
+        },(results)=>{
+            var ret=[];
+            for(item of results){
+                ret.push({InsID:item.Ins_ID,description:item.Description})
+            }
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify(ret))
+
+            utility.log(`sent instrument list to user ${data.ssn}`)
         })
     })
 }

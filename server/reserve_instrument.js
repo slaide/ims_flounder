@@ -11,23 +11,15 @@ const check_timeslot_available=require("./check_timeslot_available")
  */
 function reserve_instrument(req,res){
     utility.parse_data(req,(data)=>{
-        //make sure all of the expected data is here and defined
-        for(attribute of "ins_id date start_time end_time ssn".split(" ")){
-            if(!data[attribute]){
-                const error_message=`request is missing the attribute '${attribute}'`
-                utility.log(`${error_message}`)
-
-                res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
-
-                return
-            }
-        }
-        //when no notes were added this field is undefined, though it should just be an empty string
-        if(!data.notes){
-            data.notes=""
-        }
-        check_timeslot_available.check_timeslot_available(req,res,data)
+        database.timeslot.book(data,(error)=>{
+            if(error.fatal) throw error;
+            
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error}))
+        },(results)=>{
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({success:"timeslot was booked"}))
+        })
     })
 }
 module.exports.reserve_instrument=reserve_instrument
