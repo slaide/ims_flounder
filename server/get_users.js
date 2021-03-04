@@ -21,11 +21,9 @@ function get_users(req,res) {
            return
        }
         db_user=JSON.parse(JSON.stringify(result))  
-        console.log('>> db_user: ', db_user) //for testing
 
         var ret=[];
-        for(item of db_user){
-            //Q: Isn't it unsafe to show password? 
+        for(item of db_user){ 
             ret.push({SSN: item.SSN, FirstName:item.First_name, LastName:item.Last_name, Password:item.Password, Admin:item.Admin, Phone:item.Phone_number, Email:item.Email, SpecRight:item.Special_rights, Immun:item.Immunocompromised, Maintenance:item.Maintenance})
         }   
         res.writeHeader(200,utility.content.from_filename(".json"))
