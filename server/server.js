@@ -35,10 +35,12 @@ const request_handler={
     "/get_rooms":rooms.get_rooms,
     "/add_room":add_room.add_room, //TODO testing
     "/remove_room":remove_room.remove_room, // TODO write
+    "/get_rooms_admin":rooms.get_rooms_admin,
 
     "/get_instruments_in_room":rooms.get_instruments_in_room,
     "/add_instrument":add_instrument.add_instrument, //TODO testing
     "/remove_instrument":remove_instrument.remove_instrument, // TODO write
+    "/get_instruments_in_room_admin":rooms.get_instruments_in_room_admin,
 
     "/get_personal_schedule":get_personal_schedule.get_personal_schedule, //solve SSN problem with logout functionality 
 
