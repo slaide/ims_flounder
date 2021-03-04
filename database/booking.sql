@@ -23,7 +23,10 @@ INSERT INTO booking (Booking_ID, SSN, Ins_ID, Start_Time, End_Time, `Status`, No
 (4, 882767577, 4, '2021-02-16 10:00:00', '2021-02-16 11:00:00', 'Working ', 'Everything works just fine '),
 (5, 762324167, 7, '2021-03-01 14:00:00', '2021-03-01 15:00:00', 'Working', 'should be cleaned '),
 (6, 762324167, 1, '2021-02-10 14:00:00', '2021-02-10 15:00:00', 'Using ', 'The instrument  will be used '),
-(7, 762324167, 8, '2021-06-09 12:00:00', '2021-06-09 13:00:00', 'Will be used ', 'Clean ');
+(7, 762324167, 8, '2021-06-09 12:00:00', '2021-06-09 13:00:00', 'Will be used ', 'Clean '),
+(8, 1450238774, 5, '2021-05-19 10:00:00', '2021-05-19 11:00:00', 'instrument will be used ', 'clean and ready to be used '),
+(9, 882767577, 6, '2021-04-15 11:00:00', '2021-04-15 12:00:00', 'Clean ', 'Everything works just fine '),
+(10, 762324167, 4, '2021-06-01 14:00:00', '2021-06-01 14:00:00', 'Will be used ', 'The filter needs to be changed ');
 
 
 ALTER TABLE booking
