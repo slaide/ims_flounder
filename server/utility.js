@@ -208,13 +208,8 @@ module.exports.get_log_for_level=function(get_log_level){
     log("end log output","important")
 }
 
-/*
-function sha512(str) {
-    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
-       return Array.prototype.map.call(new Uint8Array(buf), x=>('00'+x.toString(16)).slice(-2)).join('');
-    });
- }
-
- sha512("my string for hashing").then((x) => console.log(x));
-
- */
+function sha512(str,salt=null) {
+    const buf=crypto.createHash("sha512").update(str,"utf-8").update(salt||"salt","utf-8").digest()
+    return Array.prototype.map.call(new Uint8Array(buf), x=>x.toString(16)).join("")
+}
+module.exports.sha512=sha512

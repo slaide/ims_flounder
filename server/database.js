@@ -387,15 +387,33 @@ const instruments={
         const attributes="description,serial,proc_date,room_ID"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
-            const query=`insert into instrument(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
+            const query=`
+                start transaction;
+
+                #check if room exists since roomid is freeform text currently
+                select @RoomExists := count(*) as RoomExists
+                from room
+                where room.Room_ID=${data.room_ID}
+                and room.Exist=1;
+
+                if @RoomExists = 1 then
+                    insert into instrument(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
+                end if;
+
+                commit;
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results.affectedRows!=1){
-                    error_function({source:"instruments.add",message:"did not insert",fatal:true})
+                if(results[1][0].RoomExists==0){
+                    error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:results})
+                    return
+                }
+                if(results[1].affectedRows!=1){
+                    error_function({source:"instruments.add",message:"did not insert",fatal:false,error:results})
                     return
                 }
                 success_function()
@@ -410,7 +428,7 @@ const instruments={
             const query=`
                 start transaction;
 
-                select @NumFutureBookings := count(*)
+                select @NumFutureBookings := count(*) as NumFutureBookings
                 from booking
                 where timediff(booking.Start_Time,${new Date().toLocaleString("se-SE",{timezone:"Sweden"})})>0
                 and booking.Ins_ID = ${data.ins_id};
@@ -752,6 +770,7 @@ const account={
             })
         }
     },
+    //TODO testing
     set_special_rights(data,error_function,success_function){
         if(check_attributes(data,"ssn Special_rights",error_function)){
             const query=`
