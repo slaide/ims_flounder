@@ -7,8 +7,6 @@
     <link rel="stylesheet" type="text/css" href="./flounder.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <!--<style>@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');</style>-->
-
   </head>
 
   <body>
@@ -23,51 +21,21 @@
       </nav>
     
     <main id="whole_page">
-      <h1>Maintenance</h1>
       <div id="select_ins">
         <h1>Select instrument</h1>
-        <p id="test"><p>
-        <!--form action="javascript:test_print(this);" id="lmaolmao"-->
           <select id="instrument_menu"  onChange="javascript:selected_ins(this);" name="instrument_menu">
           </select>
-          <!--button type="submit">Submit me!</button-->
-        <!--  <input type="submit" value="select">  -->
-        <!--/form-->
-      <!--div id="maintenance_form">
-        <h1>Maintenance form</h1>
-        <form id="form">
-        </form-->
-      </div>
-      <h1>Maintenance Note</h1>
-      <div id="maintenance_form_div">
-        <!--form id="maintenance_form" action="javascript:selected_ins(this);">
-        <
-          Date: <input type="datetime-local" id="form_date"><br>
-          State: <input type="text" id="form_state"><br>
-          note: <input type="text" id="form_note"><br><br>
-          <input type="submit" value="submitt form">
-        </form>
-      -->
-      </div>
-      <div id="maintenance_overview">
-        <h1>Maintanence overview</h1>
-        <div id="see_notes">
-          <!--table id="notes_table">
-            <tr>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Notes</th>
-            </tr>
-          </table-->
+        <div id="maintenance_form_div">
+        </div>
+        <div id="maintenance_overview">
+          <h1>Maintanence overview</h1>
+          <div id="see_notes">
+          </div>
         </div>
       </div>
 
-      <div id="lmao"></div>
-
       <script>
-
          var ssn = localStorage.getItem("ssn");
-
          if (localStorage.getItem("admin")==="1") {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
@@ -97,14 +65,6 @@
                }
             }
 
-         function hello_world() {
-         document.querySelector('#lmao').innerHTML = "hello world";
-         //  let ins_menu = document.querySelector('#lmao');
-         //  let room_alt = document.createElement('div');
-         //  ins_menu.innerHTML = "Hello world";
-         //  ins_menu.appendChild(room_alt);
-         }
-         //hello_world();
 
          function getRooms() {
             var xhttp = new XMLHttpRequest();
@@ -141,7 +101,6 @@
                   console.log(instruments.error);
                   return;
                 }
-                document.querySelector('#lmao').innerHTML = instruments.length;
                 let ins_menu = document.querySelector("#instrument_menu");
                 for (let i = 0; i < instruments.length; i++) {
                   let ins_alt = document.createElement('option');
@@ -158,10 +117,13 @@
         }
 
         function selected_ins(InsID_input) {
-          var InsID = InsID_input[InsID_input.selectedIndex].value;
+          var Ins_ID = InsID_input[InsID_input.selectedIndex].value;
           
           let form_div = document.querySelector("#maintenance_form_div");
           form_div.innerHTML = "";
+          let form_title = document.createElement('h1');
+          form_title.setAttribute('id', 'form_title');
+          form_title.innerHTML = "Form";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
           let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');'
@@ -197,6 +159,7 @@
           form_main.appendChild(input_note);
           form_main.appendChild(document.createElement('br'));
           form_main.appendChild(submit_button);
+          form_div.appendChild(form_title);
           form_div.appendChild(form_main);
 
           // Seeing old notes
@@ -206,7 +169,7 @@
           table_notes.setAttribute('id', 'notes_table');
           see_notes_div.appendChild(table_notes);
           //test_print();//Remove when show_mantenance is working
-          show_maintenance(InsID);
+          show_maintenance(Ins_ID);
           //add_maintenance(InsID);
         }
 
