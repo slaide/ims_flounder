@@ -58,9 +58,15 @@ const request_handler={
     },
     "/get_log":function(req,res){
         utility.parse_data(req,data=>{
-            utility.log("start log output","important")
             utility.get_log_for_level(data.level)
-            utility.log("end log output","important")
+
+            res.writeHeader(200,utility.content.json)
+            res.end("{}")
+        })
+    },
+    "/set_log":function(req,res){
+        utility.parse_data(req,data=>{
+            utility.set_global_log_level(data.level)
 
             res.writeHeader(200,utility.content.json)
             res.end("{}")

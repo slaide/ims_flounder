@@ -163,7 +163,10 @@ module.exports.set_global_log_level=function(new_log_level){
     if(new_log_level<0 || new_log_level>log_levels.length){
         throw `new log level must be in range! ${new_log_level}`
     }
+
     global_log_level=new_log_level
+
+    log(`set log level to '${log_levels[global_log_level]}'`,"important")
 }
 
 var log_messages={};
@@ -193,10 +196,25 @@ module.exports.get_log_for_level=function(get_log_level){
     if(get_log_level<0 || get_log_level>log_levels.length){
         throw `log level must be in range! ${new_log_level}`
     }
+    
+    log("start log output","important")
 
     var get_log_level=log_levels[get_log_level]
 
     for(log of log_messages[get_log_level]){
         console.log(`oldlog: ${log.time} ${get_log_level}: ${log.message}`)
     }
+
+    log("end log output","important")
 }
+
+/*
+function sha512(str) {
+    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str)).then(buf => {
+       return Array.prototype.map.call(new Uint8Array(buf), x=>('00'+x.toString(16)).slice(-2)).join('');
+    });
+ }
+
+ sha512("my string for hashing").then((x) => console.log(x));
+
+ */
