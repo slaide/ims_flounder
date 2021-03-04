@@ -11,8 +11,6 @@ const database=require("./database.js")
 
  function remove_instrument(req,res){
     utility.parse_data(req,(data)=>{
-      console.log(">>data: ", data) //for testing 
-      console.log(">>data: ", data.ins_id) //for testing
 
       var sql="UPDATE instrument SET Exist=0 WHERE Ins_ID=?"
       database.connection.query(sql, [data.ins_id], (error, result)=> {

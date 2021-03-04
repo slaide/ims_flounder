@@ -11,8 +11,6 @@ const database=require("./database.js")
 
  function remove_user(req,res){
     utility.parse_data(req,(data)=>{
-      console.log(">>data: ", data) //for testing 
-      console.log(">>data: ", data.ssn) //for testing
 
       var sql="UPDATE user SET Exist=0 WHERE SSN=?"
       database.connection.query(sql, [data.ssn], (error, result)=> {

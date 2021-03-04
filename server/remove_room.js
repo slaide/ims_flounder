@@ -11,8 +11,6 @@ const database=require("./database.js")
 
  function remove_room(req,res){
     utility.parse_data(req,(data)=>{
-      console.log(">>data: ", data) //for testing 
-      console.log(">>data: ", data.RoomID) //for testing
 
       var sql="UPDATE room SET Exist=0 WHERE Room_ID=?"
       database.connection.query(sql, [data.RoomID], (error, result)=> {
