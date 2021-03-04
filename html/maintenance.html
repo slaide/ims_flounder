@@ -17,7 +17,7 @@
          <img src="./favicon.ico" width="256" height="256">
          <ul id="menu_list">
             <a href="./overview.html"><li>Book an instrument</li></a>
-            <a href="./my_schedule.html"><li>My Schedule</li></a>
+            <a href="./my_schedule.html"><li>My Booking</li></a>
          </ul>
          <a id="log_out" onclick="logOut()">Log out</a>
       </nav>
@@ -210,7 +210,7 @@
           //add_maintenance(InsID);
         }
 
-        function add_maintenance(InsID) {
+        function add_maintenance(Ins_ID) {
           let date_obj = document.getElementById("form_date").value;
           let date = date_obj.replace('T', ' ');
           let status = document.getElementById("form_status").value;
@@ -231,7 +231,7 @@
             }
           };
           //alert("calling");
-          xhttp.send(JSON.stringify({'DateTime': date, 'Status': status, 'Notes': note, 'SSN': ssn, 'Ins_ID': InsID}));
+          xhttp.send(JSON.stringify({'DateTime': date, 'Status': status, 'Notes': note, 'SSN': ssn, 'Ins_ID': Ins_ID}));
         }
 
         function show_maintenance(Ins_ID) {
