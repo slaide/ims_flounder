@@ -11,6 +11,7 @@ const database=require("./database.js")
 
 function add_maintenance(req,res){
     utility.parse_data(req,(data)=>{
+        console.log('data: ', data) //for testing
         var add_user_data=[]
         //make sure all of the expected data is here and defined
         //Q: How to do with maintenance ID since it will autogenerate? 
