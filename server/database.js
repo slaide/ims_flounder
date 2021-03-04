@@ -303,11 +303,28 @@ const rooms={
         const attributes="ssn room_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`update room set Exist=0 where Room_ID=${data.room_id};`
+            const query=`
+                start transaction;
+
+                select @NumInstrumentsInRoom := count(*)
+                from instrument
+                where instrument.Room_ID = ${data.room_id}
+                and instrument.Exist=1;
+
+                if @NumInstrumentsInRoom=0 then
+                    update room set Exist=0 where Room_ID=${data.room_id};
+                end if;
+
+                commit;
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(result[0].NumFutureBookings!=0){
+                    error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
                     return
                 }
                 if(results[0].affectedRows!=1){
@@ -377,15 +394,32 @@ const instruments={
         const attributes="ssn ins_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`update instrument set Exist=0 where Ins_ID=${data.ins_id};`
+            const query=`
+                start transaction;
+
+                select @NumFutureBookings := count(*)
+                from booking
+                where timediff(booking.Start_Time,${new Date().toLocaleString("se-SE",{timezone:"Sweden"})})>0
+                and booking.Ins_ID = ${data.ins_id};
+
+                if @NumFutureBookings=0 then
+                    update instrument set Exist=0 where Ins_ID=${data.ins_id};
+                end if;
+
+                commit;
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
-                    error_function({source:"instruments.remove",message:"did not remove",fatal:true})
+                if(result[0].NumFutureBookings!=0){
+                    error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false})
+                    return
+                }
+                if(results[1].affectedRows!=1){
+                    error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
                     return
                 }
                 success_function()
