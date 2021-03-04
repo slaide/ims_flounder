@@ -18,6 +18,7 @@ const remove_instrument=require("./remove_instrument")
 const remove_room=require("./remove_room")
 const remove_user=require("./remove_user")
 const get_users=require("./get_users")
+const set_user_rights=require("./set_user_rights")
 
 /**
  * central object that routes client requests
@@ -55,6 +56,8 @@ const request_handler={
     "/get_users":get_users.get_users, //TODO write
     "/add_user":add_user.add_user, //TODO testing
     "/remove_user":remove_user.remove_user, // TODO write 
+
+    "/set_user_rights":set_user_rights. set_user_rights, //TODO testing
 
     //for backend use only
     "/shutdown":function(req,res){
