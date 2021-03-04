@@ -384,17 +384,17 @@ const instruments={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="Description,Serial,Proc_date,Room_ID"
+        const attributes="description,serial,proc_date,room_ID"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
-            const query=`insert into instrument(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+            const query=`insert into instrument(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results.affectedRows!=1){
                     error_function({source:"instruments.add",message:"did not insert",fatal:true})
                     return
                 }
