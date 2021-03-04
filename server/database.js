@@ -244,3 +244,482 @@ function connect_build_database(then,on_error=(conn,err)=>{
     })
 }
 module.exports.connect_build_database=connect_build_database
+
+function check_attributes(data,attributes_string,error_function,delim=" "){
+    var sorted_attributes=[]
+    for(attribute of attributes_string.split(delim)){
+        if(!data[attribute]){
+            const error_message=`request is missing the attribute '${attribute}'`
+            error_function({source:"check_attributes",message:error_message,fatal:false})
+
+            return false
+        }
+        sorted_attributes.push(data[attribute])
+    }
+    return sorted_attributes
+}
+
+const rooms={
+    //TODO testing
+    get:function(data,error_function,success_function){
+        const sorted_attributes=check_attributes(data,"ssn",error_function)
+        if(sorted_attributes){
+            const query=`select * from room where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 and Exist=1;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({RoomID:result.Room_ID})
+                }
+                success_function(ret)
+            })
+        }
+    },
+    //TODO testing
+    add:function(data,error_function,success_function){
+        const attributes="Room_ID, Room_code, Area, Building_code, Capacity, Class"
+        const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
+        if(sorted_attributes){
+            const query=`insert into room(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"rooms.add",message:"did not insert",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    //TODO testing
+    remove:function(data,error_function,success_function){
+        const attributes="ssn room_id"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
+        if(sorted_attributes){
+            const query=`update from room where Room_ID=${data.room_id} set Exist=0;`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"rooms.remove",message:"did not remove",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    //TODO check is user is admin, testing, map fields
+    get_admin:function(data,error_function,success_function){
+        const sorted_attributes=check_attributes(data,"ssn",error_function)
+        if(sorted_attributes){
+            const query=`select * from room where Exist=1;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"rooms.get_admin",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({InsID:result.Ins_ID,description:result.Description})
+                }
+                success_function(ret)
+            })
+        }
+    },
+}
+module.exports.rooms=rooms
+
+const instruments={
+    //TODO testing
+    get:function(data,error_function,success_function){
+        if(check_attributes(data,"RoomID",error_function)){
+            const query=`select * from instrument where Room_ID="${data.RoomID}" and Exist=1 and strcmp(user.Special_Rights,room.Class)>=0;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({InsID:result.Ins_ID,description:result.Description})
+                }
+                success_function(ret)
+            })
+        }
+    },
+    //TODO testing
+    add:function(data,error_function,success_function){
+        const attributes="Description,Serial,Proc_date,Room_ID"
+        const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
+        if(sorted_attributes){
+            const query=`insert into instrument(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"instruments.add",message:"did not insert",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    //TODO testing
+    remove:function(data,error_function,success_function){
+        const attributes="ssn ins_id"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
+        if(sorted_attributes){
+            const query=`update from instrument where Ins_ID=${data.ins_id} set Exist=0;`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"instruments.remove",message:"did not remove",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    //TODO testing
+    get_admin:function(data,error_function,success_function){
+        if(check_attributes(data,"RoomID",error_function)){
+            const query=`select * from instrument where Room_ID="${data.RoomID}" and Exist=1;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({InsID:result.Ins_ID,description:result.Description})
+                }
+                success_function(ret)
+            })
+        }
+    },
+}
+module.exports.instruments=instruments
+
+const bookings={
+    //TODO any safety checks on the booking removal, or have blind trust that the booking is removed by the user who made it?, also testing
+    remove:function(data,error_function,success_function){
+        const attributes="ssn booking_id"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
+        if(sorted_attributes){
+            const query=`delete from booking where Booking_ID=${data.booking_id}`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"bookings.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"bookings.remove",message:"did not remove",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+}
+module.exports.bookings=bookings
+
+function timeslot_available(data,error_function,insert=false){
+    var attributes="ins_id start_time ssn"
+    if(insert){
+        attributes+=" end_time"
+    }
+    const sorted_attributes=check_attributes(data,attributes,error_function)
+    if(sorted_attributes){
+        const query=`
+            call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${(!!insert)?1:0});
+        `;
+
+        const handles=[
+            //handle 0     
+            (results)=>{
+                //if timeslot is already occupied, timeslot is not available
+                if(results[0].InstrumentExists===0){
+                    const error_message="instrument does not exist anymore"
+                    utility.log(`${error_message}`)
+
+                    error_function({source:"timeslot_available.query0",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+                return true;
+            },
+            
+            //handle 1        
+            (results)=>{
+                //if timeslot is already occupied, timeslot is not available
+                if(results[0].TimeslotAlreadyReserved){
+                    const error_message="timeslot is already occupied"
+                    utility.log(`${error_message}`)
+
+                    error_function({source:"timeslot_available.query2",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+                return true;
+            },
+
+            //handle 2
+            (results)=>{
+                //check if this number is 0 (allow further checks) or !=0 (disallow) (see description above query)
+                if(results[0].NumImmunocompromisedInRoom>0){
+                    const error_message="room is already occupied by an immunocompromised person that is not you"
+                    utility.log(`${error_message}`)
+
+                    error_function({source:"timeslot_available.query2",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+                return true;
+            },
+
+            //handle 3
+            (results)=>{
+                //if room is full, timeslot is not available
+                if(results[0].NumberPeopleInRoom==results[0].RoomCapacity){
+                    const error_message="room is already at max capacity at that time"
+                    utility.log(`${error_message}`)
+
+                    error_function({source:"timeslot_available.query3",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+                //if you are immunocompromised and the room is partially occupied by someone else, timeslot is not available
+                if(results[0].YouAreImmunoCompromised && results[0].NumberPeopleInRoom>0){
+                    const error_message="room is already at occupied at that time"
+                    utility.log(`${error_message}`)
+
+                    error_function({source:"timeslot_available.query3",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+                return true;
+            }
+        ]
+
+        database.connection.query(query,(error,results,fields)=>{
+            if(error){
+                const error_message="timeslot availability check query failed";
+                utility.log(`${error_message} ${error}`,"error")
+
+                error_function({source:"timeslot_available.database_query",message:error_message,error:error,fatal:true})
+
+                return
+            }
+
+            if(
+                handles[0](results[0])
+                && handles[1](results[1])
+                && handles[2](results[2])
+                && handles[3](results[3])
+            ){
+                if(insert && results[results.length-1].affectedRows!=1){
+                    const error_message="inserting new booking failed";
+                    utility.log(`${error_message} ${results[results.length-1]}`,"error")
+
+                    error_function({source:"timeslot_available.database_query_check",message:error_message,error:results,fatal:false})
+
+                    return false;
+                }
+
+            }
+
+            return results;
+        })
+    }
+}
+
+const timeslot={
+    //TODO testing
+    check_available:function(data,error_function,success_function){
+        const result=timeslot_available(data,error_function,false)
+        if(result){
+            success_function(result)
+        }
+    },
+    //TODO testing
+    book:function(data,error_function,success_function){
+        const result=timeslot_available(data,error_function,true)
+        if(result){
+            success_function(result)
+        }
+    },
+}
+module.exports.timeslot=timeslot
+
+const personal_schedule={
+    //TODO testing
+    get:function(data,error_function,success_function){
+        if(check_attributes(data,"SSN",error_function)){
+            var sql=`SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID join user on user.SSN=booking.SSN WHERE booking.SSN = ${data.SSN} and instrument.Exist=1 and user.Exist=1;`
+
+            database.connection.query(sql, (error, result)=> {
+                database.connection.query(query,(error,results,fields)=>{
+                    if(error){
+                        error_function({source:"personal_schedule.get",message:error.sqlMessage,error:error,fatal:true})
+                        return
+                    }
+
+                    var ret=[];
+                    for(result of results){
+                        ret.push({BookingID:result.Booking_ID, StartTime:result.Start_Time, EndTime:result.End_Time, Description:result.Description})
+                    }
+                    success_function(ret)
+                })
+            })
+        }
+    },
+}
+module.exports.personal_schedule=personal_schedule
+
+const users={
+    //TODO testing
+    get:function(data,error_function,success_function){
+        if(check_attributes(data,"ssn",error_function)){
+            const query=`select * from user where Exist=1;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"users.get",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({SSN:result.SSN,First_name:result.First_name,Last_name:result.Last_name,Admin:result.Admin,Phone_number:result.Phone_number,Email:result.Email,Special_rights:result.Special_rights,Immunocompromised:result.Immunocompromised,Maintenance:result.Maintenance})
+                }
+                success_function(ret)
+            })
+        }
+    },
+    //TODO testing
+    add:function(data,error_function,success_function){
+        const attributes="User_SSN,First_name,Last_name,Password,Admin,Phone_number,Email,Special_rights,Immunocompromised,Maintenance"
+        const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
+        if(sorted_attributes){
+            const query=`insert into user(SSN,${attributes.slice(1)},Exist) values (${'?'.repeat(sorted_attributes.length)},1)`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"users.add",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"users.add",message:"did not insert",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    //TODO testing
+    remove:function(data,error_function,success_function){
+        const attributes="ssn ssn_user"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
+        if(sorted_attributes){
+            const query=`update from user where SSN=${data.ssn_user} set Exist=0;`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"users.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"users.remove",message:"did not remove",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+}
+module.exports.users=users
+
+const maintenance={
+    //TODO make sure instrument exists? also testing
+    get:function(data,error_function,success_function){
+        if(check_attributes(data,"Ins_ID",error_function)){
+            const query=`select * from booking where Ins_ID="${data.RoomID}";`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                var ret=[]
+                for(result of results){
+                    ret.push({DateTime:result.DateTime,Status:result.Status,Notes:result.Notes,SSN:result.SSN,Ins_ID:result.Ins_ID})
+                }
+                success_function(ret)
+            })
+        }
+    },
+    //TODO testing
+    add:function(data,error_function,success_function){
+        const attributes="DateTime, Status, Notes, SSN, Ins_ID"
+        const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
+        if(sorted_attributes){
+            const query=`insert into maintenance(${attributes}) values (${'?'.repeat(sorted_attributes.length)})`
+
+            database.connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"maintenance.add",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"maintenance.add",message:"did not insert",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+}
+module.exports.maintenance=maintenance
+
+const login={
+    //TODO testing
+    login:function(data,error_function,success_function){
+        if(check_attributes(data,"ssn",error_function)){
+            const query=`select * from user where user.SSN='${data.ssn}' and user.Password=${data.password} and user.Exist=1;`
+
+            database.connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                if(results[0].affectedRows!=1){
+                    error_function({source:"login.login",message:"ssn or password is wrong.",error:results,fatal:false})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+}
+module.exports.login=login
