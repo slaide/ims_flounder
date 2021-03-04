@@ -51,6 +51,7 @@
             </div>
 
             <script>
+
                 //Add maintenance navigering if maintenance personell
                 if (localStorage.getItem("main")==="1") {
                 let menu_list = document.querySelector('#menu_list');
@@ -112,7 +113,7 @@
                                 let remove_container = document.querySelector(".remove_room");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.href = "ADMIN_DEMO_2.html";
+                                    window.location.reload();
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
@@ -130,6 +131,7 @@
 
                 //Retriving all the room again for displaying the instruments
                 function getRoomsForIns() {
+                    //window.location.reload();
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
@@ -165,7 +167,7 @@
                                 let remove_container = document.querySelector(".remove_ins");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.href = "ADMIN_DEMO_2.html";
+                                    window.location.reload();
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
