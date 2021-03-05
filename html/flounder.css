@@ -128,8 +128,7 @@ p img {
 .grid_sched {
    margin: 1rem 1rem 1rem 0.5rem;
 }
-
-.grid h1, #button_container h1, .remove_ins h1, .remove_room h1, #user_display h1, #select_ins h1, #maintenance_overview h1 {
+h1{
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
