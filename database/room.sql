@@ -11,7 +11,7 @@ CREATE TABLE room (
   Area int NOT NULL,
   Building_code int NOT NULL,
   Capacity int NOT NULL,
-  Class varchar(40) NOT NULL,
+  Class varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   Exist tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
