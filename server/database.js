@@ -285,7 +285,7 @@ const rooms={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="room_ID, area, building_code, capacity, class"
+        const attributes="area, building_code, capacity, class"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
         if(sorted_attributes){
 
@@ -307,7 +307,7 @@ const rooms={
     //TODO testing
     remove:function(data,error_function,success_function){
         console.log(data)
-        const attributes="ssn room_id"
+        const attributes="ssn RoomID"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
@@ -330,8 +330,7 @@ const rooms={
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                console.log("results:", results)
-                if(result[0].NumFutureBookings!=0){
+                if(results[0].NumFutureBookings!=0){
                     error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
                     return
                 }
@@ -432,7 +431,7 @@ const instruments={
 
                 select @NumFutureBookings := count(*) as NumFutureBookings
                 from booking
-                where timediff(booking.Start_Time,${new Date().toLocaleString("se-SE",{timezone:"Sweden"})})>0
+                where timediff(booking.Start_Time,'${new Date().toLocaleString("se-SE",{timezone:"Sweden"})}')>0
                 and booking.Ins_ID = ${data.ins_id};
 
                 if @NumFutureBookings=0 then
@@ -447,10 +446,13 @@ const instruments={
                     error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(result[0].NumFutureBookings!=0){
+                console.log("results: ", results)
+                console.log("results.NumFutureBookings!", results.NumFutureBookings)
+                if(results.NumFutureBookings!=0){
                     error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false})
                     return
                 }
+                console.log("results[1].affectedRows ", results[1].affectedRows)
                 if(results[1].affectedRows!=1){
                     error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
                     return
