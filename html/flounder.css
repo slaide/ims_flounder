@@ -346,5 +346,12 @@ p img {
    color:white;
 }
 
+#email {
+   color:white; 
+   float: right;
+   padding: 0.6rem 0.9rem;
+   margin: 0.6rem;
+}
+
 /*Maintenance page style*/
 
