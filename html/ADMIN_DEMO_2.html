@@ -79,6 +79,7 @@
 
                 //Function for displaying rooms
                 function getRooms() {
+                    var ssn = localStorage.getItem("ssn");
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
@@ -139,13 +140,12 @@
                             }
                         }
                     }
-                    var ssn = localStorage.getItem("ssn");
                     xhttp.send(JSON.stringify({"ssn": ssn}));
                 }
 
                 //Retriving all the room again for displaying the instruments
                 function getRoomsForIns() {
-                    //window.location.reload();
+                    var ssn = localStorage.getItem("ssn");
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_rooms_admin", true);
                     xhttp.onreadystatechange = function() {
@@ -172,6 +172,11 @@
                                 submit.setAttribute('type','submit');
                                 submit.setAttribute('value','Remove instrument');
                             form.appendChild(submit);
+                            let input_ssn = document.createElement('input');
+                                input_ssn.setAttribute("type","hidden");
+                                input_ssn.setAttribute("name","ssn");
+                                input_ssn.setAttribute("value",`${ssn}`);
+                            form.appendChild(input_ssn);
 
                             //Redirecting to admin page when submitting removal
                             function formSubmit(e) {
@@ -197,7 +202,6 @@
                             }
                         }
                     }
-                    var ssn = localStorage.getItem("ssn");
                     xhttp.send(JSON.stringify({"ssn": ssn}));
                 }
 
@@ -303,7 +307,8 @@
                             }
                         }
                     }
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var admin_ssn = localStorage.getItem("ssn");
+                    xhttp.send(JSON.stringify({"ssn_user": ssn, "ssn": admin_ssn}));
                 }
 
                 //Change special rights function
