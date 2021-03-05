@@ -223,7 +223,7 @@ function connect_build_database(then,on_error=(conn,err)=>{
                         var long_file="";
                         for(file of sql_files){
                             //remove collate values that npms mysql module just cannot play nice with for some reason
-                            const file_content=fs.readFileSync(file,utility.encoding.utf8).replace("COLLATE utf8mb4_0900_ai_ci","").replace("COLLATE=utf8mb4_0900_ai_ci","")
+                            const file_content=fs.readFileSync(file,utility.encoding.utf8).replace(/COLLATE utf8mb4_0900_ai_ci/gi,"").replace(/COLLATE=utf8mb4_0900_ai_ci/gi,"")
                             long_file+=file_content
                         }
 
@@ -643,7 +643,7 @@ const users={
     //TODO testing
     get:function(data,error_function,success_function){
         if(check_attributes(data,"ssn",error_function)){
-            const query=`select * from user where Exist=1;`
+            const query=`select Email,SSN,First_name,Last_name,Admin,Maintenance,Immunocompromised,Phone_number from user where Exist=1;`
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
@@ -657,10 +657,15 @@ const users={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="User_SSN,First_name,Last_name,Password,Admin,Phone_number,Email,Special_rights,Immunocompromised,Maintenance"
+        const attributes="ssn,first_name,last_name,password,admin,phone_number,email,special_rights,immunocompromised,maintenance"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
-            const query=`insert into user(SSN,${attributes.slice(1)},Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
+            if(!"ABC".split("").includes(data.special_rights)){
+                error_function({source:"users.add",message:"special rights must be A/B/C",fatal:false})
+                return
+            }
+
+            const query=`insert into user(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
@@ -675,7 +680,7 @@ const users={
             })
         }
     },
-    //TODO testing, allow users with future bookings to be removed?
+    //TODO remove future booking of that user
     remove:function(data,error_function,success_function){
         const attributes="ssn ssn_user"
         const sorted_attributes=check_attributes(data,attributes,error_function)
@@ -748,12 +753,12 @@ module.exports.maintenance=maintenance
 const account={
     //TODO testing
     login:function(data,error_function,success_function){
-        if(check_attributes(data,"ssn",error_function)){
+        if(check_attributes(data,"ssn password",error_function)){
             const query=`
-                select * 
+                select user.SSN,user.Email,user.Admin,user.Maintenance
                 from user 
                 where user.SSN='${data.ssn}'
-                and user.Password=${data.password} 
+                and user.Password=${data.password}
                 and user.Exist=1;
             `
 
@@ -762,7 +767,10 @@ const account={
                     error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                //check if selected admin attribute is valid (cannot be null per database)
+                //if invalid, login failed, no user matched login data
+                if(typeof(results[0].admin)=="undefined" || results[0].admin==null){
+                    //user may not exist, which means ssn is "wrong"
                     error_function({source:"login.login",message:"ssn or password is wrong.",error:results,fatal:false})
                     return
                 }
@@ -770,9 +778,13 @@ const account={
             })
         }
     },
-    //TODO testing
     set_special_rights(data,error_function,success_function){
         if(check_attributes(data,"ssn Special_rights",error_function)){
+            if(!"ABC".split("").includes(data.Special_rights)){
+                error_function({source:"account.set_special_rights",message:"special rights must be A/B/C",fatal:false})
+                return
+            }
+
             const query=`
                 update user 
                 set user.Special_rights='${data.Special_rights}'
@@ -787,6 +799,32 @@ const account={
                 }
                 if(results.affectedRows!=1){
                     error_function({source:"account.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    generate_new_login_token(data,error_function,success_function){
+        if(check_attributes(data,"ssn password",error_function)){
+            const query=`
+                select user.SSN,user.Email,user.Admin,user.Maintenance
+                from user 
+                where user.SSN='${data.ssn}'
+                and user.Password=${data.password}
+                and user.Exist=1;
+            `
+
+            connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                //check if selected admin attribute is valid (cannot be null per database)
+                //if invalid, login failed, no user matched login data
+                if(typeof(results[0].admin)=="undefined" || results[0].admin==null){
+                    //user may not exist, which means ssn is "wrong"
+                    error_function({source:"login.login",message:"ssn or password is wrong.",error:results,fatal:false})
                     return
                 }
                 success_function()
