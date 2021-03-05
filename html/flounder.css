@@ -114,7 +114,7 @@ p img {
    font-family: 'Poppins','Helvetica',sans-serif;
 }
 
-.grid {
+.grid, #select_ins, #maintenance_overview {
    background-color: #ffffffb6;
    padding: 0.8rem;
    border-radius: 10px;
@@ -128,7 +128,7 @@ p img {
    margin: 1rem 1rem 1rem 0.5rem;
 }
 
-.grid h1, #button_container h1, .remove_ins h1, .remove_room h1, #user_display h1 {
+.grid h1, #button_container h1, .remove_ins h1, .remove_room h1, #user_display h1, #select_ins h1, #maintenance_overview h1 {
    font-size: 1.4rem;
    font-weight: 600;
    text-transform: uppercase; 
@@ -252,7 +252,7 @@ p img {
    font-size: 0.9rem;
 }
 
-#booking_form input[type=submit] {
+#booking_form input[type=submit], #maintenance_form input[type=submit] {
    display: block;
    margin: auto;
    margin-top: 0.8rem;
@@ -265,7 +265,7 @@ p img {
    font-size: 1rem;
 }
 
-#booking_form input[type=submit]:hover {
+#booking_form input[type=submit]:hover, #maintenance_form input[type=submit]:hover {
    background-color: #262223;
 }
 
@@ -354,4 +354,70 @@ p img {
 }
 
 /*Maintenance page style*/
+#whole_page {
+   display: grid;
+   grid-template-columns: 0.5fr 1fr;
+}
+
+#select_ins {
+   margin: 1rem;
+}
+
+#maintenance_overview {
+   margin: 1rem 1rem 1rem 0;
+}
+
+#maintenance_form h1, h2 {
+   font-size: 1rem;
+   text-transform: capitalize;
+   font-weight: 500;
+   margin: 0;
+   padding: 0;
+   line-height: 1rem;
+}
+
+#instrument_menu {
+   font-family: 'Poppins','Helvetica',sans-serif;
+   padding: 0.3rem;
+   border: 1px #262223 solid;
+   color:#262223;
+   border-radius: 10px;
+   width: 60%;
+   display: block;
+   margin: auto;
+   margin-top: 0.3rem;
+   outline: none;
+   background-color:#f1fcfa;
+   margin-bottom: 0.5rem;
+}
+
+#maintenance_form {
+   width: 60%;
+   text-align: left;
+   margin: auto;
+   margin-bottom: 1rem;
+}
+
+#maintenance_form input[type=text], #maintenance_form input[type=datetime-local] {
+   width: 97%;
+   padding: 0.3rem;
+   font-size: 0.8rem;
+   outline: none;
+   border-radius: 10px;
+   margin: 0;
+   margin-bottom: 0.8rem;
+   border: 1px #262223 solid;
+   background-color: #f1fcfa;
+}
+
+#maintenance_form input[type=datetime-local] {
+   font-family: 'Poppins','Helvetica',sans-serif;
+}
+
+
+
+
+
+
+
 
