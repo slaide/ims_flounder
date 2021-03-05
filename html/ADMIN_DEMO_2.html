@@ -245,12 +245,12 @@
                                         td.innerHTML = "Yes";
                                     } else if (users[i][key] === 0) {
                                         td.innerHTML = "No";
-                                    } else if (key === "SpecRight") {
+                                    } else if (key === "special_rights") {
                                         let button = document.createElement('button');
-                                            button.setAttribute('onclick',`changeRights(${users[i]["SSN"]})`);
+                                            button.setAttribute('onclick',`changeRights(${users[i]["ssn"]})`);
                                             button.setAttribute('class','change_rights');
                                         td.innerHTML = users[i][key];
-                                        td.setAttribute('id',`spec_data_${users[i]["SSN"]}`);
+                                        td.setAttribute('id',`spec_data_${users[i]["ssn"]}`);
                                         button.innerHTML = "edit";
                                         tr.appendChild(td);
                                         td.appendChild(button);
@@ -261,7 +261,7 @@
                                 }
                                 let td = document.createElement('td');
                                 let button = document.createElement('button');
-                                    button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                    button.setAttribute('onclick',`removeUser(${users[i]["ssn"]})`);
                                     button.setAttribute('class','remove_user');
                                     button.innerHTML = "remove";
                                 tr.appendChild(td);
@@ -278,7 +278,7 @@
                 }
 
                 //Remove user function
-                function removeUser(ssn) {
+                function removeUser(user_ssn) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST","/remove_user",true);
                     xhttp.onreadystatechange = function() {
@@ -291,15 +291,17 @@
                             }
                         }
                     }
+                    console.log(user_ssn)
                     var token=localStorage.getItem("token")
-                    xhttp.send(JSON.stringify({ssn:ssn,token:token}));
+                    var ssn=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({ssn:ssn,user_ssn:user_ssn,token:token}));
                 }
 
                 //Change special rights function
-                function changeRights(ssn) {
+                function changeRights(user_ssn) {
                     //Create form for filling in the new special right, action: /set_user_rights 
                     //Sending new special right and ssn
-                    let td = document.querySelector(`#spec_data_${ssn}`);
+                    let td = document.querySelector(`#spec_data_${user_ssn}`);
                     $(td).empty();
                     let form = document.createElement('form');
                         form.setAttribute('class','change_right_form');
@@ -307,14 +309,24 @@
                         form.setAttribute('method','POST');
                     td.appendChild(form);
                     let rights = document.createElement('input');
-                        rights.setAttribute('name','Special_rights');
+                        rights.setAttribute('name','special_rights');
                         rights.setAttribute('type','text');
                     form.appendChild(rights);
+                    let user_ssn_input = document.createElement('input');
+                        user_ssn_input.setAttribute('type','hidden');
+                        user_ssn_input.setAttribute('value',`${user_ssn}`);
+                        user_ssn_input.setAttribute('name','user_ssn');
                     let ssn_input = document.createElement('input');
                         ssn_input.setAttribute('type','hidden');
-                        ssn_input.setAttribute('value',`${ssn}`);
+                        ssn_input.setAttribute('value',`${localStorage.getItem("ssn")}`);
                         ssn_input.setAttribute('name','ssn');
+                    let token_input = document.createElement('input');
+                        token_input.setAttribute('type','hidden');
+                        token_input.setAttribute('value',`${localStorage.getItem("token")}`);
+                        token_input.setAttribute('name','token');
+                    form.appendChild(user_ssn_input);
                     form.appendChild(ssn_input);
+                    form.appendChild(token_input);
                     let submit = document.createElement('input');
                         submit.setAttribute('type','submit');
                         submit.setAttribute('value','OK');
@@ -329,7 +341,7 @@
                         xhtpp.onerror = function() {
                             window.alert("Request failed");
                         }
-                        xhttp.send($('.change_right_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
+                        xhttp.send($('.change_right_form').serialize());
                         e.preventDefault();
                         document.querySelector(".change_right_form").removeEventListener("submit", formSubmit);
                     }
