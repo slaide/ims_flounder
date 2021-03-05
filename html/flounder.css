@@ -103,6 +103,7 @@ p img {
    display: inline-block;
 }
 
+
 /*Grid display for the overview page*/
 #overview_cont{
    display: grid;
@@ -413,6 +414,28 @@ p img {
 #maintenance_form input[type=datetime-local] {
    font-family: 'Poppins','Helvetica',sans-serif;
 }
+
+#notes_table {
+   margin: auto;
+}
+
+#notes_table th, #notes_table td {
+   border: 1px solid #f1fcfa;
+}
+
+#notes_table th {
+   background-color: #f1fcfa;
+}
+
+/*email in navigation menu*/
+#email {
+   font-size: 0.8rem;
+   padding: 0;
+   margin: 0;
+   margin-top: 1.3rem;
+}
+
+
 
 
 
