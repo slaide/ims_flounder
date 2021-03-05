@@ -14,7 +14,7 @@ const { Console } = require("console")
 
 function check_login_data(req,res){
     utility.parse_data(req,(user_data)=>{
-        database.account.login(user_data,error=>{
+        database.accounts.login(user_data,error=>{
             if(error.fatal) throw error;
 
             utility.log(`error selecting attributes from user: ${error}`)

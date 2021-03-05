@@ -10,39 +10,15 @@ const database=require("./database.js")
  */
 function revoke_reservation(req,res){
     utility.parse_data(req,(data)=>{
-        //make sure all of the expected data is here and defined
-        for(attribute of "ssn booking_id".split(" ")){
-            if(!data[attribute]){
-                const error_message=`request is missing the attribute '${attribute}'`
-                utility.log(error_message)
-
-                res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
-
-                return
-            }
-        }
-
-        //make sure a user only revokes their own bookings?
-        database.connection.query("delete from booking where Booking_ID=? and SSN=?;",[data.booking_id,data.ssn],(error,results,fields)=>{
-            if(error){
-                const error_message="failed to delete booking"
-                utility.log(`${error_message}: ${error}`)
-
-                res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
-                return
-            }
-            if (results.affectedRows!=1){
-                const error_message="failed to remove the booking. maybe it was removed already?"
-                utility.log(`${error_message}: ${data}`)
-
-                res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
-
-                return
-            }
-
+        database.bookings.remove(data,(error)=>{
+            if(error.fatal) throw error; 
+ 
+            const error_message="failed to delete booking"
+            utility.log(`${error_message}: ${JSON.stringify(error)}`)
+ 
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error}))
+        },()=>{
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({result:"successfully revoked booking"}))
         })
