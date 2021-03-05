@@ -409,7 +409,6 @@ const instruments={
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                console.log("results ", results)
                 if(results[1][0].RoomExists==0){
                     error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:results})
                     return

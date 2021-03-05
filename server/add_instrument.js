@@ -1,5 +1,6 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
+const fs=require("fs")
 
 /**
  * Add a new instrument to the system
@@ -17,8 +18,7 @@ function add_instrument(req,res){
             res.end(JSON.stringify({error:error}))
 
         },(results)=>{
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({success:"successfully added instrument"}))
+            res.end(fs.readFileSync("../html/ADMIN_DEMO_2.html",utility.encoding.utf8))
         })
     })
 }

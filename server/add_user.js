@@ -1,6 +1,6 @@
 const utility=require("./utility.js")
 const database=require("./database.js")
-
+const fs=require("fs")
 /**
  * Add a new user to the system
  * currently expects client data: ssn, first_name, last_name, password, admin, phone_number, email, special_rights, immunocompromised
@@ -10,7 +10,6 @@ const database=require("./database.js")
  */
 function add_user(req,res){
     utility.parse_data(req,(data)=>{
-        console.log("data: ", data)
         database.users.add(data,(error)=>{
             if(error.fatal) throw error;
             
@@ -18,8 +17,7 @@ function add_user(req,res){
             res.end(JSON.stringify({error:error}))
 
         },(results)=>{
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({success:"successfully added user"}))
+            res.end(fs.readFileSync("../html/ADMIN_DEMO_2.html",utility.encoding.utf8))
         })
     })
 }
