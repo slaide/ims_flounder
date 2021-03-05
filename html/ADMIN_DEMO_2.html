@@ -93,12 +93,12 @@
                             cont.appendChild(form);
                             form.addEventListener("submit", formSubmit);
                             let select_room = document.createElement('select');
-                                select_room.setAttribute("name","RoomID");
+                                select_room.setAttribute("name","room_id");
                             form.appendChild(select_room);
                             for (let i = 0; i < rooms.length; i++) {
                                 let option = document.createElement('option');
-                                    option.setAttribute("value",`${rooms[i].RoomID}`);
-                                    option.innerHTML = `Room ${rooms[i].RoomID}`;
+                                    option.setAttribute("value",`${rooms[i].room_id}`);
+                                    option.innerHTML = `Room ${rooms[i].room_id}`;
                                 select_room.appendChild(option);
                             }
                             let submit = document.createElement('input');
@@ -154,7 +154,7 @@
                                 select.setAttribute("name", "ins_id");
                             form.appendChild(select);
                             for (let i = 0; i < rooms.length; i++) {
-                                displayIns(rooms[i].RoomID, select);
+                                displayIns(rooms[i].room_id, select);
                             }
                             let submit = document.createElement("input");
                                 submit.setAttribute('type','submit');
@@ -187,7 +187,7 @@
                 }
 
                 //Displaying instruments inside the rooms
-                function displayIns(RoomID, select) {
+                function displayIns(room_id, select) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_instruments_in_room_admin", true);
                     xhttp.onreadystatechange = function() {
@@ -200,8 +200,8 @@
                             for (let i = 0; i < instrument.length; i++) {
                                 let option = document.createElement("option");
                                     option.setAttribute('class','ins_option');
-                                    option.setAttribute('value', `${instrument[i].InsID}`);
-                                    option.innerHTML = `Room ${RoomID}: ${instrument[i].description}`;
+                                    option.setAttribute('value', `${instrument[i].ins_id}`);
+                                    option.innerHTML = `Room ${room_id}: ${instrument[i].description}`;
                                 select.appendChild(option);
 
                             }
@@ -209,7 +209,7 @@
                     }
                     var ssn = localStorage.getItem("ssn");
                     var token = localStorage.getItem("token");
-                    xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn,token:token}));
+                    xhttp.send(JSON.stringify({'room_id': room_id, 'ssn': ssn,token:token}));
                     
                 }
                 
@@ -278,7 +278,7 @@
                 }
 
                 //Remove user function
-                function removeUser(user_ssn) {
+                function removeUser(ssn_user) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST","/remove_user",true);
                     xhttp.onreadystatechange = function() {
@@ -291,17 +291,16 @@
                             }
                         }
                     }
-                    console.log(user_ssn)
                     var token=localStorage.getItem("token")
-                    var ssn=localStorage.getItem("token")
-                    xhttp.send(JSON.stringify({ssn:ssn,user_ssn:user_ssn,token:token}));
+                    var ssn=localStorage.getItem("ssn")
+                    xhttp.send(JSON.stringify({ssn:ssn,ssn_user:ssn_user,token:token}));
                 }
 
                 //Change special rights function
-                function changeRights(user_ssn) {
+                function changeRights(ssn_user) {
                     //Create form for filling in the new special right, action: /set_user_rights 
                     //Sending new special right and ssn
-                    let td = document.querySelector(`#spec_data_${user_ssn}`);
+                    let td = document.querySelector(`#spec_data_${ssn_user}`);
                     $(td).empty();
                     let form = document.createElement('form');
                         form.setAttribute('class','change_right_form');
@@ -312,10 +311,10 @@
                         rights.setAttribute('name','special_rights');
                         rights.setAttribute('type','text');
                     form.appendChild(rights);
-                    let user_ssn_input = document.createElement('input');
-                        user_ssn_input.setAttribute('type','hidden');
-                        user_ssn_input.setAttribute('value',`${user_ssn}`);
-                        user_ssn_input.setAttribute('name','user_ssn');
+                    let ssn_user_input = document.createElement('input');
+                        ssn_user_input.setAttribute('type','hidden');
+                        ssn_user_input.setAttribute('value',`${ssn_user}`);
+                        ssn_user_input.setAttribute('name','ssn_user');
                     let ssn_input = document.createElement('input');
                         ssn_input.setAttribute('type','hidden');
                         ssn_input.setAttribute('value',`${localStorage.getItem("ssn")}`);
@@ -324,7 +323,7 @@
                         token_input.setAttribute('type','hidden');
                         token_input.setAttribute('value',`${localStorage.getItem("token")}`);
                         token_input.setAttribute('name','token');
-                    form.appendChild(user_ssn_input);
+                    form.appendChild(ssn_user_input);
                     form.appendChild(ssn_input);
                     form.appendChild(token_input);
                     let submit = document.createElement('input');
