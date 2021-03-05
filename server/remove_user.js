@@ -9,22 +9,18 @@ const database=require("./database.js")
  * @param {Response} res Response object
  */
 
- function remove_user(req,res){
-    utility.parse_data(req,(data)=>{
+function remove_user(req,res){
+   utility.parse_data(req,(data)=>{
+      database.users.remove(data,(error)=>{
+          if(error.fatal) throw error;
+          
+          res.writeHeader(200,utility.content.json)
+          res.end(JSON.stringify({error:error}))
 
-      var sql="UPDATE user SET Exist=0 WHERE SSN=?"
-      database.connection.query(sql, [data.ssn], (error, result)=> {
-         if(error){
-            const error_message="error when removing user:'"+error+"'"
-            utility.log(`${error_message}`,"error")
-
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({error:error_message}))
-            return
-        }
-        res.writeHeader(200,utility.content.json)
-        res.end(JSON.stringify({result:"successfully removed user"}))
+      },(results)=>{
+          res.writeHeader(200,utility.content.json)
+          res.end(JSON.stringify({success:"successfully added instrument"}))
       })
-   })
- }
- module.exports.remove_user=remove_user
+  })  
+}
+module.exports.remove_user=remove_user

@@ -694,7 +694,7 @@ const users={
                     error_function({source:"users.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results.affectedRows!=1){
                     error_function({source:"users.remove",message:"did not remove",fatal:true})
                     return
                 }
