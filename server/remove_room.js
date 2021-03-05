@@ -11,15 +11,12 @@ const database=require("./database.js")
 
  function remove_room(req,res){
    utility.parse_data(req,(data)=>{
-      console.log("inside remove_room")
-      console.log("data:", data)
       database.rooms.remove(data,(error)=>{
           if(error.fatal) throw error;
           
           res.writeHeader(200,utility.content.json)
           res.end(JSON.stringify({error:error}))
-
-      },(results)=>{
+      },()=>{
           res.writeHeader(200,utility.content.json)
           console.log("removed room")
           res.end(JSON.stringify({success:"successfully removed room"}))
