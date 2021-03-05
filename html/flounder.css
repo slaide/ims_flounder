@@ -417,13 +417,25 @@ p img {
 
 #notes_table {
    margin: auto;
+   width: 90%;
 }
 
 #notes_table th, #notes_table td {
+   padding: 0.6rem 0.6rem;
+   text-align: left;
    border: 1px solid #f1fcfa;
 }
 
 #notes_table th {
+   background-color: #38BDF2;
+   color: #ffffff;
+}
+
+#notes_table td {
+   font-size: 0.9rem;
+}
+
+#notes_table tr:nth-child(odd){
    background-color: #f1fcfa;
 }
 
