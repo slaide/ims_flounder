@@ -18,6 +18,7 @@
                <a href="#"><li>My Bookings</li></a>
             </ul>
             <a id="log_out" href="#" onclick="logOut()">Log out</a>
+            <div id="email"></div>
          </nav>
 
             <div class="grid sched">
@@ -40,6 +41,9 @@
 
                //SSN from storage
                var SSN = localStorage.getItem("ssn");
+               var email = localStorage.getItem("email");
+
+               document.getElementById("email").innerHTML = email;
 
                //Todays date
                var today = new Date();
