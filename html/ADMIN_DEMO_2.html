@@ -109,6 +109,11 @@
                                 submit.setAttribute('type','submit');
                                 submit.setAttribute('value','Remove room');
                             form.appendChild(submit);
+                            let input_ssn = document.createElement('input');
+                                input_ssn.setAttribute("type","hidden");
+                                input_ssn.setAttribute("name","ssn");
+                                input_ssn.setAttribute("value",`${ssn}`);
+                            form.appendChild(input_ssn);
 
                             //Redirecting to admin page when submitting removal
                             function formSubmit(e) {
