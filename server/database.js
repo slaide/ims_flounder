@@ -447,13 +447,11 @@ const instruments={
                     return
                 }
                 console.log("results: ", results)
-                console.log("results.NumFutureBookings!", results.NumFutureBookings)
-                if(results.NumFutureBookings!=0){
+                if(results[1][0].NumFutureBookings!=0){
                     error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false})
                     return
                 }
-                console.log("results[1].affectedRows ", results[1].affectedRows)
-                if(results[1].affectedRows!=1){
+                if(results[2].affectedRows!=1){
                     error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
                     return
                 }
