@@ -10,7 +10,6 @@ const database=require("./database.js")
  */
 function add_instrument(req,res){
     utility.parse_data(req,(data)=>{
-        console.log("data: ", data)
         database.instruments.add(data,(error)=>{
             if(error.fatal) throw error;
             
