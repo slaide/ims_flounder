@@ -113,7 +113,11 @@
                                 let remove_container = document.querySelector(".remove_room");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.reload();
+                                    if (JSON.parse(this.responseText).error) {
+                                        console.log(JSON.parse(this.responseText).error);
+                                    } else {
+                                        window.location.reload();
+                                    }   
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
@@ -167,7 +171,11 @@
                                 let remove_container = document.querySelector(".remove_ins");
                                 let message = document.createElement('p');
                                 request.onload = function () {
-                                    window.location.reload();
+                                    if (JSON.parse(this.responseText).error) {
+                                        console.log(JSON.parse(this.responseText).error)
+                                    } else {
+                                        window.location.reload();
+                                    }
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
@@ -299,6 +307,7 @@
                         form.setAttribute('action','/set_user_rights');
                         form.setAttribute('method','POST');
                     td.appendChild(form);
+                    form.addEventListener("submit", formSubmit);
                     let rights = document.createElement('input');
                         rights.setAttribute('name','Special_rights');
                         rights.setAttribute('type','text');
@@ -317,9 +326,13 @@
                         var xhttp = new XMLHttpRequest();
                         xhttp.open("POST","/set_user_rights",true);
                         xhttp.onload = function () {
-                            window.location.reload();
+                            if(JSON.parse(this.responseText).error) {
+                                console.log(JSON.parse(this.responseText).error);
+                            } else {
+                                window.location.reload();
+                            }
                         }
-                        xhtpp.onerror = function() {
+                        xhttp.onerror = function() {
                             window.alert("Request failed");
                         }
                         xhttp.send($('.change_right_form').serialize());
