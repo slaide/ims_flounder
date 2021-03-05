@@ -151,13 +151,10 @@ strong {
 
 #add_room_form, #add_user_form, #add_ins_form {
    margin: auto;
-   width: 25%;
+   width: 400px;
    text-align: left;
 }
 
-#add_ins_form{
-   width: 50%;
-}
 
 
 
