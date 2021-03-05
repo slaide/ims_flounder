@@ -19,7 +19,7 @@ function get_rooms(req,res){
         },(results)=>{
             var ret=[];
             for(item of results){
-                ret.push({RoomID:item.Room_ID})
+                ret.push({room_id:item.Room_ID})
             }
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
@@ -48,7 +48,7 @@ function get_rooms_admin(req,res){
         },(results)=>{
             var ret=[];
             for(item of results){
-                ret.push({RoomID:item.Room_ID})
+                ret.push({room_id:item.Room_ID})
             }
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
@@ -77,7 +77,7 @@ function get_instruments_in_room(req,res){
         },(results)=>{
             var ret=[];
             for(item of results){
-                ret.push({InsID:item.Ins_ID,description:item.Description})
+                ret.push({ins_id:item.Ins_ID,description:item.Description})
             }
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
@@ -106,7 +106,7 @@ function get_instruments_in_room_admin(req,res){
         },(results)=>{
             var ret=[];
             for(item of results){
-                ret.push({InsID:item.Ins_ID,description:item.Description})
+                ret.push({ins_id:item.Ins_ID,description:item.Description})
             }
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
