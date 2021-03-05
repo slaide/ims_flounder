@@ -7,6 +7,7 @@
       <link rel="stylesheet" type="text/css" href="./flounder.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
    </head>
 
    <body>
@@ -19,10 +20,10 @@
             <!--<h1 id="title">LOG IN</h1>-->
             <!--The class for padding is unneccesary and also all the div tags-->
             <form action="/login" method="POST">
-                  <input type="email" name="email" placeholder="Email" required><br>
-                  <input type="password" name="password" placeholder="Password" required>
+                  <input id="email" type="email" name="email" placeholder="Email" required><br>
+                  <input id="password" type="password" name="password" placeholder="Password" required>
                <p>
-                  <input class="button" type="submit" value="Log in">
+                  <input class="button" type="button" value="Log in" onclick="send_hashed_password()">
                </p> 
             </form>
       </main>
@@ -40,6 +41,50 @@
 
       if (localStorage.getItem("ssn")) {
          window.location.replace("overview.html");
+      }
+
+      function sha512(data){
+         return crypto.subtle.digest("SHA-512",
+            new TextEncoder("utf-8").encode()
+         )
+      }
+
+      function send_hashed_password(){
+         sha512($("#password").value).then(
+            x=>sha512(x).then(
+               x=>{
+                  var xhttp=new XMLHttpRequest()
+                  xhttp.open("POST","/login",true)
+                  xhttp.onload=function(){
+                     var response=JSON.parse(this.responseText)
+                     if(response.error){
+                        window.warn(response.error)
+                     }
+                     if(response.ssn && response.main && response.admin && response.email){
+                        localStorage.setItem("ssn",response.ssn)
+                        localStorage.setItem("main",response.main)
+                        localStorage.setItem("admin",response.admin)
+                        localStorage.setItem("email",response.email)
+                     }else{
+                        console.log(`${response}`)
+                        const r=window.confirm("login failed. incomplete server response. press ok to reload page and try again.")
+                        if(r){
+                           window.location.reload()
+                        }
+                     }
+                     
+                     window.location.href="/overview.html"
+                  }
+                  xhttp.onerror=function(){
+                     const r=window.confirm("login failed. press ok to reload page and try again.")
+                     if(r){
+                        window.location.reload()
+                     }
+                  }
+                  xhttp.send(`?password=${x}&email=${$("email").value}`)
+               }
+            )
+         )
       }
 
    </script>
