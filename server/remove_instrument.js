@@ -10,21 +10,19 @@ const database=require("./database.js")
  */
 
  function remove_instrument(req,res){
-    utility.parse_data(req,(data)=>{
+   utility.parse_data(req,(data)=>{ 
+      database.instruments.remove(data,(error)=>{
+          if(error.fatal) throw error; 
 
-      var sql="UPDATE instrument SET Exist=0 WHERE Ins_ID=?"
-      database.connection.query(sql, [data.ins_id], (error, result)=> {
-         if(error){
-            const error_message="error when removing instrument:'"+error+"'"
-            utility.log(`${error_message}`,"error")
+          const error_message=`error when removing instrument:'${error}'`
+          utility.log(`${error_message}`)
 
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({error:error_message}))
-            return
-        }
-        res.writeHeader(200,utility.content.json)
-        res.end(JSON.stringify({result:"successfully removed instrument"}))
-      }) 
-    })
+          res.writeHeader(200,utility.content.json)
+          res.end(JSON.stringify({error:error}))
+      },(results)=>{
+          res.writeHeader(200,utility.content.json)
+          res.end(JSON.stringify({success:"successfully removed instrument"}))
+      })
+  })
  }
  module.exports.remove_instrument=remove_instrument
