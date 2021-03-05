@@ -88,7 +88,9 @@
                   }
                }
             };
-            xhttp.send(JSON.stringify({'ssn':ssn}));
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'ssn': ssn,token:token}));
          }
 
          function populateMenu(RoomID) {
@@ -113,7 +115,9 @@
                   }
             }
          };
-         xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
+         var token = localStorage.getItem("token");
+         var ssn = localStorage.getItem("ssn");
+         xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn,token:token}));
         }
 
         function selected_ins(InsID_input) {
@@ -195,7 +199,8 @@
             }
           };
           //alert("calling");
-          xhttp.send(JSON.stringify({'DateTime': date, 'Status': status, 'Notes': note, 'SSN': ssn, 'Ins_ID': Ins_ID}));
+          var token = localStorage.getItem("token");
+          xhttp.send(JSON.stringify({'date_time': date, 'status': status, 'notes': note, 'ssn': ssn, 'ins_id': Ins_ID, token:token}));
         }
 
         function show_maintenance(Ins_ID) {
@@ -244,7 +249,9 @@
               //alert("error4");
             }
           };
-          xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'Ins_ID': Ins_ID,'ssn': ssn,token:token}));
         }
 
         function test_print() {

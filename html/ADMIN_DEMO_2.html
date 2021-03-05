@@ -119,14 +119,15 @@
                                     message.innerHTML = "Request failed";
                                 }
                                 remove_container.appendChild(message);
-                                request.send($('#remove_room_form').serialize());
+                                request.send($('#remove_room_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
                                 e.preventDefault();
                                 document.querySelector("#remove_room_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({"ssn": ssn,token:token}));
                 }
 
                 //Retriving all the room again for displaying the instruments
@@ -173,14 +174,15 @@
                                     message.innerHTML = "Request failed";
                                 }
                                 remove_container.appendChild(message);
-                                request.send($('#remove_ins_form').serialize());
+                                request.send($('#remove_ins_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
                                 e.preventDefault();
                                 document.querySelector("#remove_ins_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({"ssn": ssn,token:token}));
                 }
 
                 //Displaying instruments inside the rooms
@@ -205,7 +207,8 @@
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
-                    xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
+                    var token = localStorage.getItem("token");
+                    xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn,token:token}));
                     
                 }
                 
@@ -268,7 +271,9 @@
                             table_head.appendChild(th);
                         }
                     }
-                    xhttp.send();
+                    var ssn=localStorage.getItem("ssn")
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({ssn:ssn,token:token}));
                 }
 
                 //Remove user function
@@ -285,7 +290,8 @@
                             }
                         }
                     }
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({ssn:ssn,token:token}));
                 }
 
                 //Change special rights function
@@ -322,7 +328,7 @@
                         xhtpp.onerror = function() {
                             window.alert("Request failed");
                         }
-                        xhttp.send($('.change_right_form').serialize());
+                        xhttp.send($('.change_right_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
                         e.preventDefault();
                         document.querySelector(".change_right_form").removeEventListener("submit", formSubmit);
                     }

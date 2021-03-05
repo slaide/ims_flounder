@@ -137,7 +137,8 @@
                      }
                   };
                   //Send request and info to server 
-                  xhttp.send(JSON.stringify({'SSN': SSN}));
+                  var token = localStorage.getItem("token");
+                  xhttp.send(JSON.stringify({'ssn': SSN,token:token}));
                }
 
             function populateMenu() {
@@ -176,7 +177,8 @@
 
             };
                //Send request and info to server
-               xhttp.send(JSON.stringify({'SSN': SSN}));
+               var token = localStorage.getItem("token");
+               xhttp.send(JSON.stringify({'ssn': SSN,token:token}));
          }
 
             function revokeBooking() {
@@ -189,7 +191,7 @@
 
                //Error handling
                if (response.error) {
-                  console.log("an error occured on the server: " + response.error)
+                  console.log("an error occured on the server: " + this.responseText)
                   document.getElementById("revoke_message").innerHTML = "Server error"
                   return;
                }
@@ -201,7 +203,7 @@
             }
          };
          //Send request and info to server
-         xhttp.send($("#revoke").serialize() + '&ssn=' + localStorage.getItem("ssn"));
+         xhttp.send($("#revoke").serialize() + '&ssn=' + localStorage.getItem("ssn") + '&token='+localStorage.getItem("token"));
       }
 
       function logOut() {
