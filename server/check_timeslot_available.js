@@ -14,6 +14,8 @@ function check_timeslot_available(req,res){
         database.timeslot.check_available(data,(error)=>{
             if(error.fatal) throw error;
 
+            utility.log(`failed to check for timeslot availability ${JSON.stringify(error)}`)
+
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error}))
         },(results)=>{
