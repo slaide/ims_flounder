@@ -306,6 +306,7 @@ const rooms={
     },
     //TODO testing
     remove:function(data,error_function,success_function){
+        console.log(data)
         const attributes="ssn room_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
@@ -314,11 +315,11 @@ const rooms={
 
                 select @NumInstrumentsInRoom := count(*)
                 from instrument
-                where instrument.Room_ID = ${data.room_id}
+                where instrument.Room_ID = ${data.RoomID}
                 and instrument.Exist=1;
 
                 if @NumInstrumentsInRoom=0 then
-                    update room set Exist=0 where Room_ID=${data.room_id};
+                    update room set Exist=0 where Room_ID=${data.RoomID};
                 end if;
 
                 commit;
@@ -329,6 +330,7 @@ const rooms={
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                console.log("results:", results)
                 if(result[0].NumFutureBookings!=0){
                     error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
                     return
