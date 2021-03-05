@@ -129,7 +129,7 @@ function create_global_connection_pool(){
             start transaction;
 
                 update user 
-                set user.Token=SHA2(concat(user.Password,new_time,SHA2(RAND())),512), Last_login=new_time
+                set user.Token=SHA2(concat(user.Password,new_time,SHA(RAND())),512), Last_login=new_time
                 where user.SSN=ssn;
 
                 select user.token into Token
@@ -323,13 +323,20 @@ function check_attributes(data,attributes_string,error_function,delim=" "){
 
 const rooms={
     get:function(data,error_function,success_function){
-        const sorted_attributes=check_attributes(data,"ssn",error_function)
+        const sorted_attributes=check_attributes(data,"ssn token",error_function)
         if(sorted_attributes){
             const query=`
-                select * 
-                from room 
-                where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 
-                and room.Exist=1;
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    if @Success=1 then
+                        select * 
+                        from room 
+                        where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0 
+                        and room.Exist=1;
+                    end if;
+                commit;
             `
 
             connection.query(query,(error,results,fields)=>{
@@ -337,25 +344,42 @@ const rooms={
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                if(results[2][0].Success!=1){
+                    error_function({source:"rooms.get",message:"token is invalid",fatal:false})
+                    return
+                }
 
-                success_function(results)
+                success_function(results[3])
             })
         }
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="room_ID, area, building_code, capacity, class"
-        const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
+        const attributes="ssn token room_id area building_code capacity class"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
 
-            const query=`insert into room(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    if @Success=1 then
+                        insert into room(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)
+                    end if;
+                commit;
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results.affectedRows!=1){
+                if(results[2][0].Success!=1){
+                    error_function({source:"rooms.add",message:"token is invalid",fatal:false})
+                    return
+                }
+                if(results[3].affectedRows!=1){
                     error_function({source:"rooms.add",message:"did not insert",fatal:true})
                     return
                 }
@@ -365,19 +389,23 @@ const rooms={
     },
     //TODO testing
     remove:function(data,error_function,success_function){
-        const attributes="ssn RoomID"
+        const attributes="ssn token room_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
                 start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
 
-                    select @NumInstrumentsInRoom := count(*)
-                    from instrument
-                    where instrument.Room_ID = ${data.RoomID}
-                    and instrument.Exist=1;
+                    if @Success=1 then
+                        select @NumInstrumentsInRoom := count(*)
+                        from instrument
+                        where instrument.Room_ID = ${data.room_id}
+                        and instrument.Exist=1;
 
-                    if @NumInstrumentsInRoom=0 then
-                        update room set Exist=0 where Room_ID=${data.RoomID};
+                        if @NumInstrumentsInRoom=0 then
+                            update room set Exist=0 where Room_ID=${data.room_id};
+                        end if;
                     end if;
 
                 commit;
@@ -388,11 +416,15 @@ const rooms={
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(result[0].NumFutureBookings!=0){
+                if(results[2][0].Success!=1){
+                    error_function({source:"rooms.remove",message:"token is invalid",fatal:false})
+                    return
+                }
+                if(results[3][0].NumInstrumentsInRoom!=0){
                     error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results[4].affectedRows!=1){
                     error_function({source:"rooms.remove",message:"did not remove",fatal:true})
                     return
                 }
@@ -402,17 +434,38 @@ const rooms={
     },
     //TODO check is user is admin, testing, map fields
     get_admin:function(data,error_function,success_function){
-        const sorted_attributes=check_attributes(data,"ssn",error_function)
+        const sorted_attributes=check_attributes(data,"ssn token",error_function)
         if(sorted_attributes){
-            const query=`select * from room where Exist=1;`
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        select * from room where Exist=1;
+                    end if;
+                commit;
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.get_admin",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                if(results[2][0].Success!=1){
+                    error_function({source:"rooms.get_admin",message:"token is invalid",fatal:false})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
 
-                success_function(results)
+                success_function(results[4])
             })
         }
     },
@@ -421,14 +474,21 @@ module.exports.rooms=rooms
 
 const instruments={
     get:function(data,error_function,success_function){
-        if(check_attributes(data,"RoomID ssn",error_function)){
+        if(check_attributes(data,"room_id ssn token",error_function)){
             const query=`
-                select *
-                from instrument 
-                join room on room.Room_ID = instrument.Room_ID 
-                where room.Room_ID="${data.RoomID}" 
-                and instrument.Exist=1 
-                and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    if @Success=1 then
+                        select *
+                        from instrument 
+                        join room on room.Room_ID = instrument.Room_ID 
+                        where room.Room_ID="${data.room_id}" 
+                        and instrument.Exist=1 
+                        and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;
+                    end if;
+                commit;
             `
 
             connection.query(query,(error,results,fields)=>{
@@ -436,29 +496,39 @@ const instruments={
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                if(results[2][0].Success!=1){
+                    error_function({source:"instruments.get",message:"token is invalid",fatal:false})
+                    return
+                }
 
-                success_function(results)
+                success_function(results[3])
             })
         }
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="description,serial,proc_date,room_ID"
-        const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
+        const attributes="ssn token description serial proc_date room_id"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
                 start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
 
-                #check if room exists since roomid is freeform text currently
-                select @RoomExists := count(*) as RoomExists
-                from room
-                where room.Room_ID=${data.room_ID}
-                and room.Exist=1;
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
 
-                if @RoomExists = 1 then
-                    insert into instrument(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
-                end if;
+                    if @Success=1 and @UserIsAdmin then
+                        select @RoomExists := count(*) as RoomExists
+                        from room
+                        where room.Room_ID=${data.room_id}
+                        and room.Exist=1;
 
+                        if @RoomExists = 1 then
+                            insert into instrument(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
+                        end if;
+                    end if;
                 commit;
             `
 
@@ -467,11 +537,18 @@ const instruments={
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[1][0].RoomExists==0){
-                    error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:results})
+                if(results[2][0].Success!=1){
+                    error_function({source:"instruments.add",message:"token is invalid",fatal:false,error:results})
                     return
                 }
-                if(results[1].affectedRows!=1){
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"instruments.add",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+                if(results[4][0].RoomExists!=1){
+                    error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:results})
+                }
+                if(results[5].affectedRows!=1){
                     error_function({source:"instruments.add",message:"did not insert",fatal:false,error:results})
                     return
                 }
@@ -481,21 +558,28 @@ const instruments={
     },
     //TODO testing
     remove:function(data,error_function,success_function){
-        const attributes="ssn ins_id"
+        const attributes="ssn token ins_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
                 start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
 
-                select @NumFutureBookings := count(*) as NumFutureBookings
-                from booking
-                where timediff(booking.Start_Time,${new Date().toLocaleString("se-SE",{timezone:"Sweden"})})>0
-                and booking.Ins_ID = ${data.ins_id};
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
 
-                if @NumFutureBookings=0 then
-                    update instrument set Exist=0 where Ins_ID=${data.ins_id};
-                end if;
+                    if @Success=1 and @UserIsAdmin then
+                        select @NumFutureBookings := count(*) as NumFutureBookings
+                        from booking
+                        where timediff(booking.Start_Time,'${new Date().toLocaleString("se-SE",{timezone:"Sweden"})}')>0
+                        and booking.Ins_ID = ${data.ins_id};
 
+                        if @NumFutureBookings=0 then
+                            update instrument set Exist=0 where Ins_ID=${data.ins_id};
+                        end if;
+                    end if;
                 commit;
             `
 
@@ -504,11 +588,19 @@ const instruments={
                     error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(result[0].NumFutureBookings!=0){
+                if(results[2][0].Success!=1){
+                    error_function({source:"instruments.remove",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+                if(results[4][0].NumFutureBookings!=0){
                     error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false})
                     return
                 }
-                if(results[1].affectedRows!=1){
+                if(results[5].affectedRows!=1){
                     error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
                     return
                 }
@@ -518,16 +610,40 @@ const instruments={
     },
     //TODO testing
     get_admin:function(data,error_function,success_function){
-        if(check_attributes(data,"RoomID",error_function)){
-            const query=`select * from instrument where Room_ID="${data.RoomID}" and Exist=1;`
+        if(check_attributes(data,"ssn token room_id",error_function)){
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        select * 
+                        from instrument 
+                        where Room_ID='${data.room_id}'
+                        and Exist=1;
+                    end if;
+                commit;
+            `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
-                    error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
+                    error_function({source:"instruments.get_admin",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                if(results[2][0].Success!=1){
+                    error_function({source:"instruments.get_admin",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"instruments.get_admin",message:"user is not an admin",fatal:false,error:results})
                     return
                 }
 
-                success_function(results)
+                success_function(results[4])
             })
         }
     },
@@ -537,18 +653,34 @@ module.exports.instruments=instruments
 const bookings={
     //TODO any safety checks on the booking removal, or have blind trust that the booking is removed by the user who made it?, also testing
     remove:function(data,error_function,success_function){
-        const attributes="ssn booking_id"
+        const attributes="ssn token booking_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
-            const query=`delete from booking where Booking_ID=${data.booking_id}`
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    if @Success=1 then
+                        delete 
+                        from booking 
+                        where Booking_ID=${data.booking_id}
+                        and booking.SSN=${data.ssn};
+                    end if;
+                commit;
+            `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
                     error_function({source:"bookings.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
-                    error_function({source:"bookings.remove",message:"did not remove",fatal:true})
+                if(results[2][0].Success!=1){
+                    error_function({source:"bookings.remove",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3].affectedRows!=1){
+                    error_function({source:"bookings.remove",message:"did not remove",fatal:false})
                     return
                 }
                 success_function()
@@ -558,15 +690,29 @@ const bookings={
 }
 module.exports.bookings=bookings
 
-function timeslot_available(data,error_function,insert=false,then=null){
-    var attributes="ins_id start_time ssn"
-    if(insert){
+function timeslot_available(data,error_function,insert_data=false,success_function=null){
+    var attributes="ins_id start_time ssn token"
+    if(insert_data){
         attributes+=" end_time"
     }
     const sorted_attributes=check_attributes(data,attributes,error_function)
     if(sorted_attributes){
         const query=`
-            call check_timeslot_available("${data.start_time}","${data.end_time || "1900-01-01 00:00:00"}","${data.ssn}","${data.ins_id}","${data.notes || ""}",${insert?1:0});
+            start transaction;
+                call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                select @Success as Success;
+
+                if @Success=1 then
+                    call check_timeslot_available(
+                        "${data.start_time}",
+                        "${data.end_time || "1900-01-01 00:00:00"}",
+                        "${data.ssn}",
+                        "${data.ins_id}",
+                        "${data.notes || ""}",
+                        ${insert_data?1:0}
+                    );
+                end if;
+            commit;
         `;
 
         const handles=[
@@ -643,20 +789,24 @@ function timeslot_available(data,error_function,insert=false,then=null){
 
                 error_function({source:"timeslot_available.database_query",message:error_message,error:error,fatal:true})
             }
+            if(results[2][0].Success!=1){
+                error_function({source:"timeslot_available.database_query",message:"token is invalid",fatal:false,error:results})
+                return
+            }
 
             if(
-                handles[0](results[0])
-                && handles[1](results[1])
-                && handles[2](results[2])
-                && handles[3](results[3])
+                handles[0](results[3])
+                && handles[1](results[4])
+                && handles[2](results[5])
+                && handles[3](results[6])
             ){
-                if(insert && results[results.length-1].affectedRows!=1){
+                if(insert_data && results[8].affectedRows!=1){
                     const error_message="inserting new booking failed";
                     utility.log(`${error_message} ${results[results.length-1]}`,"error")
 
                     error_function({source:"timeslot_available.database_query_check",message:error_message,error:results,fatal:false})
                 }else{
-                    then(results);
+                    success_function();
                 }
             }
         })
@@ -665,14 +815,10 @@ function timeslot_available(data,error_function,insert=false,then=null){
 
 const timeslot={
     check_available:function(data,error_function,success_function){
-        timeslot_available(data,error_function,false,(results)=>{
-            success_function(results)
-        })
+        timeslot_available(data,error_function,insert_data=false,success_function=success_function)
     },
     book:function(data,error_function,success_function){
-        timeslot_available(data,error_function,true,(results)=>{
-            success_function(results)
-        })
+        timeslot_available(data,error_function,insert_data=true,success_function=success_function)
     },
 }
 module.exports.timeslot=timeslot
@@ -680,97 +826,63 @@ module.exports.timeslot=timeslot
 const personal_schedule={
     //TODO testing
     get:function(data,error_function,success_function){
-        if(check_attributes(data,"SSN",error_function)){
-            var sql=`SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID join user on user.SSN=booking.SSN WHERE booking.SSN = ${data.SSN} and instrument.Exist=1 and user.Exist=1;`
+        if(check_attributes(data,"ssn token",error_function)){
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
 
-            connection.query(sql, (error, result)=> {
-                connection.query(query,(error,results,fields)=>{
-                    if(error){
-                        error_function({source:"personal_schedule.get",message:error.sqlMessage,error:error,fatal:true})
-                        return
-                    }
+                    if @Success=1 then
+                        SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description 
+                        FROM booking 
+                        JOIN instrument 
+                        ON booking.Ins_ID=instrument.Ins_ID 
+                        join user 
+                        on user.SSN=booking.SSN 
+                        WHERE booking.SSN = ${data.ssn} 
+                        and instrument.Exist=1 
+                        and user.Exist=1;
+                    end if;
+                commit;
+            `
 
-                    success_function(results)
-                })
+            connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"personal_schedule.get",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                if(results[2][0].Success!=1){
+                    error_function({source:"personal_schedule.get",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+
+                success_function(results[3])
             })
         }
     },
 }
 module.exports.personal_schedule=personal_schedule
 
-const users={
-    //TODO testing
-    get:function(data,error_function,success_function){
-        if(check_attributes(data,"ssn",error_function)){
-            const query=`select Email,SSN,First_name,Last_name,Admin,Maintenance,Immunocompromised,Phone_number from user where Exist=1;`
-
-            connection.query(query,(error,results,fields)=>{
-                if(error){
-                    error_function({source:"users.get",message:error.sqlMessage,error:error,fatal:true})
-                    return
-                }
-
-                success_function(results)
-            })
-        }
-    },
-    //TODO testing
-    add:function(data,error_function,success_function){
-        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance"
-        const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
-        if(sorted_attributes){
-            if(!"ABC".split("").includes(data.special_rights)){
-                error_function({source:"users.add",message:"special rights must be A/B/C",fatal:false})
-                return
-            }
-
-            const query=`insert into user(${attributes},Exist) values (SHA2(?,512), ${'?,'.repeat(sorted_attributes-1)}1)`
-
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
-                if(error){
-                    error_function({source:"users.add",message:error.sqlMessage,fatal:true,error:error})
-                    return
-                }
-                if(results.affectedRows!=1){
-                    error_function({source:"users.add",message:"did not insert",fatal:true})
-                    return
-                }
-                success_function()
-            })
-        }
-    },
-    //TODO remove future booking of that user
-    remove:function(data,error_function,success_function){
-        const attributes="ssn ssn_user"
-        const sorted_attributes=check_attributes(data,attributes,error_function)
-        if(sorted_attributes){
-            const query=`update user set Exist=0 where SSN=${data.ssn_user};`
-
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
-                if(error){
-                    error_function({source:"users.remove",message:error.sqlMessage,fatal:true,error:error})
-                    return
-                }
-                if(results[0].affectedRows!=1){
-                    error_function({source:"users.remove",message:"did not remove",fatal:true})
-                    return
-                }
-                success_function()
-            })
-        }
-    },
-}
-module.exports.users=users
-
 const maintenance={
     //TODO make sure instrument exists? also testing
     get:function(data,error_function,success_function){
-        if(check_attributes(data,"Ins_ID",error_function)){
+        if(check_attributes(data,"ssn token ins_id",error_function)){
             const query=`
-                SELECT DateTime, Status, Notes
-                FROM ins_maintenance
-                join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID
-                WHERE ins_maintenance.Ins_ID = ${data.Ins_ID} and instrument.Exist =1
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsMaintenance := user.Admin as UserIsMaintenance
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsMaintenance then
+                        SELECT DateTime, Status, Notes
+                        FROM ins_maintenance
+                        join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID
+                        WHERE ins_maintenance.Ins_ID = ${data.ins_id} and instrument.Exist =1
+                    end if;
+                commit;
             `
 
             connection.query(query,(error,results,fields)=>{
@@ -778,19 +890,39 @@ const maintenance={
                     error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                console.log("maintenance.get",results)
+                if(results[2][0].Success!=1){
+                    error_function({source:"maintenance.get",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3].UserIsMaintenance!=1){
+                    error_function({source:"maintenance.get",message:"user is not maintenance personnel",fatal:false,error:results})
+                    return
+                }
 
-                success_function(results)
+                success_function(results[4])
             })
         }
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="DateTime, Status, Notes, SSN, Ins_ID"
+        const attributes="ssn token date_time status notes ssn ins_id"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
         if(sorted_attributes){
             const query=`
-                insert into maintenance(${attributes}) 
-                values (${'?'.repeat(sorted_attributes.length)})
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsMaintenance := user.Admin as UserIsMaintenance
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsMaintenance then
+                        insert into maintenance(${attributes}) 
+                        values (${'?'.repeat(sorted_attributes.length)});
+                    end if;
+                commit;
             `
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
@@ -798,7 +930,15 @@ const maintenance={
                     error_function({source:"maintenance.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                if(results[0].affectedRows!=1){
+                if(results[2][0].Success!=1){
+                    error_function({source:"maintenance.add",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3].UserIsMaintenance!=1){
+                    error_function({source:"maintenance.add",message:"user is not maintenance personnel",fatal:false,error:results})
+                    return
+                }
+                if(results[4].affectedRows!=1){
                     error_function({source:"maintenance.add",message:"did not insert",fatal:true})
                     return
                 }
@@ -809,38 +949,183 @@ const maintenance={
 }
 module.exports.maintenance=maintenance
 
-const account={
-    set_special_rights(data,error_function,success_function){
-        if(check_attributes(data,"ssn Special_rights",error_function)){
-            if(!"ABC".split("").includes(data.Special_rights)){
-                error_function({source:"account.set_special_rights",message:"special rights must be A/B/C",fatal:false})
-                return
-            }
-
+const accounts={
+    //TODO testing
+    get:function(data,error_function,success_function){
+        if(check_attributes(data,"ssn token",error_function)){
             const query=`
-                update user 
-                set user.Special_rights='${data.Special_rights}'
-                where user.SSN='${data.ssn}'
-                and user.Exist=1;
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        select Email,SSN,First_name,Last_name,Admin,Maintenance,Immunocompromised,Phone_number,Special_rights
+                        from user 
+                        where Exist=1;
+                    end if;
+                commit;
             `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
-                    error_function({source:"account.set_special_rights",message:error.sqlMessage,error:error,fatal:true})
+                    error_function({source:"accounts.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                if(results.affectedRows!=1){
-                    error_function({source:"account.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
+                if(results[2][0].Success!=1){
+                    error_function({source:"accounts.get",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"accounts.get",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+
+                success_function(results[4])
+            })
+        }
+    },
+    //TODO testing
+    add:function(data,error_function,success_function){
+        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance"
+        const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
+        if(sorted_attributes){
+            if(!"ABC".split("").includes(data.special_rights)){
+                error_function({source:"accounts.add",message:"special rights must be A/B/C",fatal:false})
+                return
+            }
+
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        insert into user(${attributes},Exist) 
+                        values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-1)}1);
+                    end if;
+                commit;
+            `
+
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"accounts.add",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[2][0].Success!=1){
+                    error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"accounts.add",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+                if(results[4].affectedRows!=1){
+                    error_function({source:"accounts.add",message:"did not insert",fatal:true})
                     return
                 }
                 success_function()
             })
         }
     },
-    //TODO testing
+    //TODO remove future booking of that user
+    remove:function(data,error_function,success_function){
+        const attributes="ssn ssn_user token"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
+        if(sorted_attributes){
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        update user 
+                        set Exist=0 
+                        where SSN=${data.ssn_user};
+                    end if;
+                commit;
+            `
+
+            connection.query(query,sorted_attributes,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"accounts.remove",message:error.sqlMessage,fatal:true,error:error})
+                    return
+                }
+                if(results[2][0].Success!=1){
+                    error_function({source:"accounts.remove",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"accounts.remove",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+                if(results[4].affectedRows!=1){
+                    error_function({source:"accounts.remove",message:"did not remove",fatal:true})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
+    set_special_rights(data,error_function,success_function){
+        if(check_attributes(data,"ssn ssn_user token special_rights",error_function)){
+            if(!"ABC".split("").includes(data.special_rights)){
+                error_function({source:"account.set_special_rights",message:"special rights must be A/B/C",fatal:false})
+                return
+            }
+
+            const query=`
+                start transaction;
+                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    select @Success as Success;
+
+                    select @UserIsAdmin := user.Admin as UserIsAdmin
+                    from user 
+                    where user.SSN=${data.ssn};
+
+                    if @Success=1 and @UserIsAdmin then
+                        update user 
+                        set user.Special_rights='${data.special_rights}'
+                        where user.SSN='${data.ssn_user}'
+                        and user.Exist=1;
+                    end if;
+                commit;
+            `
+
+            connection.query(query,(error,results,fields)=>{
+                if(error){
+                    error_function({source:"accounts.set_special_rights",message:error.sqlMessage,error:error,fatal:true})
+                    return
+                }
+                if(results[2][0].Success!=1){
+                    error_function({source:"accounts.set_special_rights",message:"token is invalid",fatal:false,error:results})
+                    return
+                }
+                if(results[3][0].UserIsAdmin!=1){
+                    error_function({source:"accounts.set_special_rights",message:"user is not an admin",fatal:false,error:results})
+                    return
+                }
+                if(results[4].affectedRows!=1){
+                    error_function({source:"accounts.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
+                    return
+                }
+                success_function()
+            })
+        }
+    },
     login:function(data,error_function,success_function){
         if(check_attributes(data,"email password",error_function)){
-            console.log(data)
             const query=`
                 start transaction;
                     call check_credentials('${data.email}','${data.password}',@MatchFound);
@@ -860,12 +1145,12 @@ const account={
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
-                    error_function({source:"account.login",message:error.sqlMessage,error:error,fatal:true})
+                    error_function({source:"accounts.login",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                if(results[2][0].MatchFound==0){
+                if(results[2][0].MatchFound!=1){
                     //user may not exist, which means ssn is "wrong"
-                    error_function({source:"account.login",message:"email or password is wrong.",error:results,fatal:false})
+                    error_function({source:"accounts.login",message:"email or password is wrong.",error:results,fatal:false})
                     return
                 }
 
@@ -874,4 +1159,4 @@ const account={
         }
     },
 }
-module.exports.account=account
+module.exports.accounts=accounts
