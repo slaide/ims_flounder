@@ -17,13 +17,14 @@ CREATE TABLE `user` (
   Special_rights varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   Immunocompromised tinyint(1) NOT NULL,
   Maintenance tinyint(1) NOT NULL,
-  Exist tinyint(1) NOT NULL
+  Exist tinyint(1) NOT NULL,
+  Token varchar(126) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance, Exist) VALUES
-(762324167, 'Ariel', 'Fin', 'dfr456', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1, 1, 1),
-(882767577, 'Sebastian', 'Crabb', 'cfr789', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1),
-(1450238774, 'Eric', 'Prince', 'swq123', 1, 709483940, 'eric.prince@gmail.com', 'A', 0, 1, 1);
+INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance, Exist, Token) VALUES
+(762324167, 'Ariel', 'Fin', 'dfr456', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1, 1, 1, ''),
+(882767577, 'Sebastian', 'Crabb', 'cfr789', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1, ''),
+(1450238774, 'Eric', 'Prince', 'swq123', 1, 709483940, 'eric.prince@gmail.com', 'A', 0, 1, 1, '');
 
 
 ALTER TABLE `user`
