@@ -8,8 +8,8 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE ins_maintenance (
   DateTime datetime NOT NULL,
-  Status varchar(40) NOT NULL,
-  Notes varchar(40) NOT NULL,
+  Status varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  Notes varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   SSN int NOT NULL,
   Ins_ID int NOT NULL,
   Maintence_ID int NOT NULL

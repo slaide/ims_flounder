@@ -12,8 +12,8 @@ CREATE TABLE booking (
   Ins_ID int NOT NULL,
   Start_Time datetime NOT NULL,
   End_Time datetime NOT NULL,
-  Status varchar(40) NOT NULL,
-  Note varchar(40) NOT NULL
+  Status varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  Note varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO booking (Booking_ID, SSN, Ins_ID, Start_Time, End_Time, `Status`, Note) VALUES
