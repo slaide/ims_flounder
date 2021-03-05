@@ -10,7 +10,7 @@ const database=require("./database.js")
  **/
 function get_users(req,res) {
 
-    var sql="SELECT SSN, First_name, Last_name, Password, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance FROM user WHERE Exist=1"
+    var sql="SELECT SSN, First_name, Last_name, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance FROM user WHERE Exist=1"
     database.connection.query(sql, (error, result)=> {
         if(error){
            const error_message="error when selecting users:'"+error+"'"
@@ -24,7 +24,7 @@ function get_users(req,res) {
 
         var ret=[];
         for(item of db_user){ 
-            ret.push({SSN: item.SSN, FirstName:item.First_name, LastName:item.Last_name, Password:item.Password, Admin:item.Admin, Phone:item.Phone_number, Email:item.Email, SpecRight:item.Special_rights, Immun:item.Immunocompromised, Maintenance:item.Maintenance})
+            ret.push({SSN: item.SSN, FirstName:item.First_name, LastName:item.Last_name, Admin:item.Admin, Phone:item.Phone_number, Email:item.Email, SpecRight:item.Special_rights, Immun:item.Immunocompromised, Maintenance:item.Maintenance})
         }   
         res.writeHeader(200,utility.content.from_filename(".json"))
         res.end(JSON.stringify(ret))
