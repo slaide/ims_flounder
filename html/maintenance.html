@@ -224,11 +224,11 @@
               table_element.appendChild(table_header);
               for (let i = 0; i < instrument_notes.length; i++) {                
                 let table_entry = document.createElement("tr");
-                let table_time = document.createElement("th");
+                let table_time = document.createElement("td");
                 table_time.innerHTML = instrument_notes[i].DateTime;
-                let table_status = document.createElement("th");
+                let table_status = document.createElement("td");
                 table_status.innerHTML = instrument_notes[i].Status;
-                let table_note = document.createElement("th");
+                let table_note = document.createElement("td");
                 table_note.innerHTML = instrument_notes[i].Notes;
                 table_entry.appendChild(table_time);
                 table_entry.appendChild(table_status);
