@@ -49,23 +49,25 @@
      </script>
 
      <!--Form to add a new instrument-->
-      <form action="/add_instrument" method="POST"> 
-         <br><h2>Please provide the following information:</h2>
+     <div id="add_ins_div">
+         <form action="/add_instrument" method="POST" id="add_ins_form"> 
+            <br><h2>Please provide the following information:</h2>
 
 
-         <br><label for="serial">Serial number:</label>
-         <input type="text" name="serial">
+            <br><br><label for="serial">Serial number:</label>
+            <input type="text" name="serial">
 
-         <br><label for="room_ID">Room ID:</label>
-         <input type="text" name="room_ID">
+            <br><br><label for="room_ID">Room ID:</label>
+            <input type="text" name="room_ID">
 
-         <br><label for="description">Description:</label>
-         <input type="text" name="description">
+            <br><br><label for="description">Description:</label>
+            <input type="text" name="description">
 
-         <br><label for="proc_date">Procurement date:</label>
-         <input type="text" name="proc_date">
+            <br><br><label for="proc_date">Procurement date:</label>
+            <input type="text" name="proc_date">
 
-         <br><input class="button" type="submit" value="Confirm">
-      </form>
+            <br><input class="button" type="submit" value="Confirm">
+         </form>
+      </div>
    </body>
 </html>
