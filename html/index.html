@@ -67,6 +67,7 @@
                      localStorage.setItem("main",response.maintenance)
                      localStorage.setItem("admin",response.admin)
                      localStorage.setItem("email",response.email)
+                     localStorage.setItem("token",response.token)
                      window.location.href="/overview.html"
                   }else{
                      const r=window.confirm("login failed. incomplete server response. press ok to reload page and try again.")
