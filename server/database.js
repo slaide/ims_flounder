@@ -106,18 +106,77 @@ function create_global_connection_pool(){
             end if;
             commit;
         end;
-    `;
+    `
+
+    const check_credentials=`
+    create procedure check_credentials(email varchar(40), password varchar(126), out MatchesFound int)
+    begin
+        start transaction;
+
+        select count(*) into MatchesFound
+        from user 
+        where user.Email=email
+        and user.Password=password
+        and user.Exist=1;
+
+        commit;
+    end;
+    `
+
+    const generate_token_if_credentials_correct_definition=`
+        create procedure generate_token(ssn int, new_time datetime, out Token varchar(126))
+        begin
+            start transaction;
+
+                update user 
+                set user.Token=SHA2(concat(user.Password,new_time,SHA2(RAND())),512), Last_login=new_time
+                where user.SSN=ssn;
+
+                select user.token into Token
+                from user
+                where user.SSN=ssn;
+            commit;
+        end;
+    `
+
+    const check_token_definition=`
+        create procedure check_token(ssn int, token varchar(126), new_time datetime, out TokenValid int)
+        begin
+            start transaction;
+
+            set @token_valid_time = "00:15:00";
+
+            select count(*) into TokenValid
+            from user 
+            where user.SSN=ssn
+            and user.Token=token
+            and user.Exist=1
+            and timediff(new_time,addtime(user.Last_login,@token_valid_time))<=0;
+
+            commit;
+        end;
+    `
 
     var connection=mysql.createPool(connection_data)
 
     //procedures are stored per database, not connection
-    connection.query(check_timeslot_available_definition,(error)=>{
+    connection.query(check_timeslot_available_definition,(error,results,fields)=>{
         if (error) throw error;
-    })
-    connection.query("set autocommit=1;",(error)=>{
-        if (error) throw error;
+        connection.query(check_credentials,(error,results,fields)=>{
+            if (error) throw error;
+            connection.query(check_token_definition,(error,results,fields)=>{
+                if (error) throw error;
+                connection.query(generate_token_if_credentials_correct_definition,(error,results,fields)=>{
+                    if (error) throw error;
+                    connection.query("set autocommit=1;",(error,results,fields)=>{
+                        if (error) throw error;
+                    })
+                })
+            })
+        })
     })
 
+    //TODO i know this should be async called within the last query above
     return connection
 }
 var connection=null
@@ -306,21 +365,20 @@ const rooms={
     },
     //TODO testing
     remove:function(data,error_function,success_function){
-        console.log(data)
-        const attributes="ssn room_id"
+        const attributes="ssn RoomID"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
                 start transaction;
 
-                select @NumInstrumentsInRoom := count(*)
-                from instrument
-                where instrument.Room_ID = ${data.RoomID}
-                and instrument.Exist=1;
+                    select @NumInstrumentsInRoom := count(*)
+                    from instrument
+                    where instrument.Room_ID = ${data.RoomID}
+                    and instrument.Exist=1;
 
-                if @NumInstrumentsInRoom=0 then
-                    update room set Exist=0 where Room_ID=${data.RoomID};
-                end if;
+                    if @NumInstrumentsInRoom=0 then
+                        update room set Exist=0 where Room_ID=${data.RoomID};
+                    end if;
 
                 commit;
             `
@@ -330,7 +388,6 @@ const rooms={
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                console.log("results:", results)
                 if(result[0].NumFutureBookings!=0){
                     error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
                     return
@@ -659,7 +716,7 @@ const users={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="ssn,first_name,last_name,password,admin,phone_number,email,special_rights,immunocompromised,maintenance"
+        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
             if(!"ABC".split("").includes(data.special_rights)){
@@ -667,7 +724,7 @@ const users={
                 return
             }
 
-            const query=`insert into user(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1)`
+            const query=`insert into user(${attributes},Exist) values (SHA2(?,512), ${'?,'.repeat(sorted_attributes-1)}1)`
 
             connection.query(query,sorted_attributes,(error,results,fields)=>{
                 if(error){
@@ -753,33 +810,6 @@ const maintenance={
 module.exports.maintenance=maintenance
 
 const account={
-    //TODO testing
-    login:function(data,error_function,success_function){
-        if(check_attributes(data,"ssn password",error_function)){
-            const query=`
-                select user.SSN,user.Email,user.Admin,user.Maintenance
-                from user 
-                where user.SSN='${data.ssn}'
-                and user.Password=${data.password}
-                and user.Exist=1;
-            `
-
-            connection.query(query,(error,results,fields)=>{
-                if(error){
-                    error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
-                    return
-                }
-                //check if selected admin attribute is valid (cannot be null per database)
-                //if invalid, login failed, no user matched login data
-                if(typeof(results[0].admin)=="undefined" || results[0].admin==null){
-                    //user may not exist, which means ssn is "wrong"
-                    error_function({source:"login.login",message:"ssn or password is wrong.",error:results,fatal:false})
-                    return
-                }
-                success_function()
-            })
-        }
-    },
     set_special_rights(data,error_function,success_function){
         if(check_attributes(data,"ssn Special_rights",error_function)){
             if(!"ABC".split("").includes(data.Special_rights)){
@@ -807,31 +837,41 @@ const account={
             })
         }
     },
-    generate_new_login_token(data,error_function,success_function){
-        if(check_attributes(data,"ssn password",error_function)){
+    //TODO testing
+    login:function(data,error_function,success_function){
+        if(check_attributes(data,"email password",error_function)){
+            console.log(data)
             const query=`
-                select user.SSN,user.Email,user.Admin,user.Maintenance
-                from user 
-                where user.SSN='${data.ssn}'
-                and user.Password=${data.password}
-                and user.Exist=1;
+                start transaction;
+                    call check_credentials('${data.email}','${data.password}',@MatchFound);
+                    select @MatchFound as MatchFound;
+
+                    if @MatchFound = 1 then
+                        select @SSN := user.SSN as SSN, user.Admin as Admin, user.Email as Email, user.Maintenance as Maintenance
+                        from user
+                        where user.email='${data.email}';
+
+                        call generate_token(@SSN,'${utility.format_time(new Date())}',@Token);
+
+                        select @Token as NewToken;
+                    end if;
+                commit;
             `
 
             connection.query(query,(error,results,fields)=>{
                 if(error){
-                    error_function({source:"login.login",message:error.sqlMessage,error:error,fatal:true})
+                    error_function({source:"account.login",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                //check if selected admin attribute is valid (cannot be null per database)
-                //if invalid, login failed, no user matched login data
-                if(typeof(results[0].admin)=="undefined" || results[0].admin==null){
+                if(results[2][0].MatchFound==0){
                     //user may not exist, which means ssn is "wrong"
-                    error_function({source:"login.login",message:"ssn or password is wrong.",error:results,fatal:false})
+                    error_function({source:"account.login",message:"email or password is wrong.",error:results,fatal:false})
                     return
                 }
-                success_function()
+
+                success_function([results[3][0],results[4][0]])
             })
         }
-    }
+    },
 }
 module.exports.account=account

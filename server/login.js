@@ -20,7 +20,7 @@ function check_login_data(req,res){
             utility.log(`error selecting attributes from user: ${error}`)
 
             res.writeHeader(200,utility.content.json)
-            res.end(`{error:${error}}`)
+            res.end(JSON.stringify({error:error}))
 
             return
         },results=>{
@@ -29,12 +29,12 @@ function check_login_data(req,res){
                 ssn:results[0].SSN,
                 admin:results[0].Admin,
                 maintenance:results[0].Maintenance,
-                token: utility.sha512(user_data.password,salt=utility.format_time(new Date))
+                token: results[1].NewToken
             }
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(user_data))
 
-            utility.log(`user ${user_data.ssn} successfully logged in`)
+            utility.log(`user ${user_data.email} successfully logged in`)
         })  
     })
 }
