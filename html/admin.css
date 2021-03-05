@@ -142,8 +142,22 @@ strong {
    padding: 0.15rem 0.4rem;
 }
 
+#add_room_div, #add_user_div, #add_ins_div{
+   background-color:#ffffffb6;
+   border-radius: 10px;
+   margin: 1rem;
 
+}
 
+#add_room_form, #add_user_form, #add_ins_form {
+   margin: auto;
+   width: 25%;
+   text-align: left;
+}
+
+#add_ins_form{
+   width: 50%;
+}
 
 
 
