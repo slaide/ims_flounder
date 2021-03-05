@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="eng">
     <head>
+    <!--Title of the page and CSS code -->
+
       <title>Add new user</title>
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
@@ -12,15 +14,20 @@
 
     <body>
 
+        <!--Navigation to the other pages-->
         <nav class="menu">
             <img src="./favicon.ico" width="256" height="256">
             <ul id="menu_list">
                <a href="./overview.html"><li>Book an instrument</li></a>
                <a href="./my_schedule.html"><li>My Bookings</li></a>
-               <a href="#"><li>Administrator</li></a>
+               <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>         
             </ul>
+            
+            <!--log out button-->
             <a id="log_out" href="#" onclick="logOut()">Log out</a>
         </nav>
+
+        <!--Scripts for the pages-->
 
         <script>
             if (localStorage.getItem("main")==="1") {
@@ -43,6 +50,7 @@
             }
         </script>
 
+        <!--Form to add the new user-->
         <form action="/add_user" method="POST"> 
             <br><h2>Please provide the following information:</h2>
 

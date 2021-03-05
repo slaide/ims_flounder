@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="eng">
    <head>
+      <!--Title of page and relevant CSS code-->
       <title>Add new instrument</title>
       <meta charset="UTF-8">
       <link rel="stylesheet" type="text/css" href="./reset.css">
@@ -12,17 +13,20 @@
 
    <body>
 
-
+      <!--Menue to navigate to the other pages-->
       <nav class="menu">
          <img src="./favicon.ico" width="256" height="256">
          <ul id="menu_list">
             <a href="./overview.html"><li>Book an instrument</li></a>
             <a href="./my_schedule.html"><li>My Bookings</li></a>
-            <a href="#"><li>Administrator</li></a>
+            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>         
          </ul>
+
+         <!--Log out button-->
          <a id="log_out" href="#" onclick="logOut()">Log out</a>
      </nav>
 
+     <!--Relevant scripts to the page-->
      <script>
          if (localStorage.getItem("main")==="1") {
                  let menu_list = document.querySelector('#menu_list');
@@ -44,6 +48,7 @@
          }
      </script>
 
+     <!--Form to add a new instrument-->
       <form action="/add_instrument" method="POST"> 
          <br><h2>Please provide the following information:</h2>
 
