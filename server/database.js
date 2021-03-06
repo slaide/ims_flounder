@@ -1049,7 +1049,9 @@ const accounts={
                     from user 
                     where user.SSN=${data.ssn};
 
-                    if @Success=1 and @UserIsAdmin then
+                    select @DeleteAccountIsSelf := ${data.ssn}=${data.ssn_user} as DeleteAccountIsSelf;
+
+                    if @Success=1 and @UserIsAdmin and @DeleteAccountIsSelf=0 then
                         update user 
                         set Exist=0 
                         where SSN=${data.ssn_user};
@@ -1070,7 +1072,11 @@ const accounts={
                     error_function({source:"accounts.remove",message:"user is not an admin",fatal:false,error:results})
                     return
                 }
-                if(results[4].affectedRows!=1){
+                if(results[4][0].DeleteAccountIsSelf!=0){
+                    error_function({source:"accounts.remove",message:"admins cannot delete their own account",fatal:false,error:results})
+                    return
+                }
+                if(results[5].affectedRows!=1){
                     error_function({source:"accounts.remove",message:"did not remove",fatal:true})
                     return
                 }
