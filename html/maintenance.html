@@ -126,14 +126,17 @@
           form_title.innerHTML = "Form";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
-          let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');'
+          let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');';
           form_main.setAttribute('action', arg_str);
 
-          let text_date = document.createElement("h2");
+          let text_date = document.createElement("h1");
           text_date.innerHTML = "Date";
           let input_date = document.createElement("input");
           input_date.setAttribute('type', 'datetime-local');
           input_date.setAttribute('id', 'form_date');
+          let error_date = document.createElement("h5");
+          error_date.setAttribute("id", "error_date");
+          //error_date.innerHTML = "";
 
           let text_status = document.createElement("h1");
           text_status.innerHTML = "Status";
@@ -151,7 +154,11 @@
           submit_button.setAttribute('type', 'submit');
           submit_button.setAttribute('value', 'submit form');
 
+          let confirmation = document.createElement("h1");
+          confirmation.setAttribute('id', 'confirmation');
+
           form_main.appendChild(text_date);
+          form_main.appendChild(error_date);
           form_main.appendChild(input_date);
           form_main.appendChild(text_status);
           form_main.appendChild(input_status);
@@ -159,6 +166,7 @@
           form_main.appendChild(input_note);
           form_main.appendChild(document.createElement('br'));
           form_main.appendChild(submit_button);
+          form_main.appendChild(confirmation);
           form_div.appendChild(form_title);
           form_div.appendChild(form_main);
 
@@ -178,6 +186,27 @@
           let date = date_obj.replace('T', ' ');
           let status = document.getElementById("form_status").value;
           let note = document.getElementById("form_note").value;
+
+          var today = new Date();
+          var dd = String(today.getDate());
+          var mm = 1+today.getMonth();
+          var yyyy = today.getFullYear();
+          //alert(date.substring(5, 7));
+          if (yyyy<date.substring(0, 4)) {
+            let error_date = document.getElementById("error_date");
+            error_date.innerHTML = "Invalid year";
+            return false;
+          } else if(yyyy == date.substring(0, 4) && mm < Number(date.substring(5, 7))){
+            let error_date = document.getElementById("error_date");
+            error_date.innerHTML = "Invalid month";
+            return false;
+          } else if (yyyy == date.substring(0, 4) && mm == date.substring(5, 7) && dd < Number(date.substring(8, 10))) {
+            let error_date = document.getElementById("error_date");
+            error_date.innerHTML = "Invalid day";
+            return false;
+          }
+
+
           //alert(InsID);
           //alert(date + status + note);
           
@@ -190,7 +219,10 @@
                 console.log(maintenance_for_ins.error);
                 return;
               }
-              alert("Note was added succesfully");
+              let error_date = document.querySelector("#error_date");
+              error_date.innerHTML = "";
+              let confirmation = document.querySelector("#confirmation");
+              confirmation.innerHTML = maintenance_for_ins.result;
               //show_maintenance(InsID);
             }
           };
