@@ -8,7 +8,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE ins_locates (
   Start_time_Date datetime NOT NULL,
-  End_time_Date datetime NOT NULL,
+  End_time_Date datetime DEFAULT NULL,
   Room_ID int NOT NULL,
   Ins_ID int NOT NULL,
   Ins_location_ID int NOT NULL
