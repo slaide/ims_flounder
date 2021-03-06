@@ -10,7 +10,7 @@ CREATE TABLE `user` (
   SSN int NOT NULL,
   First_name varchar(40) NOT NULL,
   Last_name varchar(40) NOT NULL,
-  Password varchar(126) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  Password varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   Admin tinyint(1) NOT NULL,
   Phone_number int NOT NULL,
   Email varchar(40) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE `user` (
   Immunocompromised tinyint(1) NOT NULL,
   Maintenance tinyint(1) NOT NULL,
   Exist tinyint(1) NOT NULL,
-  Token varchar(126) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  Token varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   Last_login datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
