@@ -13,7 +13,7 @@ function get_maintenance(req,res) {
         database.maintenance.get(data,(error)=>{
             if(error.fatal) throw error; 
 
-            const error_message="error when getting list of maintenances:'"+error+"'"
+            const error_message="error when getting list of maintenances:'"+JSON.stringify(error)+"'"
             utility.log(`${error_message}`,"error")
 
             res.writeHeader(200,utility.content.json)
@@ -22,7 +22,7 @@ function get_maintenance(req,res) {
         },(db_maintenances)=>{
             var ret=[];
             for(item of db_maintenances){
-                ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
+                ret.push({date_time:item.Date_Time, status:item.Status, notes:item.Notes})
             } 
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))

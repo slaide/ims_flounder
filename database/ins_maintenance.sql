@@ -7,7 +7,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 
 CREATE TABLE ins_maintenance (
-  DateTime datetime NOT NULL,
+  Date_Time datetime NOT NULL,
   Status varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   Notes varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   SSN int NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE ins_maintenance (
   Maintence_ID int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO ins_maintenance (`DateTime`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
+INSERT INTO ins_maintenance (`Date_Time`, `Status`, Notes, SSN, Ins_ID, Maintence_ID) VALUES
 ('2021-01-29 10:00:00', 'Working', 'fixed loose rotor ', 882767577, 1, 1),
 ('2021-01-29 10:00:00', 'Working', 'fixed the filter ', 762324167, 5, 2);
 
