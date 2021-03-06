@@ -365,7 +365,7 @@ const rooms={
                     select @Success as Success;
 
                     if @Success=1 then
-                        insert into room(${attributes}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)
+                        insert into room(${attributes.replace(/\ /gi,",")}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)
                     end if;
                 commit;
             `
@@ -526,7 +526,7 @@ const instruments={
                         and room.Exist=1;
 
                         if @RoomExists = 1 then
-                            insert into instrument(${attributes},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
+                            insert into instrument(${attributes.replace(/\ /gi,",")},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
                         end if;
                     end if;
                 commit;
@@ -872,15 +872,15 @@ const maintenance={
                     call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
-                    select @UserIsMaintenance := user.Admin as UserIsMaintenance
+                    select @UserIsMaintenance := user.Maintenance as UserIsMaintenance
                     from user 
                     where user.SSN=${data.ssn};
 
                     if @Success=1 and @UserIsMaintenance then
-                        SELECT DateTime, Status, Notes
+                        SELECT ins_maintenance.Date_Time, ins_maintenance.Status, ins_maintenance.Notes
                         FROM ins_maintenance
                         join instrument on ins_maintenance.Ins_ID=instrument.Ins_ID
-                        WHERE ins_maintenance.Ins_ID = ${data.ins_id} and instrument.Exist =1
+                        WHERE ins_maintenance.Ins_ID = ${data.ins_id} and instrument.Exist =1;
                     end if;
                 commit;
             `
@@ -890,12 +890,11 @@ const maintenance={
                     error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
-                console.log("maintenance.get",results)
                 if(results[2][0].Success!=1){
                     error_function({source:"maintenance.get",message:"token is invalid",fatal:false,error:results})
                     return
                 }
-                if(results[3].UserIsMaintenance!=1){
+                if(results[3][0].UserIsMaintenance!=1){
                     error_function({source:"maintenance.get",message:"user is not maintenance personnel",fatal:false,error:results})
                     return
                 }
@@ -906,26 +905,26 @@ const maintenance={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="ssn token date_time status notes ssn ins_id"
-        const sorted_attributes=check_attributes(data,attributes,error_function,delim=", ")
+        const attributes="token ssn date_time status notes ins_id"
+        const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
             const query=`
                 start transaction;
                     call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
-                    select @UserIsMaintenance := user.Admin as UserIsMaintenance
+                    select @UserIsMaintenance := user.Maintenance as UserIsMaintenance
                     from user 
                     where user.SSN=${data.ssn};
 
                     if @Success=1 and @UserIsMaintenance then
-                        insert into maintenance(${attributes}) 
-                        values (${'?'.repeat(sorted_attributes.length)});
+                        insert into ins_maintenance(ssn,date_time,status,notes,ins_id)
+                        values (?,?,?,?,?);
                     end if;
                 commit;
             `
 
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes.slice(1),(error,results,fields)=>{
                 if(error){
                     error_function({source:"maintenance.add",message:error.sqlMessage,fatal:true,error:error})
                     return
