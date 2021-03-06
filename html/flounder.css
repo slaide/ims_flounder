@@ -446,7 +446,9 @@ h1{
    margin-top: 1.3rem;
 }
 
-
+#error_date {
+   color: red;
+}
 
 
 
