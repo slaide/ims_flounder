@@ -63,6 +63,7 @@ p img {
    background-color: #413d3e;
    position: sticky;
    top: 0;
+   text-align: left;
 }
 
 .menu li{
@@ -84,6 +85,7 @@ p img {
    float: left;
    margin-left: 0.3rem;
    margin-top: 0.2rem;
+   margin-right: 0.3rem;
 }
 
 #log_out {
