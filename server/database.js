@@ -109,18 +109,18 @@ function create_global_connection_pool(){
     `
 
     const check_credentials=`
-    create procedure check_credentials(email varchar(40), password varchar(128), out MatchesFound int)
-    begin
-        start transaction;
+        create procedure check_credentials(email varchar(40), password varchar(128), out MatchesFound int)
+        begin
+            start transaction;
 
-        select count(*) into MatchesFound
-        from user
-        where user.Email=email
-        and user.Password=password
-        and user.Exist=1;
+            select count(*) into MatchesFound
+            from user
+            where user.Email=email
+            and user.Password=password
+            and user.Exist=1;
 
-        commit;
-    end;
+            commit;
+        end;
     `
 
     const generate_token_if_credentials_correct_definition=`
@@ -344,7 +344,6 @@ const rooms={
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                console.log(results)
                 if(results[2][0].Success!=1){
                     error_function({source:"rooms.get",message:"token is invalid",fatal:false})
                     return
@@ -1019,7 +1018,6 @@ const accounts={
                     error_function({source:"accounts.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
-                console.log("accounts.add",results)
                 if(results[2][0].Success!=1){
                     error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:results})
                     return
@@ -1160,8 +1158,6 @@ const accounts={
                     error_function({source:"accounts.login",message:"email or password is wrong.",error:results,fatal:false})
                     return
                 }
-
-                console.log(results)
 
                 success_function([results[3][0],results[4][0]])
             })
