@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html> 
+<html>
     <head>
         <title>Administrator panel</title>
         <meta charset="UTF-8">
@@ -26,12 +26,12 @@
         </nav>
 
         <main>
-        
+
             <div id="button_container">
                 <h1>Add objects to database</h1>
                 <button class="add_button" onclick="document.location='ADD_NEW_USER_ADMIN.html'">Add a new <strong>user</strong></button>
                 <button class="add_button" onclick="document.location='ADD_NEW_INSTRUMENT_ADMIN.html'">Add a new <strong>instrument</strong></button>
-                <button class="add_button" onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new <strong>room</strong></button> 
+                <button class="add_button" onclick="document.location='ADD_NEW_ROOM_ADMIN.html'">Add a new <strong>room</strong></button>
             </div>
 
             <div id="remove_container">
@@ -74,6 +74,7 @@
                     localStorage.removeItem("email");
                     localStorage.removeItem("admin");
                     localStorage.removeItem("main");
+             localStorage.removeItem("token");
                     window.location.replace("index.html");
                 }
 
@@ -98,12 +99,12 @@
                             cont.appendChild(form);
                             form.addEventListener("submit", formSubmit);
                             let select_room = document.createElement('select');
-                                select_room.setAttribute("name","RoomID");
+                                select_room.setAttribute("name","room_id");
                             form.appendChild(select_room);
                             for (let i = 0; i < rooms.length; i++) {
                                 let option = document.createElement('option');
-                                    option.setAttribute("value",`${rooms[i].RoomID}`);
-                                    option.innerHTML = `Room ${rooms[i].RoomID}`;
+                                    option.setAttribute("value",`${rooms[i].room_id}`);
+                                    option.innerHTML = `Room ${rooms[i].room_id}`;
                                 select_room.appendChild(option);
                             }
                             let submit = document.createElement('input');
@@ -130,19 +131,21 @@
                                         window.location.reload();
                                     } else {
                                         window.location.reload();
-                                    }   
+                                    }
                                 }
                                 request.onerror = function () {
                                     message.innerHTML = "Request failed";
                                 }
                                 remove_container.appendChild(message);
-                                request.send($('#remove_room_form').serialize());
+                                request.send($('#remove_room_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
                                 e.preventDefault();
                                 document.querySelector("#remove_room_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var ssn = localStorage.getItem("ssn");
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({"ssn": ssn,token:token}));
                 }
 
                 //Retriving all the room again for displaying the instruments
@@ -168,7 +171,7 @@
                                 select.setAttribute("name", "ins_id");
                             form.appendChild(select);
                             for (let i = 0; i < rooms.length; i++) {
-                                displayIns(rooms[i].RoomID, select);
+                                displayIns(rooms[i].room_id, select);
                             }
                             let submit = document.createElement("input");
                                 submit.setAttribute('type','submit');
@@ -200,17 +203,19 @@
                                     message.innerHTML = "Request failed";
                                 }
                                 remove_container.appendChild(message);
-                                request.send($('#remove_ins_form').serialize());
+                                request.send($('#remove_ins_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
                                 e.preventDefault();
                                 document.querySelector("#remove_ins_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
-                    xhttp.send(JSON.stringify({"ssn": ssn}));
+                    var ssn = localStorage.getItem("ssn");
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({"ssn": ssn,token:token}));
                 }
 
                 //Displaying instruments inside the rooms
-                function displayIns(RoomID, select) {
+                function displayIns(room_id, select) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/get_instruments_in_room_admin", true);
                     xhttp.onreadystatechange = function() {
@@ -223,18 +228,19 @@
                             for (let i = 0; i < instrument.length; i++) {
                                 let option = document.createElement("option");
                                     option.setAttribute('class','ins_option');
-                                    option.setAttribute('value', `${instrument[i].InsID}`);
-                                    option.innerHTML = `Room ${RoomID}: ${instrument[i].description}`;
+                                    option.setAttribute('value', `${instrument[i].ins_id}`);
+                                    option.innerHTML = `Room ${room_id}: ${instrument[i].description}`;
                                 select.appendChild(option);
 
                             }
                         }
                     }
                     var ssn = localStorage.getItem("ssn");
-                    xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
-                    
+                    var token = localStorage.getItem("token");
+                    xhttp.send(JSON.stringify({'room_id': room_id, 'ssn': ssn,token:token}));
+
                 }
-                
+
 
                 //Function for displaying user information
                 function getUsers() {
@@ -267,12 +273,12 @@
                                         td.innerHTML = "Yes";
                                     } else if (users[i][key] === 0) {
                                         td.innerHTML = "No";
-                                    } else if (key === "SpecRight") {
+                                    } else if (key === "special_rights") {
                                         let button = document.createElement('button');
-                                            button.setAttribute('onclick',`changeRights(${users[i]["SSN"]})`);
+                                            button.setAttribute('onclick',`changeRights(${users[i]["ssn"]})`);
                                             button.setAttribute('class','change_rights');
                                         td.innerHTML = users[i][key];
-                                        td.setAttribute('id',`spec_data_${users[i]["SSN"]}`);
+                                        td.setAttribute('id',`spec_data_${users[i]["ssn"]}`);
                                         button.innerHTML = "edit";
                                         tr.appendChild(td);
                                         td.appendChild(button);
@@ -282,10 +288,10 @@
                                     tr.appendChild(td);
                                 }
                                 let td = document.createElement('td');
-                                if (users[i]["SSN"]!=localStorage.getItem("ssn")) {
-                                    
+                                if (users[i]["ssn"]!=localStorage.getItem("ssn")) {
+
                                     let button = document.createElement('button');
-                                        button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                        button.setAttribute('onclick',`removeUser(${users[i]["ssn"]})`);
                                         button.setAttribute('class','remove_user');
                                         button.innerHTML = "remove";
                                     td.appendChild(button);
@@ -297,11 +303,13 @@
                             table_head.appendChild(th);
                         }
                     }
-                    xhttp.send();
+                    var ssn=localStorage.getItem("ssn")
+                    var token=localStorage.getItem("token")
+                    xhttp.send(JSON.stringify({ssn:ssn,token:token}));
                 }
 
                 //Remove user function
-                function removeUser(ssn) {
+                function removeUser(ssn_user) {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST","/remove_user",true);
                     xhttp.onreadystatechange = function() {
@@ -316,15 +324,16 @@
                             }
                         }
                     }
-                    var admin_ssn = localStorage.getItem("ssn");
-                    xhttp.send(JSON.stringify({"ssn_user": ssn, "ssn": admin_ssn}));
+                    var token=localStorage.getItem("token")
+                    var admin_ssn=localStorage.getItem("ssn")
+                    xhttp.send(JSON.stringify({ssn:admin_ssn,ssn_user:ssn_user,token:token}));
                 }
 
                 //Change special rights function
-                function changeRights(ssn) {
-                    //Create form for filling in the new special right, action: /set_user_rights 
+                function changeRights(ssn_user) {
+                    //Create form for filling in the new special right, action: /set_user_rights
                     //Sending new special right and ssn
-                    let td = document.querySelector(`#spec_data_${ssn}`);
+                    let td = document.querySelector(`#spec_data_${ssn_user}`);
                     $(td).empty();
                     let form = document.createElement('form');
                         form.setAttribute('class','change_right_form');
@@ -333,14 +342,24 @@
                     td.appendChild(form);
                     form.addEventListener("submit", formSubmit);
                     let rights = document.createElement('input');
-                        rights.setAttribute('name','Special_rights');
+                        rights.setAttribute('name','special_rights');
                         rights.setAttribute('type','text');
                     form.appendChild(rights);
+                    let ssn_user_input = document.createElement('input');
+                        ssn_user_input.setAttribute('type','hidden');
+                        ssn_user_input.setAttribute('value',`${ssn_user}`);
+                        ssn_user_input.setAttribute('name','ssn_user');
                     let ssn_input = document.createElement('input');
                         ssn_input.setAttribute('type','hidden');
-                        ssn_input.setAttribute('value',`${ssn}`);
+                        ssn_input.setAttribute('value',`${localStorage.getItem("ssn")}`);
                         ssn_input.setAttribute('name','ssn');
+                    let token_input = document.createElement('input');
+                        token_input.setAttribute('type','hidden');
+                        token_input.setAttribute('value',`${localStorage.getItem("token")}`);
+                        token_input.setAttribute('name','token');
+                    form.appendChild(ssn_user_input);
                     form.appendChild(ssn_input);
+                    form.appendChild(token_input);
                     let submit = document.createElement('input');
                         submit.setAttribute('type','submit');
                         submit.setAttribute('value','OK');
@@ -365,7 +384,7 @@
                         e.preventDefault();
                         document.querySelector(".change_right_form").removeEventListener("submit", formSubmit);
                     }
-                    
+
                 }
 
                 getRooms();

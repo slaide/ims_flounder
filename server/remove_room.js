@@ -16,8 +16,7 @@ function remove_room(req,res){
           
           res.writeHeader(200,utility.content.json)
           res.end(JSON.stringify({error:error}))
-
-      },(results)=>{
+      },()=>{
           res.writeHeader(200,utility.content.json)
           res.end(JSON.stringify({success:"successfully removed room"}))
       })

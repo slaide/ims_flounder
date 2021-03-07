@@ -10,7 +10,7 @@ const database=require("./database.js")
  */
 function set_user_rights(req,res){
     utility.parse_data(req,(data)=>{
-        database.account.set_special_rights(data,(error)=>{
+        database.accounts.set_special_rights(data,(error)=>{
             if(error.fatal) throw error;
             
             res.writeHeader(200,utility.content.json)

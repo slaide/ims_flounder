@@ -10,21 +10,21 @@ const database=require("./database.js")
  **/
 function get_maintenance(req,res) {     
     utility.parse_data(req,(data)=>{
-
         database.maintenance.get(data,(error)=>{
             if(error.fatal) throw error; 
+
+            const error_message="error when getting list of maintenances:'"+JSON.stringify(error)+"'"
+            utility.log(`${error_message}`,"error")
 
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error}))
 
-        },(results)=>{
-            db_maintenance=JSON.parse(JSON.stringify(results))   
-
+        },(db_maintenances)=>{
             var ret=[];
-            for(item of db_maintenance){
-                ret.push({DateTime:item.DateTime, Status:item.Status, Notes:item.Notes})
+            for(item of db_maintenances){
+                ret.push({date_time:item.Date_Time, status:item.Status, notes:item.Notes})
             } 
-            res.writeHeader(200,utility.content.from_filename(".json"))
+            res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
             utility.log(`Maintenance sent to client for insID ${data.Ins_ID}`) 
         })

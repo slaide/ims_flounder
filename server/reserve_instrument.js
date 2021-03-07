@@ -16,7 +16,7 @@ function reserve_instrument(req,res){
             
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error}))
-        },(results)=>{
+        },()=>{
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({success:"timeslot was booked"}))
         })

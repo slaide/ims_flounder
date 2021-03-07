@@ -10,9 +10,9 @@ const fs=require("fs")
  */
 function add_user(req,res){
     utility.parse_data(req,(data)=>{
-        database.users.add(data,(error)=>{
+        database.accounts.add(data,(error)=>{
             if(error.fatal) throw error;
-            
+
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error}))
 

@@ -13,7 +13,7 @@ function remove_instrument(req,res){
    utility.parse_data(req,(data)=>{
       database.instruments.remove(data,(error)=>{
           if(error.fatal) throw error;
-          
+
           res.writeHeader(200,utility.content.json)
           res.end(JSON.stringify({error:error}))
 

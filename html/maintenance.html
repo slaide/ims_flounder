@@ -19,7 +19,7 @@
          </ul>
          <a id="log_out" onclick="logOut()">Log out</a>
       </nav>
-    
+
     <main id="whole_page">
       <div id="select_ins">
         <h1>Select instrument</h1>
@@ -54,15 +54,14 @@
                   li.innerHTML = "Maintenance";
                   link.appendChild(li);
             }
-          
+
           function logOut() {
                localStorage.removeItem("ssn");
                localStorage.removeItem("email");
                localStorage.removeItem("admin");
                localStorage.removeItem("main");
-                  if (!localStorage.getItem("ssn")) {
-                     window.location.replace("index.html");
-               }
+               localStorage.removeItem("token");
+                window.location.replace("index.html");
             }
 
 
@@ -78,9 +77,9 @@
                   }
                   let ins_menu = document.querySelector("#instrument_menu");
                   for (let i = 0; i < rooms.length; i++) {
-                    populateMenu(rooms[i].RoomID);
+                    populateMenu(rooms[i].room_id);
                      //let room_alt = document.createElement('option');
-                     //room_alt.innerHTML = 'Room ' + rooms[i].RoomID;
+                     //room_alt.innerHTML = 'Room ' + rooms[i].room_id;
                      //ins_menu.appendChild(room_alt);
                      //room_alt.setAttribute('class', 'room_alt');
                      //let room_name = document.createTextNode(rooms[i]);
@@ -88,10 +87,12 @@
                   }
                }
             };
-            xhttp.send(JSON.stringify({'ssn':ssn}));
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'ssn': ssn,token:token}));
          }
 
-         function populateMenu(RoomID) {
+         function populateMenu(room_id) {
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/get_instruments_in_room", true);
             xhttp.onreadystatechange = function() {
@@ -104,21 +105,23 @@
                 let ins_menu = document.querySelector("#instrument_menu");
                 for (let i = 0; i < instruments.length; i++) {
                   let ins_alt = document.createElement('option');
-                  //alert(instruments[i].InsID);
-                  //ins_alt.className = instruments[i].InsID;
-                  ins_alt.setAttribute("value", instruments[i].InsID);
-                  ins_alt.innerHTML = 'Room ' + RoomID + ": " + instruments[i].description;
+                  //alert(instruments[i].ins_id);
+                  //ins_alt.className = instruments[i].ins_id;
+                  ins_alt.setAttribute("value", instruments[i].ins_id);
+                  ins_alt.innerHTML = 'Room ' + room_id + ": " + instruments[i].description;
                   ins_menu.appendChild(ins_alt);
-                  //show_maintanance(instruments[i].InsID);
+                  //show_maintanance(instruments[i].ins_id);
                   }
             }
          };
-         xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
+         var token = localStorage.getItem("token");
+         var ssn = localStorage.getItem("ssn");
+         xhttp.send(JSON.stringify({'room_id': room_id, 'ssn': ssn,token:token}));
         }
 
-        function selected_ins(InsID_input) {
-          var InsID = InsID_input[InsID_input.selectedIndex].value;
-          
+        function selected_ins(ins_id_input) {
+          var ins_id = ins_id_input[ins_id_input.selectedIndex].value;
+
           let form_div = document.querySelector("#maintenance_form_div");
           form_div.innerHTML = "";
           let form_title = document.createElement('h1');
@@ -126,13 +129,13 @@
           form_title.innerHTML = "Form";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
-          let arg_str = 'javascript:add_maintenance(' + InsID.toString() + ');';
+          let arg_str = 'javascript:add_maintenance(' + ins_id.toString() + ');'
           form_main.setAttribute('action', arg_str);
 
           let text_date = document.createElement("h1");
           text_date.innerHTML = "Date";
           let input_date = document.createElement("input");
-          input_date.setAttribute('type', 'datetime-local');
+          input_date.setAttribute('type', 'DateTime-local');
           input_date.setAttribute('id', 'form_date');
           let error_date = document.createElement("h5");
           error_date.setAttribute("id", "error_date");
@@ -177,11 +180,11 @@
           table_notes.setAttribute('id', 'notes_table');
           see_notes_div.appendChild(table_notes);
           //test_print();//Remove when show_mantenance is working
-          show_maintenance(InsID);
-          //add_maintenance(InsID);
+          show_maintenance(ins_id);
+          //add_maintenance(ins_id);
         }
 
-        function add_maintenance(Ins_ID) {
+        function add_maintenance(ins_id) {
           let date_obj = document.getElementById("form_date").value;
           let date = date_obj.replace('T', ' ');
           let status = document.getElementById("form_status").value;
@@ -209,7 +212,7 @@
 
           //alert(InsID);
           //alert(date + status + note);
-          
+
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/add_maintenance", true);
           xhttp.onreadystatechange = function() {
@@ -227,17 +230,19 @@
             }
           };
           //alert("calling");
-          xhttp.send(JSON.stringify({'DateTime': date, 'Status': status, 'Notes': note, 'SSN': ssn, 'Ins_ID': Ins_ID}));
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'date_time': date, 'status': status, 'notes': note, 'ssn': ssn, 'ins_id': ins_id, token:token}));
         }
 
-        function show_maintenance(Ins_ID) {
+        function show_maintenance(ins_id) {
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/get_maintenance", true);
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               var instrument_notes = JSON.parse(this.responseText);
               if (instrument_notes.error) {
-                console.log(instruents.error);
+                console.log(this.responseText);
                 alert("Error");
                 return;
               }
@@ -254,19 +259,19 @@
               table_header.appendChild(table_header_status);
               table_header.appendChild(table_header_note);
               table_element.appendChild(table_header);
-              for (let i = 0; i < instrument_notes.length; i++) {                
+              for (let i = 0; i < instrument_notes.length; i++) {
                 let table_entry = document.createElement("tr");
-                let table_time = document.createElement("td");
-                table_time.innerHTML = instrument_notes[i].DateTime;
-                let table_status = document.createElement("td");
-                table_status.innerHTML = instrument_notes[i].Status;
-                let table_note = document.createElement("td");
-                table_note.innerHTML = instrument_notes[i].Notes;
+                let table_time = document.createElement("th");
+                table_time.innerHTML = instrument_notes[i].date_time;
+                let table_status = document.createElement("th");
+                table_status.innerHTML = instrument_notes[i].status;
+                let table_note = document.createElement("th");
+                table_note.innerHTML = instrument_notes[i].notes;
                 table_entry.appendChild(table_time);
                 table_entry.appendChild(table_status);
                 table_entry.appendChild(table_note);
                 table_element.appendChild(table_entry);
-                  
+
               }
             } else if(this.status == 200){
               //alert("error2");
@@ -276,12 +281,14 @@
               //alert("error4");
             }
           };
-          xhttp.send(JSON.stringify({'Ins_ID': Ins_ID}));
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'ins_id': ins_id,'ssn': ssn,token:token}));
         }
 
         function test_print() {
-          //var ins_IDXX = in_str[in_str.selectedIndex].value;
-          //document.querySelector('#lmao').innerHTML = ins_IDXX;
+          //var ins_idXX = in_str[in_str.selectedIndex].value;
+          //document.querySelector('#lmao').innerHTML = ins_idXX;
 
           let table_element = document.querySelector("#notes_table");
           table_element.innerHTML = "";

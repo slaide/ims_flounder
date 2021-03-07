@@ -11,25 +11,20 @@ const database=require("./database.js")
 
 function get_personal_schedule(req,res){
     utility.parse_data(req,(data)=>{ 
+        database.personal_schedule.get(data,(error)=>{
+            if(error.fatal) throw error; 
 
-        var sql="SELECT booking.Booking_ID, booking.Start_Time, booking.End_Time, instrument.Description FROM booking JOIN instrument ON booking.Ins_ID=instrument.Ins_ID WHERE booking.SSN = ? and instrument.Exist=1" 
+            const error_message="error selecting attributes: '"+error+"'"
+            utility.log(`${error_message}`)
 
-        database.connection.query(sql, [data.SSN], (error, result)=> {
-            if(error){
-                const error_message="error selecting attributes: '"+error+"'"
-                utility.log(`${error_message}`)
-
-                res.writeHeader(200,utility.content.json)
-                res.end(JSON.stringify({error:error_message}))
-                return
-            }
-            db_booking=JSON.parse(JSON.stringify(result))   
-
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:error}))
+        },(db_bookings)=>{
             var ret=[];
-            for(item of db_booking){
+            for(item of db_bookings){
                 ret.push({BookingID:item.Booking_ID, StartTime:item.Start_Time, EndTime:item.End_Time, Description:item.Description})
             }
-            res.writeHeader(200,utility.content.from_filename(".json"))
+            res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify(ret))
             utility.log(`Bookings sent for user ${data.SSN}`)
         })

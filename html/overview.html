@@ -21,7 +21,7 @@
          <a id="log_out" onclick="logOut()">Log out</a>
          <div id="email"></div>
       </nav>
-      
+
       <main id="overview_cont">
          <div class="grid grid_room">
             <h1 class="overview_title">Room overview</h1>
@@ -93,8 +93,9 @@
                localStorage.removeItem("email");
                localStorage.removeItem("admin");
                localStorage.removeItem("main");
+             localStorage.removeItem("token");
                window.location.replace("index.html");
-            } 
+            }
 
             //Function for retrieving room data and displaying it
             function getRooms() {
@@ -114,9 +115,9 @@
                            overview.appendChild(room_container);
                         let room = document.createElement('button');
                            room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns(${rooms[i].RoomID})`);
+                           room.setAttribute('onclick', `getIns(${rooms[i].room_id})`);
                            room.setAttribute('class','room');
-                           room.innerHTML = 'Room ' + rooms[i].RoomID;
+                           room.innerHTML = 'Room ' + rooms[i].room_id;
                            room.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_room");
                               if (current[0] != undefined) {
@@ -126,22 +127,23 @@
                            })
                         room_container.appendChild(room);
                         let instruments = document.createElement('div');
-                           instruments.setAttribute('id', `ins_${rooms[i].RoomID}`);
+                           instruments.setAttribute('id', `ins_${rooms[i].room_id}`);
                            instruments.setAttribute('class','ins');
                         room_container.appendChild(instruments);
 
                      }
-                  }  
+                  }
                };
                var ssn = localStorage.getItem("ssn");
-               xhttp.send(JSON.stringify({'ssn': ssn}));
+               var token = localStorage.getItem("token");
+               xhttp.send(JSON.stringify({'ssn': ssn,token:token}));
             }
 
-            
+
             //Function for showing instruments when a room button is clicked
             //instruments.json must contain insID and ins_description
-            function getIns(RoomID) {
-               $(`#ins_${RoomID}`).empty();
+            function getIns(room_id) {
+               $(`#ins_${room_id}`).empty();
                $('.ins').empty();
                var xhttp = new XMLHttpRequest();
                xhttp.open("POST", "/get_instruments_in_room", true);
@@ -153,7 +155,7 @@
                         return;
                      }
                      for (let i = 0; i < instrument.length; i++) {
-                        let instruments = document.querySelector(`#ins_${RoomID}`);
+                        let instruments = document.querySelector(`#ins_${room_id}`);
                         let ins = document.createElement('button');
                            ins.setAttribute('type', 'button');
                            ins.setAttribute('class','ins_button');
@@ -164,7 +166,7 @@
                            let current_date = today.getDate();
                            let current_weekday = today.getDay();
                            //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].InsID}, '${instrument[i].description}', ${RoomID})`);
+                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].ins_id}, '${instrument[i].description}', ${room_id})`);
                            ins.innerHTML = instrument[i].description;
                            ins.addEventListener("click", function() {
                               var current = document.getElementsByClassName("selected_ins");
@@ -178,7 +180,8 @@
                   }
                };
                var ssn = localStorage.getItem("ssn");
-               xhttp.send(JSON.stringify({'RoomID': RoomID, 'ssn': ssn}));
+               var token = localStorage.getItem("token");
+               xhttp.send(JSON.stringify({'room_id': room_id, 'ssn': ssn,token:token}));
             }
 
 
@@ -191,7 +194,7 @@
             }
 
             //Change to previous week
-            function next(year,month,last_date,insID,ins_desc,RoomID) {
+            function next(year,month,last_date,insID,ins_desc,room_id) {
                let date = 0;
                let nmr_days = 32 - (new Date(year,month)).getDate();
                if (nmr_days === last_date) {
@@ -201,11 +204,11 @@
                   date = last_date+1;
                }
                year = (month === 11) ? year + 1 : year;
-               calendar(year,month,date,0,insID,ins_desc,RoomID);
+               calendar(year,month,date,0,insID,ins_desc,room_id);
             }
 
             //Change to next week
-            function previous(year,month,first_date,insID,ins_desc,RoomID) {
+            function previous(year,month,first_date,insID,ins_desc,room_id) {
                year = (month === 0) ? year - 1 : year;
                let date = 0;
                if (first_date === 1) {
@@ -214,11 +217,11 @@
                } else {
                   date = first_date-1;
                }
-               calendar(year,month,date,6,insID,ins_desc,RoomID);
+               calendar(year,month,date,6,insID,ins_desc,room_id);
             }
-            
-            //Showing calender 
-            function calendar(year,month,date,weekday,insID,ins_desc,RoomID) {
+
+            //Showing calender
+            function calendar(year,month,date,weekday,insID,ins_desc,room_id) {
                $("#info_text").empty();
                $("tbody").empty();
                $("thead").empty();
@@ -227,11 +230,11 @@
                $(".success_message").empty();
                //Title of instrument
                let ins_text = document.querySelector('#info_text');
-                  ins_text.innerHTML = "Room " + RoomID + ': ' + ins_desc;
+                  ins_text.innerHTML = "Room " + room_id + ': ' + ins_desc;
                //Choose tbody and thead elements by id
                let tbody = document.querySelector('#timeSlots');
                let thead = document.querySelector('#date');
-               //Array for the days of the week 
+               //Array for the days of the week
                let day_arr = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
                //Dates in a week
                let week_dates = [];
@@ -241,7 +244,7 @@
                let daysInPreviousMonth = 32 - new Date(year, month-1, 32).getDate();
                //Loop for creating table rows
                for (let j = 0; j < 12; j++) {
-                  //Create table row for every booking hour 
+                  //Create table row for every booking hour
                   let tr = document.createElement('tr');
                   //For new month
                   let k = 1;
@@ -311,13 +314,14 @@
                                     }
                                     this.className += " active";
                                  })
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${RoomID})`);
+                                 slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${room_id})`);
                               }
                            }
-                        } 
+                        }
                         let start_timeslot = booking_date + ' ' + start_;
                         var ssn = localStorage.getItem("ssn");
-                        xhttp.send(JSON.stringify({'ssn': ssn, "ins_id": insID, "start_time": start_timeslot})); 
+                        var token = localStorage.getItem("token");
+                        xhttp.send(JSON.stringify({'ssn': ssn, token:token, "ins_id": insID, "start_time": start_timeslot}));
                         slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
                      }
@@ -331,7 +335,7 @@
                   previous_week.setAttribute('class','change_week');
                   let first_date = week_dates[0][2];
                   let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${insID},'${ins_desc}',${RoomID})`)
+                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${insID},'${ins_desc}',${room_id})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
                   change.appendChild(previous_week);
@@ -339,7 +343,7 @@
                   next_week.setAttribute('class','change_week');
                   let last_date = week_dates[6][2];
                   let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${insID},'${ins_desc}',${RoomID})`);
+                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${insID},'${ins_desc}',${room_id})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
@@ -347,7 +351,7 @@
                }
 
             //slotID is the start time
-            function show_BookingForm(year,month,date,weekday,slotID,booking_date,insID,ins_desc,RoomID) {
+            function show_BookingForm(year,month,date,weekday,slotID,booking_date,insID,ins_desc,room_id) {
                //Creating a booking form with action: /reserve_instrument, which is sent to server with info of booking
                $("#booking_form").empty();
                $(".success_message").empty();
@@ -454,9 +458,10 @@
                         success.appendChild(message);
                         }
                      }
+                  }
                   //Request failed
                   request.onerror = function() {
-                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                     calendar(year,month,date,weekday,insID,ins_desc,room_id);
                      let schedule = document.querySelector('#schedule');
                      let success = document.createElement('div');
                      schedule.appendChild(success);
@@ -471,18 +476,18 @@
                         message.innerHTML = "Error when reserving timeslot";
                      success.appendChild(message);
                   }
-                  request.send($('#booking_form').serialize());
+                  request.send($('#booking_form').serialize()+`&token=${localStorage.getItem("token")}&ssn=${localStorage.getItem("ssn")}`);
                   e.preventDefault();
-                  document.querySelector("#booking_form").removeEventListener("submit", formSubmit);    
-               }; 
-               
+                  document.querySelector("#booking_form").removeEventListener("submit", formSubmit);
+               };
+
             }
-               
 
 
-            
 
-            getRooms();             
+
+
+            getRooms();
 
          </script>
 

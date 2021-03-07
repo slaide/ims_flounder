@@ -23,10 +23,12 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `user` (SSN, First_name, Last_name, `Password`, Admin, Phone_number, Email, Special_rights, Immunocompromised, Maintenance, Exist, Token, Last_login) VALUES
-(762324167, 'Ariel', 'Fin', 'dfr456', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1, 1, 1, '', '2021-03-05 13:10:27'),
-(882767577, 'Sebastian', 'Crabb', 'cfr789', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1, '', '2021-03-05 13:10:27'),
-(1450238774, 'Eric', 'Prince', 'swq123', 1, 709483940, 'eric.prince@gmail.com', 'A', 0, 1, 1, '', '2021-03-05 13:10:27');
-
+(762324167, 'Ariel', 'Fin', 'e209fb92e970371a47315d874a8823cbaa37f918964fe455cc3d9543cf4f657125597771a792151567ed98abbd391bf5a1fc843414dac7d48fc49dc76761', 0, 703052249, 'ariel.fin@gmail.com', 'B', 1, 1, 1, '', '2021-03-05 13:10:27'),
+(882767577, 'Sebastian', 'Crabb', '4eee8c359d9dc1cdc53224e7c35c2784874c2356dbdfec11d22fd29fe84dcc28cc303aae15f8cc7d80f5dd80846622525645d1ddd5bbbd2372a73c3b27b', 0, 762940501, 'seb.crabb@gmail.com', 'C', 0, 0, 1, '', '2021-03-05 13:10:27'),
+(1450238774, 'Eric', 'Prince', '60fc8fb48bf583ec0efd151fa06eac84bf9a952b9abffac1a9bc5ad3468044cc84bce449af42b0a859afdb649ceefed22c6cdc94d5c56dcf64df62', 1, 709483940, 'eric.prince@gmail.com', 'A', 0, 1, 1, '', '2021-03-05 13:10:27');
+#dfr456 this is ariels password
+#cfr789 sebastian
+#swq123 eric
 
 ALTER TABLE `user`
   ADD PRIMARY KEY (SSN),

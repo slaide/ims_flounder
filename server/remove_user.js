@@ -9,18 +9,17 @@ const database=require("./database.js")
  * @param {Response} res Response object
  */
 
-function remove_user(req,res){
+ function remove_user(req,res){
    utility.parse_data(req,(data)=>{
-      database.users.remove(data,(error)=>{
-          if(error.fatal) throw error;
-          
-          res.writeHeader(200,utility.content.json)
-          res.end(JSON.stringify({error:error}))
+       database.accounts.remove(data,(error)=>{
+           if(error.fatal) throw error;
 
-      },(results)=>{
-          res.writeHeader(200,utility.content.json)
-          res.end(JSON.stringify({success:"successfully added instrument"}))
-      })
-  })  
-}
-module.exports.remove_user=remove_user
+           res.writeHeader(200,utility.content.json)
+           res.end(JSON.stringify({error:error}))
+       },(results)=>{
+           res.writeHeader(200,utility.content.json)
+           res.end(JSON.stringify({result:"successfully removed user"}))
+       })
+   })
+ }
+ module.exports.remove_user=remove_user
