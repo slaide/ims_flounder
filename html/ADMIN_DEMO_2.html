@@ -309,6 +309,8 @@
                             var response = JSON.parse(this.responseText);
                             if(response.error) {
                                 console.log(response.error);
+                                window.alert(response.error.message);
+                                window.location.reload();
                             } else {
                                 window.location.href = "ADMIN_DEMO_2.html";
                             }

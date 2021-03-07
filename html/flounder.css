@@ -236,11 +236,12 @@ h1{
 
 /*Style for booking form*/
 #booking_form {
-   width: 600px;
+   width: 550px;
    margin: auto;
    text-align: left;
    padding: 0.8rem;
    text-align: center;
+   line-height: 1.8rem;
 }
 
 
