@@ -243,7 +243,7 @@
                //Days in prevoius month
                let daysInPreviousMonth = 32 - new Date(year, month-1, 32).getDate();
                //Loop for creating table rows
-               for (let j = 0; j < 12; j++) {
+               for (let j = 0; j < 16; j++) {
                   //Create table row for every booking hour
                   let tr = document.createElement('tr');
                   //For new month
@@ -286,9 +286,6 @@
                         thead.appendChild(th);
                      }
                      //Alter the time slots (no time slots for sunday and saturday)
-                     if (i == 0 || i == 6) {
-                        td.innerHTML = "";
-                     } else {
                         //Date for time slot
                         let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
                         //Start time for time slot
@@ -324,7 +321,7 @@
                         xhttp.send(JSON.stringify({'ssn': ssn, token:token, "ins_id": insID, "start_time": start_timeslot}));
                         slotButton.innerHTML = addZero(7+j) + ':00';
                         td.appendChild(slotButton);
-                     }
+                     
                   }
                   tbody.appendChild(tr);
                }
