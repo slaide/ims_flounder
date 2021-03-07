@@ -421,20 +421,39 @@
                   request.open('POST', url, true);
                   //Successful booking
                   request.onload = function() {
-                     calendar(year,month,date,weekday,insID,ins_desc,RoomID);
-                     let schedule = document.querySelector('#schedule');
-                     let success = document.createElement('div');
-                     schedule.appendChild(success);
-                        success.setAttribute('class','success_message');
-                     let image = document.createElement('img');
-                        image.setAttribute('src','./success_booking.png');
-                        image.setAttribute('width','50px');
-                        image.setAttribute('height','50px');
-                        image.setAttribute('class','success_image')
-                     success.appendChild(image);
-                     let message = document.createElement('p');
-                        message.innerHTML = `Your reservation was successful <br> ${booking_date} <br> ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
-                     success.appendChild(message);
+                     var response = JSON.parse(this.responseText);
+                     if (response.error) {
+                        console.log(response.error);
+                        calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                        let schedule = document.querySelector('#schedule');
+                        let success = document.createElement('div');
+                        schedule.appendChild(success);
+                           success.setAttribute('class','success_message');
+                        let image = document.createElement('img');
+                           image.setAttribute('src','./unsuccessful_booking.png');
+                           image.setAttribute('width','50px');
+                           image.setAttribute('height','50px');
+                           image.setAttribute('class','success_image')
+                        success.appendChild(image);
+                        let message = document.createElement('p');
+                           message.innerHTML = response.error.message;
+                        success.appendChild(message);
+                     } else {
+                        calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                        let schedule = document.querySelector('#schedule');
+                        let success = document.createElement('div');
+                        schedule.appendChild(success);
+                           success.setAttribute('class','success_message');
+                        let image = document.createElement('img');
+                           image.setAttribute('src','./success_booking.png');
+                           image.setAttribute('width','50px');
+                           image.setAttribute('height','50px');
+                           image.setAttribute('class','success_image')
+                        success.appendChild(image);
+                        let message = document.createElement('p');
+                           message.innerHTML = `Your reservation was successful <br> ${booking_date} <br> ${addZero(slotID)}:00 - ${addZero(slotID+1)}:00`;
+                        success.appendChild(message);
+                        }
                      }
                   //Request failed
                   request.onerror = function() {
