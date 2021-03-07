@@ -126,6 +126,8 @@
                                 request.onload = function () {
                                     if (JSON.parse(this.responseText).error) {
                                         console.log(JSON.parse(this.responseText).error);
+                                        window.alert(JSON.parse(this.responseText).error.message);
+                                        window.location.reload();
                                     } else {
                                         window.location.reload();
                                     }   
@@ -188,6 +190,8 @@
                                 request.onload = function () {
                                     if (JSON.parse(this.responseText).error) {
                                         console.log(JSON.parse(this.responseText).error)
+                                        window.alert(JSON.parse(this.responseText).error.message);
+                                        window.location.reload();
                                     } else {
                                         window.location.reload();
                                     }
@@ -278,12 +282,15 @@
                                     tr.appendChild(td);
                                 }
                                 let td = document.createElement('td');
-                                let button = document.createElement('button');
-                                    button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
-                                    button.setAttribute('class','remove_user');
-                                    button.innerHTML = "remove";
+                                if (users[i]["SSN"]!=localStorage.getItem("ssn")) {
+                                    
+                                    let button = document.createElement('button');
+                                        button.setAttribute('onclick',`removeUser(${users[i]["SSN"]})`);
+                                        button.setAttribute('class','remove_user');
+                                        button.innerHTML = "remove";
+                                    td.appendChild(button);
+                                }
                                 tr.appendChild(td);
-                                td.appendChild(button);
                             }
                             let th = document.createElement('th');
                                 th.innerHTML = "Remove user";
