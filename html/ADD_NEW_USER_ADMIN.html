@@ -26,6 +26,7 @@
             
             <!--log out button-->
             <a id="log_out" href="#" onclick="logOut()">Log out</a>
+            <div id="email"></div>
         </nav>
 
         <!--Scripts for the pages-->
@@ -40,6 +41,10 @@
                 li.innerHTML = "Maintenance";
                 link.appendChild(li);
             }
+
+            //To display the e-mail of current user 
+            var email = localStorage.getItem(“email”);
+            document.getElementById(“email”).innerHTML = email;
 
             //Listner for submit function and returns error text in the log if error occurs
             document.querySelector("#add_user_form").addEventListener("submit", formSubmit);
@@ -96,11 +101,11 @@
               <input type="text" name="last_name">
 
               <br><br><label for="phone_number">Phone number:</label>
-              <input type="text" name="phone_number">
+              <input type="numeric" name="phone_number">
 
 
               <br><br><label for="ssn">SSN:</label>
-              <input type="text" name="ssn">
+              <input type="numeric" name="ssn">
 
 
               <br><br><label for="special_rights">Special rights:</label>

@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="./admin.css">
       <link rel="preconnect" href="https://fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
 
 
@@ -24,6 +25,7 @@
             </ul>
             <!--Log out button-->
             <a id="log_out" href="#" onclick="logOut()">Log out</a>
+            <div id="email"></div>
         </nav>
 
         <!--Scripts relevant to the page -->
@@ -37,6 +39,33 @@
                 li.innerHTML = "Maintenance";
                 link.appendChild(li);
             }
+
+            //To display the e-mail of current user 
+            var email = localStorage.getItem(“email”);
+            document.getElementById(“email”).innerHTML = email;
+
+
+            //Listner for submit function and returns error text in the log if error occurs
+            document.querySelector("#add_room_form").addEventListener("submit", formSubmit);
+
+            function formSubmit(e) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST","#add_room_form",true);
+                xhttp.onload = function () {
+                    if(JSON.parse(this.responseText).error) {
+                        console.log(JSON.parse(this.responseText).error);
+                    } else {
+                    window.location.href = "ADMIN_DEMO_2.html";
+                }
+             }
+                xhttp.onerror = function() {
+                    window.alert("Request failed");
+             }
+                xhttp.send($("#add_room_form").serialize());
+                e.preventDefault();
+                document.querySelector("#add_room_form").removeEventListener("submit", formSubmit);
+            } (edited) 
+
 
             //Log out function
             function logOut() {
