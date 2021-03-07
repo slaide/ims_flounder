@@ -423,7 +423,6 @@
                   request.onload = function() {
                      var response = JSON.parse(this.responseText);
                      if (response.error) {
-                        console.log(response.error);
                         calendar(year,month,date,weekday,insID,ins_desc,RoomID);
                         let schedule = document.querySelector('#schedule');
                         let success = document.createElement('div');
