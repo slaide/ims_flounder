@@ -109,7 +109,7 @@ function create_global_connection_pool(){
     `
 
     const check_credentials=`
-    create procedure check_credentials(email varchar(40), password varchar(126), out MatchesFound int)
+    create procedure check_credentials(email varchar(40), password varchar(128), out MatchesFound int)
     begin
         start transaction;
 
@@ -124,7 +124,7 @@ function create_global_connection_pool(){
     `
 
     const generate_token_if_credentials_correct_definition=`
-        create procedure generate_token(ssn int, new_time datetime, out Token varchar(126))
+        create procedure generate_token(ssn int, new_time datetime, out Token varchar(128))
         begin
             start transaction;
 
@@ -140,7 +140,7 @@ function create_global_connection_pool(){
     `
 
     const check_token_definition=`
-        create procedure check_token(ssn int, token varchar(126), new_time datetime, out TokenValid int)
+        create procedure check_token(ssn int, token varchar(128), new_time datetime, out TokenValid int)
         begin
             start transaction;
 
@@ -327,13 +327,13 @@ const rooms={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
                         select *
                         from room
-                        where strcmp(Class,(select Special_rights from User where SSN=${data.ssn}))>=0
+                        where strcmp(Class,(select Special_rights from User where SSN='${data.ssn}'))>=0
                         and room.Exist=1;
                     end if;
                 commit;
@@ -344,6 +344,7 @@ const rooms={
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                console.log(results)
                 if(results[2][0].Success!=1){
                     error_function({source:"rooms.get",message:"token is invalid",fatal:false})
                     return
@@ -361,7 +362,7 @@ const rooms={
 
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
@@ -394,7 +395,7 @@ const rooms={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
@@ -438,7 +439,7 @@ const rooms={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -477,7 +478,7 @@ const instruments={
         if(check_attributes(data,"room_id ssn token",error_function)){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
@@ -486,7 +487,7 @@ const instruments={
                         join room on room.Room_ID = instrument.Room_ID
                         where room.Room_ID="${data.room_id}"
                         and instrument.Exist=1
-                        and strcmp((select user.Special_rights from user where user.SSN=${data.ssn}),room.Class)<=0;
+                        and strcmp((select user.Special_rights from user where user.SSN='${data.ssn}'),room.Class)<=0;
                     end if;
                 commit;
             `
@@ -512,7 +513,7 @@ const instruments={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -563,7 +564,7 @@ const instruments={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -613,7 +614,7 @@ const instruments={
         if(check_attributes(data,"ssn token room_id",error_function)){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -658,7 +659,7 @@ const bookings={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
@@ -699,7 +700,7 @@ function timeslot_available(data,error_function,insert_data=false,success_functi
     if(sorted_attributes){
         const query=`
             start transaction;
-                call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                 select @Success as Success;
 
                 if @Success=1 then
@@ -829,7 +830,7 @@ const personal_schedule={
         if(check_attributes(data,"ssn token",error_function)){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     if @Success=1 then
@@ -869,7 +870,7 @@ const maintenance={
         if(check_attributes(data,"ssn token ins_id",error_function)){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsMaintenance := user.Maintenance as UserIsMaintenance
@@ -910,7 +911,7 @@ const maintenance={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsMaintenance := user.Maintenance as UserIsMaintenance
@@ -954,7 +955,7 @@ const accounts={
         if(check_attributes(data,"ssn token",error_function)){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -999,7 +1000,7 @@ const accounts={
 
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -1018,6 +1019,7 @@ const accounts={
                     error_function({source:"accounts.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                console.log("accounts.add",results)
                 if(results[2][0].Success!=1){
                     error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:results})
                     return
@@ -1041,7 +1043,7 @@ const accounts={
         if(sorted_attributes){
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -1092,7 +1094,7 @@ const accounts={
 
             const query=`
                 start transaction;
-                    call check_token(${data.ssn},'${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -1158,6 +1160,8 @@ const accounts={
                     error_function({source:"accounts.login",message:"email or password is wrong.",error:results,fatal:false})
                     return
                 }
+
+                console.log(results)
 
                 success_function([results[3][0],results[4][0]])
             })
