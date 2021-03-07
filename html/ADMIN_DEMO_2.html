@@ -352,6 +352,8 @@
                         xhttp.onload = function () {
                             if(JSON.parse(this.responseText).error) {
                                 console.log(JSON.parse(this.responseText).error);
+                                window.alert(JSON.parse(this.responseText).error.message);
+                                window.location.reload();
                             } else {
                                 window.location.reload();
                             }
