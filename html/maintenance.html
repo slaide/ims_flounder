@@ -24,6 +24,7 @@
       <div id="select_ins">
         <h1>Select instrument</h1>
           <select id="instrument_menu"  onChange="javascript:selected_ins(this);" name="instrument_menu">
+            <option hidden disabled selected value >-- Select instrument --</option>
           </select>
         <div id="maintenance_form_div">
         </div>
@@ -225,7 +226,7 @@
               let error_date = document.querySelector("#error_date");
               error_date.innerHTML = "";
               let confirmation = document.querySelector("#confirmation");
-              confirmation.innerHTML = maintenance_for_ins.result;
+              confirmation.innerHTML = "Maintenance note added";
               //show_maintenance(InsID);
             }
           };
