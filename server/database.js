@@ -933,7 +933,7 @@ const maintenance={
                     error_function({source:"maintenance.add",message:"token is invalid",fatal:false,error:results})
                     return
                 }
-                if(results[3].UserIsMaintenance!=1){
+                if(results[3][0].UserIsMaintenance!=1){
                     error_function({source:"maintenance.add",message:"user is not maintenance personnel",fatal:false,error:results})
                     return
                 }
