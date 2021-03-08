@@ -643,8 +643,11 @@ const instruments={
                     if @Success=1 and @UserIsAdmin then
                         select *
                         from instrument
-                        where Room_ID='${data.room_id}'
-                        and Exist=1;
+                        join ins_locates on ins_locates.ins_id=instrument.ins_id
+                        join room on room.Room_ID = ins_locates.Room_ID
+                        where room.Room_ID="${data.room_id}"
+                        and ins_locates.End_time_Date is null
+                        and instrument.Exist=1;
                     end if;
                 commit;
             `
