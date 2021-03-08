@@ -185,57 +185,6 @@
           //add_maintenance(ins_id);
         }
 
-        function add_maintenance(ins_id) {
-          let date_obj = document.getElementById("form_date").value;
-          let date = date_obj.replace('T', ' ');
-          let status = document.getElementById("form_status").value;
-          let note = document.getElementById("form_note").value;
-
-          var today = new Date();
-          var dd = String(today.getDate());
-          var mm = 1+today.getMonth();
-          var yyyy = today.getFullYear();
-          //alert(date.substring(5, 7));
-          if (yyyy<date.substring(0, 4)) {
-            let error_date = document.getElementById("error_date");
-            error_date.innerHTML = "Invalid year";
-            return false;
-          } else if(yyyy == date.substring(0, 4) && mm < Number(date.substring(5, 7))){
-            let error_date = document.getElementById("error_date");
-            error_date.innerHTML = "Invalid month";
-            return false;
-          } else if (yyyy == date.substring(0, 4) && mm == date.substring(5, 7) && dd < Number(date.substring(8, 10))) {
-            let error_date = document.getElementById("error_date");
-            error_date.innerHTML = "Invalid day";
-            return false;
-          }
-
-
-          //alert(InsID);
-          //alert(date + status + note);
-
-          var xhttp = new XMLHttpRequest();
-          xhttp.open("POST", "/add_maintenance", true);
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              var maintenance_for_ins = JSON.parse(this.responseText);
-              if (maintenance_for_ins.error) {
-                console.log(maintenance_for_ins.error);
-                return;
-              }
-              let error_date = document.querySelector("#error_date");
-              error_date.innerHTML = "";
-              let confirmation = document.querySelector("#confirmation");
-              confirmation.innerHTML = "Maintenance note added";
-              //show_maintenance(InsID);
-            }
-          };
-          //alert("calling");
-          var token = localStorage.getItem("token");
-          var ssn = localStorage.getItem("ssn");
-          xhttp.send(JSON.stringify({'date_time': date, 'status': status, 'notes': note, 'ssn': ssn, 'ins_id': ins_id, token:token}));
-        }
-
         function show_maintenance(ins_id) {
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", "/get_maintenance", true);
@@ -263,7 +212,11 @@
               for (let i = 0; i < instrument_notes.length; i++) {
                 let table_entry = document.createElement("tr");
                 let table_time = document.createElement("th");
-                table_time.innerHTML = instrument_notes[i].date_time;
+                //table_time.innerHTML = instrument_notes[i].date_time;
+                ins_date = instrument_notes[i].date_time;
+                ins_date = ins_date.substring(0, 16);
+                ins_date = ins_date.replace('T', ' ');
+                table_time.innerHTML = ins_date;
                 let table_status = document.createElement("th");
                 table_status.innerHTML = instrument_notes[i].status;
                 let table_note = document.createElement("th");
@@ -285,6 +238,64 @@
           var token = localStorage.getItem("token");
           var ssn = localStorage.getItem("ssn");
           xhttp.send(JSON.stringify({'ins_id': ins_id,'ssn': ssn,token:token}));
+        }
+
+        function add_maintenance(ins_id) {
+          let date_obj = document.getElementById("form_date").value;
+          let date = date_obj.replace('T', ' ');
+          let status = document.getElementById("form_status").value;
+          let note = document.getElementById("form_note").value;
+
+          var today = new Date();
+          var dd = String(today.getDate());
+          var mm = 1+today.getMonth();
+          var yyyy = today.getFullYear();
+          //alert(date.substring(5, 7));
+          if (yyyy<date.substring(0, 4)) {
+            let error_date = document.getElementById("error_date");
+            let confirmation = document.querySelector("#confirmation");
+            error_date.innerHTML = "Invalid year";
+            confirmation.innerHTML = "";
+            return false;
+          } else if(yyyy == date.substring(0, 4) && mm < Number(date.substring(5, 7))){
+            let error_date = document.getElementById("error_date");
+            let confirmation = document.querySelector("#confirmation");
+            error_date.innerHTML = "Invalid month";
+            confirmation.innerHTML = "";
+            return false;
+          } else if (yyyy == date.substring(0, 4) && mm == date.substring(5, 7) && dd < Number(date.substring(8, 10))) {
+            let error_date = document.getElementById("error_date");
+            let confirmation = document.querySelector("#confirmation");
+            error_date.innerHTML = "Invalid day";
+            confirmation.innerHTML = "";
+            return false;
+          }
+
+
+          //alert(InsID);
+          //alert(date + status + note);
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "/add_maintenance", true);
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              var maintenance_for_ins = JSON.parse(this.responseText);
+              if (maintenance_for_ins.error) {
+                console.log(maintenance_for_ins.error);
+                return;
+              }
+              let error_date = document.querySelector("#error_date");
+              error_date.innerHTML = "";
+              let confirmation = document.querySelector("#confirmation");
+              confirmation.innerHTML = "Maintenance note added";
+              //show_maintenance(InsID);
+            }
+          };
+          //alert("calling");
+          var token = localStorage.getItem("token");
+          var ssn = localStorage.getItem("ssn");
+          xhttp.send(JSON.stringify({'date_time': date, 'status': status, 'notes': note, 'ssn': ssn, 'ins_id': ins_id, token:token}));
+          show_maintenance(ins_id);
         }
 
         function test_print() {
