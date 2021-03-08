@@ -93,7 +93,7 @@
                localStorage.removeItem("email");
                localStorage.removeItem("admin");
                localStorage.removeItem("main");
-             localStorage.removeItem("token");
+               localStorage.removeItem("token");
                window.location.replace("index.html");
             }
 
@@ -424,7 +424,7 @@
                   request.onload = function() {
                      var response = JSON.parse(this.responseText);
                      if (response.error) {
-                        calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                        calendar(year,month,date,weekday,insID,ins_desc,room_id);
                         let schedule = document.querySelector('#schedule');
                         let success = document.createElement('div');
                         schedule.appendChild(success);
@@ -439,7 +439,7 @@
                            message.innerHTML = response.error.message;
                         success.appendChild(message);
                      } else {
-                        calendar(year,month,date,weekday,insID,ins_desc,RoomID);
+                        calendar(year,month,date,weekday,insID,ins_desc,room_id);
                         let schedule = document.querySelector('#schedule');
                         let success = document.createElement('div');
                         schedule.appendChild(success);
