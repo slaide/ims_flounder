@@ -213,3 +213,13 @@ function sha512(str,salt=null) {
     return Array.prototype.map.call(new Uint8Array(buf), x=>x.toString(16)).join("")
 }
 module.exports.sha512=sha512
+
+function isNumeric(number){
+    return !isNaN(parseFloat(number)) && isFinite(number)
+}
+module.exports.isNumeric=isNumeric;
+
+function isDate(date){
+    return !isNaN(new Date(date).getTime())
+}
+module.exports.isDate=isDate;
