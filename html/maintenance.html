@@ -18,6 +18,7 @@
             <a href="./my_schedule.html"><li>My Bookings</li></a>
          </ul>
          <a id="log_out" onclick="logOut()">Log out</a>
+        <div id="email"></div>
       </nav>
 
     <main id="whole_page">
@@ -37,6 +38,8 @@
 
       <script>
          var ssn = localStorage.getItem("ssn");
+         var email = localStorage.getItem("email");
+         document.getElementById("email").innerHTML = email;
          if (localStorage.getItem("admin")==="1") {
                let menu_list = document.querySelector('#menu_list');
                let link = document.createElement('a');
