@@ -310,7 +310,7 @@ module.exports.connect_build_database=connect_build_database
 function check_attributes(data,attributes_string,error_function,delim=" "){
     var sorted_attributes=[]
     for(attribute of attributes_string.split(delim)){
-        if(!data[attribute]){
+        if(typeof(data[attribute])=="undefined"){
             const error_message=`request is missing the attribute '${attribute}'`
             error_function({source:"check_attributes",message:error_message,fatal:false})
 
@@ -1002,11 +1002,15 @@ const accounts={
                     call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
                     select @Success as Success;
 
+                    select @EmailInUse := count(*) as EmailInUse
+                    from user
+                    where user.Email=${data.email};
+
                     select @UserIsAdmin := user.Admin as UserIsAdmin
                     from user
                     where user.SSN=${data.ssn};
 
-                    if @Success=1 and @UserIsAdmin then
+                    if @Success=1 and @UserIsAdmin=1 and @EmailInUse=0 then
                         insert into user(${attributes},Exist)
                         values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-1)}1);
                     end if;
@@ -1022,11 +1026,15 @@ const accounts={
                     error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:results})
                     return
                 }
-                if(results[3][0].UserIsAdmin!=1){
+                if(results[3][0].EmailInUse!=0){
+                    error_function({source:"accounts.add",message:"email is already in use",fatal:false,error:results})
+                    return
+                }
+                if(results[4][0].UserIsAdmin!=1){
                     error_function({source:"accounts.add",message:"user is not an admin",fatal:false,error:results})
                     return
                 }
-                if(results[4].affectedRows!=1){
+                if(results[5].affectedRows!=1){
                     error_function({source:"accounts.add",message:"did not insert",fatal:true})
                     return
                 }
