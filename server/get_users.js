@@ -14,7 +14,7 @@ function get_users(req,res) {
             if(error.fatal) throw error; 
 
             const error_message="error when selecting users:'"+JSON.stringify(error)+"'"
-            utility.log(`${error_message}`,"error")
+            utility.log(`${error_message}`)
 
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:error}))
