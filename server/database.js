@@ -406,7 +406,7 @@ const rooms={
                         and instrument.Exist=1;
 
                         if @NumInstrumentsInRoom=0 then
-                            update room set Exist=0 where Room_ID=${data.room_id};
+                            update room set room.Exist=0 where room.Room_ID=${data.room_id};
                         end if;
                     end if;
 
@@ -487,8 +487,10 @@ const instruments={
                     if @Success=1 then
                         select *
                         from instrument
-                        join room on room.Room_ID = instrument.Room_ID
+                        join ins_locates on ins_locates.ins_id=instrument.ins_id
+                        join room on room.Room_ID = ins_locates.Room_ID
                         where room.Room_ID="${data.room_id}"
+                        and ins_locates.End_time_Date is null
                         and instrument.Exist=1
                         and strcmp((select user.Special_rights from user where user.SSN='${data.ssn}'),room.Class)<=0;
                     end if;
@@ -515,9 +517,10 @@ const instruments={
         const attributes="ssn token description serial proc_date room_id"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
+            const now_time=utility.format_time(new Date())
             const query=`
                 start transaction;
-                    call check_token('${data.ssn}','${data.token}','${utility.format_time(new Date())}',@Success);
+                    call check_token('${data.ssn}','${data.token}','${now_time}',@Success);
                     select @Success as Success;
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
@@ -531,7 +534,8 @@ const instruments={
                         and room.Exist=1;
 
                         if @RoomExists = 1 then
-                            insert into instrument(${attributes.replace(/\ /gi,",")},Exist) values (${'?,'.repeat(sorted_attributes.length)}1);
+                            insert into instrument(${attributes.replace(/\ /gi,",")},Exist) values (?,?,?,?,?,?,1);
+                            insert into ins_locates(Start_time_Date,Room_ID,Ins_ID) values('${now_time}',${data.room_id},LAST_INSERT_ID());
                         end if;
                     end if;
                 commit;
@@ -555,7 +559,11 @@ const instruments={
                     error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:sent_results})
                 }
                 if(results[5].affectedRows!=1){
-                    error_function({source:"instruments.add",message:"did not insert",fatal:false})
+                    error_function({source:"instruments.add",message:"did not insert instrument",fatal:false})
+                    return
+                }
+                if(results[6].affectedRows!=1){
+                    error_function({source:"instruments.add",message:"did not insert location",fatal:false})
                     return
                 }
                 success_function()
@@ -583,7 +591,8 @@ const instruments={
                         and booking.Ins_ID = ${data.ins_id};
 
                         if @NumFutureBookings=0 then
-                            update instrument set Exist=0 where Ins_ID=${data.ins_id};
+                            update instrument set instrument.Exist=0 where instrument.Ins_ID=${data.ins_id};
+                            update ins_locates set ins_locates.End_time_Date=${utility.format_time(new Date())} where ins_locates.Ins_ID=${data.ins_id} and ins_locates.End_time_Date is null;
                         end if;
                     end if;
                 commit;
@@ -609,6 +618,10 @@ const instruments={
                 }
                 if(results[5].affectedRows!=1){
                     error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
+                    return
+                }
+                if(results[6].affectedRows!=1){
+                    error_function({source:"instruments.remove",message:"did not remove instrument from room",fatal:false})
                     return
                 }
                 success_function()
