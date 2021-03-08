@@ -211,15 +211,21 @@
               table_element.appendChild(table_header);
               for (let i = 0; i < instrument_notes.length; i++) {
                 let table_entry = document.createElement("tr");
-                let table_time = document.createElement("th");
+                let table_time = document.createElement("td");
                 //table_time.innerHTML = instrument_notes[i].date_time;
                 ins_date = instrument_notes[i].date_time;
                 ins_date = ins_date.substring(0, 16);
                 ins_date = ins_date.replace('T', ' ');
+                //table_time.innerHTML = ins_date;
+                //date_hour = ins_date.substring(11, 12);
+                //alert(date_hour);
+                //date_hour = date_hour + 1;
+                //alert(date_hour);
+                //ins_date = ins_date.substring(0, 11) + date_hour + ins_date.substring(12, 16);
                 table_time.innerHTML = ins_date;
-                let table_status = document.createElement("th");
+                let table_status = document.createElement("td");
                 table_status.innerHTML = instrument_notes[i].status;
-                let table_note = document.createElement("th");
+                let table_note = document.createElement("td");
                 table_note.innerHTML = instrument_notes[i].notes;
                 table_entry.appendChild(table_time);
                 table_entry.appendChild(table_status);
