@@ -344,8 +344,9 @@ const rooms={
                     error_function({source:"rooms.get",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.get",message:"token is invalid",fatal:false})
+                    error_function({source:"rooms.get",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
 
@@ -375,12 +376,13 @@ const rooms={
                     error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.add",message:"token is invalid",fatal:false})
+                    error_function({source:"rooms.add",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3].affectedRows!=1){
-                    error_function({source:"rooms.add",message:"did not insert",fatal:true})
+                    error_function({source:"rooms.add",message:"did not insert",fatal:true,error:sent_results})
                     return
                 }
                 success_function()
@@ -416,12 +418,13 @@ const rooms={
                     error_function({source:"rooms.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.remove",message:"token is invalid",fatal:false})
+                    error_function({source:"rooms.remove",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].NumInstrumentsInRoom!=0){
-                    error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false})
+                    error_function({source:"rooms.remove",message:"room containing instruments cannot be removed",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4].affectedRows!=1){
@@ -456,12 +459,13 @@ const rooms={
                     error_function({source:"rooms.get_admin",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.get_admin",message:"token is invalid",fatal:false})
+                    error_function({source:"rooms.get_admin",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
 
@@ -496,8 +500,9 @@ const instruments={
                     error_function({source:"instruments.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.get",message:"token is invalid",fatal:false})
+                    error_function({source:"instruments.get",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
 
@@ -537,19 +542,20 @@ const instruments={
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.add",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"instruments.add",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"instruments.add",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"instruments.add",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4][0].RoomExists!=1){
-                    error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:results})
+                    error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:sent_results})
                 }
                 if(results[5].affectedRows!=1){
-                    error_function({source:"instruments.add",message:"did not insert",fatal:false,error:results})
+                    error_function({source:"instruments.add",message:"did not insert",fatal:false})
                     return
                 }
                 success_function()
@@ -588,16 +594,17 @@ const instruments={
                     error_function({source:"instruments.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.remove",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"instruments.remove",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"instruments.remove",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4][0].NumFutureBookings!=0){
-                    error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false})
+                    error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false,error:sent_results})
                     return
                 }
                 if(results[5].affectedRows!=1){
@@ -634,12 +641,13 @@ const instruments={
                     error_function({source:"instruments.get_admin",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.get_admin",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"instruments.get_admin",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"instruments.get_admin",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"instruments.get_admin",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
 
@@ -675,8 +683,9 @@ const bookings={
                     error_function({source:"bookings.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"bookings.remove",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"bookings.remove",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3].affectedRows!=1){
@@ -804,7 +813,8 @@ function timeslot_available(data,error_function,insert_data=false,success_functi
                     const error_message="inserting new booking failed";
                     utility.log(`${error_message} ${results[results.length-1]}`,"error")
 
-                    error_function({source:"timeslot_available.database_query_check",message:error_message,error:results,fatal:false})
+                    const sent_results=[results[3],results[4],results[5],results[6]]
+                    error_function({source:"timeslot_available.database_query_check",message:error_message,error:sent_results,fatal:false})
                 }else{
                     success_function();
                 }
@@ -851,8 +861,9 @@ const personal_schedule={
                     error_function({source:"personal_schedule.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"personal_schedule.get",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"personal_schedule.get",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
 
@@ -890,12 +901,13 @@ const maintenance={
                     error_function({source:"maintenance.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"maintenance.get",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"maintenance.get",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsMaintenance!=1){
-                    error_function({source:"maintenance.get",message:"user is not maintenance personnel",fatal:false,error:results})
+                    error_function({source:"maintenance.get",message:"user is not maintenance personnel",fatal:false,error:sent_results})
                     return
                 }
 
@@ -929,12 +941,13 @@ const maintenance={
                     error_function({source:"maintenance.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"maintenance.add",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"maintenance.add",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsMaintenance!=1){
-                    error_function({source:"maintenance.add",message:"user is not maintenance personnel",fatal:false,error:results})
+                    error_function({source:"maintenance.add",message:"user is not maintenance personnel",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4].affectedRows!=1){
@@ -974,12 +987,13 @@ const accounts={
                     error_function({source:"accounts.get",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.get",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"accounts.get",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"accounts.get",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"accounts.get",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
 
@@ -1022,16 +1036,17 @@ const accounts={
                     error_function({source:"accounts.add",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].EmailInUse!=0){
-                    error_function({source:"accounts.add",message:"email is already in use",fatal:false,error:results})
+                    error_function({source:"accounts.add",message:"email is already in use",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4][0].UserIsAdmin!=1){
-                    error_function({source:"accounts.add",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"accounts.add",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
                 if(results[5].affectedRows!=1){
@@ -1071,16 +1086,17 @@ const accounts={
                     error_function({source:"accounts.remove",message:error.sqlMessage,fatal:true,error:error})
                     return
                 }
+                const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.remove",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"accounts.remove",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"accounts.remove",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"accounts.remove",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4][0].DeleteAccountIsSelf!=0){
-                    error_function({source:"accounts.remove",message:"admins cannot delete their own account",fatal:false,error:results})
+                    error_function({source:"accounts.remove",message:"admins cannot delete their own account",fatal:false,error:sent_results})
                     return
                 }
                 if(results[5].affectedRows!=1){
@@ -1121,16 +1137,17 @@ const accounts={
                     error_function({source:"accounts.set_special_rights",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.set_special_rights",message:"token is invalid",fatal:false,error:results})
+                    error_function({source:"accounts.set_special_rights",message:"token is invalid",fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
-                    error_function({source:"accounts.set_special_rights",message:"user is not an admin",fatal:false,error:results})
+                    error_function({source:"accounts.set_special_rights",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
                 if(results[4].affectedRows!=1){
-                    error_function({source:"accounts.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",error:results,fatal:false})
+                    error_function({source:"accounts.set_special_rights",message:"did not change special rights, likely because user does not exist. reload your webpage.",fatal:false})
                     return
                 }
                 success_function()
@@ -1161,9 +1178,10 @@ const accounts={
                     error_function({source:"accounts.login",message:error.sqlMessage,error:error,fatal:true})
                     return
                 }
+                const sent_results=[results[2]]
                 if(results[2][0].MatchFound!=1){
                     //user may not exist, which means ssn is "wrong"
-                    error_function({source:"accounts.login",message:"email or password is wrong.",error:results,fatal:false})
+                    error_function({source:"accounts.login",message:"email or password is wrong.",error:sent_results,fatal:false})
                     return
                 }
 
