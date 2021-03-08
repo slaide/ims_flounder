@@ -127,10 +127,18 @@
                                 request.onload = function () {
                                     if (JSON.parse(this.responseText).error) {
                                         console.log(JSON.parse(this.responseText).error);
-                                        window.alert(JSON.parse(this.responseText).error.message);
+                                        window.alert("ERROR: "+JSON.parse(this.responseText).error.message);
                                         window.location.reload();
                                     } else {
-                                        window.location.reload();
+                                        var click_ok = window.confirm("Are you sure you want to remove this room?");
+                                        if(click_ok) {
+                                            window.alert("The room was removed succesfully!");
+                                            window.location.reload();
+                                        } else {
+                                            window.alert("The room was NOT removed");
+                                            window.location.reload();
+                                        }
+                                        
                                     }
                                 }
                                 request.onerror = function () {
@@ -193,10 +201,18 @@
                                 request.onload = function () {
                                     if (JSON.parse(this.responseText).error) {
                                         console.log(JSON.parse(this.responseText).error)
-                                        window.alert(JSON.parse(this.responseText).error.message);
+                                        window.alert("ERROR: "+ JSON.parse(this.responseText).error.message);
                                         window.location.reload();
                                     } else {
-                                        window.location.reload();
+                                        var click_ok = window.confirm("Are you sure you want to remove this instrument?");
+                                        if(click_ok) {
+                                            window.alert("The instrument was sccesfully removed!");
+                                            window.location.reload();
+                                        } else {
+                                            window.alert("The instrument was NOT removed");
+                                            window.location.reload();
+                                        }
+                                        
                                     }
                                 }
                                 request.onerror = function () {
@@ -310,19 +326,26 @@
 
                 //Remove user function
                 function removeUser(ssn_user) {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST","/remove_user",true);
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            var response = JSON.parse(this.responseText);
-                            if(response.error) {
-                                console.log(response.error);
-                                window.alert(response.error.message);
-                                window.location.reload();
-                            } else {
-                                window.location.href = "ADMIN_DEMO_2.html";
+                    var click_ok = window.confirm("Are you sure you want to remove this user?");
+                    if (click_ok) {
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.open("POST","/remove_user",true);
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var response = JSON.parse(this.responseText);
+                                if(response.error) {
+                                    console.log(response.error);
+                                    window.alert("ERROR: " + response.error.message);
+                                    window.location.reload();
+                                } else {
+                                    window.alert("The user was succesfully removed!");
+                                    window.location.reload();
+                                } 
                             }
                         }
+                    } else {
+                        window.alert("The user was NOT removed");
+                        window.location.reload();
                     }
                     var token=localStorage.getItem("token")
                     var admin_ssn=localStorage.getItem("ssn")
