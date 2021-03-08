@@ -1004,7 +1004,7 @@ const accounts={
 
                     select @EmailInUse := count(*) as EmailInUse
                     from user
-                    where user.Email=${data.email};
+                    where user.Email='${data.email}';
 
                     select @UserIsAdmin := user.Admin as UserIsAdmin
                     from user
