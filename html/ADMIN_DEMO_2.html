@@ -74,7 +74,7 @@
                     localStorage.removeItem("email");
                     localStorage.removeItem("admin");
                     localStorage.removeItem("main");
-             localStorage.removeItem("token");
+                    localStorage.removeItem("token");
                     window.location.replace("index.html");
                 }
 
@@ -87,67 +87,72 @@
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
                             if (rooms.error) {
-                                console.log(rooms.error);
+                                if (rooms.error.token_expired) {
+                                    logOut();
+                                } else {
+                                    console.log(rooms.error);
+                                }
                             return;
-                            }
-                            //Create form for removing room, action: /remove_room
-                            let cont = document.querySelector('.remove_room');
-                            let form = document.createElement('form');
-                                form.setAttribute("action","/remove_room");
-                                form.setAttribute("method","POST");
-                                form.setAttribute('id','remove_room_form');
-                            cont.appendChild(form);
-                            form.addEventListener("submit", formSubmit);
-                            let select_room = document.createElement('select');
-                                select_room.setAttribute("name","room_id");
-                            form.appendChild(select_room);
-                            for (let i = 0; i < rooms.length; i++) {
-                                let option = document.createElement('option');
-                                    option.setAttribute("value",`${rooms[i].room_id}`);
-                                    option.innerHTML = `Room ${rooms[i].room_id}`;
-                                select_room.appendChild(option);
-                            }
-                            let submit = document.createElement('input');
-                                submit.setAttribute('type','submit');
-                                submit.setAttribute('value','Remove room');
-                            form.appendChild(submit);
-                            let input_ssn = document.createElement('input');
-                                input_ssn.setAttribute("type","hidden");
-                                input_ssn.setAttribute("name","ssn");
-                                input_ssn.setAttribute("value",`${ssn}`);
-                            form.appendChild(input_ssn);
+                            } else {
+                                //Create form for removing room, action: /remove_room
+                                let cont = document.querySelector('.remove_room');
+                                let form = document.createElement('form');
+                                    form.setAttribute("action","/remove_room");
+                                    form.setAttribute("method","POST");
+                                    form.setAttribute('id','remove_room_form');
+                                cont.appendChild(form);
+                                form.addEventListener("submit", formSubmit);
+                                let select_room = document.createElement('select');
+                                    select_room.setAttribute("name","room_id");
+                                form.appendChild(select_room);
+                                for (let i = 0; i < rooms.length; i++) {
+                                    let option = document.createElement('option');
+                                        option.setAttribute("value",`${rooms[i].room_id}`);
+                                        option.innerHTML = `Room ${rooms[i].room_id}`;
+                                    select_room.appendChild(option);
+                                }
+                                let submit = document.createElement('input');
+                                    submit.setAttribute('type','submit');
+                                    submit.setAttribute('value','Remove room');
+                                form.appendChild(submit);
+                                let input_ssn = document.createElement('input');
+                                    input_ssn.setAttribute("type","hidden");
+                                    input_ssn.setAttribute("name","ssn");
+                                    input_ssn.setAttribute("value",`${ssn}`);
+                                form.appendChild(input_ssn);
 
-                            //Redirecting to admin page when submitting removal
-                            function formSubmit(e) {
-                                var url = '/remove_room';
-                                var request = new XMLHttpRequest();
-                                request.open('POST', url, true);
-                                let remove_container = document.querySelector(".remove_room");
-                                let message = document.createElement('p');
-                                request.onload = function () {
-                                    if (JSON.parse(this.responseText).error) {
-                                        console.log(JSON.parse(this.responseText).error);
-                                        window.alert("ERROR: "+JSON.parse(this.responseText).error.message);
-                                        window.location.reload();
-                                    } else {
-                                        var click_ok = window.confirm("Are you sure you want to remove this room?");
-                                        if(click_ok) {
-                                            window.alert("The room was removed succesfully!");
+                                //Redirecting to admin page when submitting removal
+                                function formSubmit(e) {
+                                    var url = '/remove_room';
+                                    var request = new XMLHttpRequest();
+                                    request.open('POST', url, true);
+                                    let remove_container = document.querySelector(".remove_room");
+                                    let message = document.createElement('p');
+                                    request.onload = function () {
+                                        if (JSON.parse(this.responseText).error) {
+                                            console.log(JSON.parse(this.responseText).error);
+                                            window.alert("ERROR: "+JSON.parse(this.responseText).error.message);
                                             window.location.reload();
                                         } else {
-                                            window.alert("The room was NOT removed");
-                                            window.location.reload();
+                                            var click_ok = window.confirm("Are you sure you want to remove this room?");
+                                            if(click_ok) {
+                                                window.alert("The room was removed succesfully!");
+                                                window.location.reload();
+                                            } else {
+                                                window.alert("The room was NOT removed");
+                                                window.location.reload();
+                                            }
+                                            
                                         }
-                                        
                                     }
+                                    request.onerror = function () {
+                                        message.innerHTML = "Request failed";
+                                    }
+                                    remove_container.appendChild(message);
+                                    request.send($('#remove_room_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
+                                    e.preventDefault();
+                                    document.querySelector("#remove_room_form").removeEventListener("submit", formSubmit);
                                 }
-                                request.onerror = function () {
-                                    message.innerHTML = "Request failed";
-                                }
-                                remove_container.appendChild(message);
-                                request.send($('#remove_room_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
-                                e.preventDefault();
-                                document.querySelector("#remove_room_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
@@ -165,63 +170,68 @@
                         if (this.readyState == 4 && this.status == 200) {
                             var rooms = JSON.parse(this.responseText);
                             if (rooms.error) {
-                                console.log(rooms.error);
+                                if (rooms.error.token_expired) {
+                                    logOut();
+                                } else {
+                                    console.log(rooms.error);
+                                }
                             return;
-                            }
-                            let remove_ins = document.querySelector(".remove_ins");
-                            let form = document.createElement('form');
-                                form.setAttribute("action","/remove_instrument");
-                                form.setAttribute("method","POST");
-                                form.setAttribute("id","remove_ins_form");
-                            remove_ins.appendChild(form);
-                            form.addEventListener("submit", formSubmit);
-                            let select = document.createElement("select");
-                                select.setAttribute("name", "ins_id");
-                            form.appendChild(select);
-                            for (let i = 0; i < rooms.length; i++) {
-                                displayIns(rooms[i].room_id, select);
-                            }
-                            let submit = document.createElement("input");
-                                submit.setAttribute('type','submit');
-                                submit.setAttribute('value','Remove instrument');
-                            form.appendChild(submit);
-                            let input_ssn = document.createElement('input');
-                                input_ssn.setAttribute("type","hidden");
-                                input_ssn.setAttribute("name","ssn");
-                                input_ssn.setAttribute("value",`${ssn}`);
-                            form.appendChild(input_ssn);
+                            } else {
+                                let remove_ins = document.querySelector(".remove_ins");
+                                let form = document.createElement('form');
+                                    form.setAttribute("action","/remove_instrument");
+                                    form.setAttribute("method","POST");
+                                    form.setAttribute("id","remove_ins_form");
+                                remove_ins.appendChild(form);
+                                form.addEventListener("submit", formSubmit);
+                                let select = document.createElement("select");
+                                    select.setAttribute("name", "ins_id");
+                                form.appendChild(select);
+                                for (let i = 0; i < rooms.length; i++) {
+                                    displayIns(rooms[i].room_id, select);
+                                }
+                                let submit = document.createElement("input");
+                                    submit.setAttribute('type','submit');
+                                    submit.setAttribute('value','Remove instrument');
+                                form.appendChild(submit);
+                                let input_ssn = document.createElement('input');
+                                    input_ssn.setAttribute("type","hidden");
+                                    input_ssn.setAttribute("name","ssn");
+                                    input_ssn.setAttribute("value",`${ssn}`);
+                                form.appendChild(input_ssn);
 
-                            //Redirecting to admin page when submitting removal
-                            function formSubmit(e) {
-                                var url = '/remove_instrument';
-                                var request = new XMLHttpRequest();
-                                request.open('POST', url, true);
-                                let remove_container = document.querySelector(".remove_ins");
-                                let message = document.createElement('p');
-                                request.onload = function () {
-                                    if (JSON.parse(this.responseText).error) {
-                                        console.log(JSON.parse(this.responseText).error)
-                                        window.alert("ERROR: "+ JSON.parse(this.responseText).error.message);
-                                        window.location.reload();
-                                    } else {
-                                        var click_ok = window.confirm("Are you sure you want to remove this instrument?");
-                                        if(click_ok) {
-                                            window.alert("The instrument was sccesfully removed!");
+                                //Redirecting to admin page when submitting removal
+                                function formSubmit(e) {
+                                    var url = '/remove_instrument';
+                                    var request = new XMLHttpRequest();
+                                    request.open('POST', url, true);
+                                    let remove_container = document.querySelector(".remove_ins");
+                                    let message = document.createElement('p');
+                                    request.onload = function () {
+                                        if (JSON.parse(this.responseText).error) {
+                                            console.log(JSON.parse(this.responseText).error)
+                                            window.alert("ERROR: "+ JSON.parse(this.responseText).error.message);
                                             window.location.reload();
                                         } else {
-                                            window.alert("The instrument was NOT removed");
-                                            window.location.reload();
+                                            var click_ok = window.confirm("Are you sure you want to remove this instrument?");
+                                            if(click_ok) {
+                                                window.alert("The instrument was sccesfully removed!");
+                                                window.location.reload();
+                                            } else {
+                                                window.alert("The instrument was NOT removed");
+                                                window.location.reload();
+                                            }
+                                            
                                         }
-                                        
                                     }
+                                    request.onerror = function () {
+                                        message.innerHTML = "Request failed";
+                                    }
+                                    remove_container.appendChild(message);
+                                    request.send($('#remove_ins_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
+                                    e.preventDefault();
+                                    document.querySelector("#remove_ins_form").removeEventListener("submit", formSubmit);
                                 }
-                                request.onerror = function () {
-                                    message.innerHTML = "Request failed";
-                                }
-                                remove_container.appendChild(message);
-                                request.send($('#remove_ins_form').serialize()+`&ssn=${localStorage.getItem("ssn")}&token=${localStorage.getItem("token")}`);
-                                e.preventDefault();
-                                document.querySelector("#remove_ins_form").removeEventListener("submit", formSubmit);
                             }
                         }
                     }
@@ -238,16 +248,20 @@
                         if (this.readyState == 4 && this.status == 200) {
                             var instrument = JSON.parse(this.responseText);
                             if (instrument.error) {
-                                console.log(instrument.error);
+                                if (instrument.error.token_expired) {
+                                    logOut();
+                                } else {
+                                    console.log(instrument.error);
+                                }
                                 return;
-                            }
-                            for (let i = 0; i < instrument.length; i++) {
-                                let option = document.createElement("option");
-                                    option.setAttribute('class','ins_option');
-                                    option.setAttribute('value', `${instrument[i].ins_id}`);
-                                    option.innerHTML = `Room ${room_id}: ${instrument[i].description}`;
-                                select.appendChild(option);
-
+                            } else {
+                                for (let i = 0; i < instrument.length; i++) {
+                                    let option = document.createElement("option");
+                                        option.setAttribute('class','ins_option');
+                                        option.setAttribute('value', `${instrument[i].ins_id}`);
+                                        option.innerHTML = `Room ${room_id}: ${instrument[i].description}`;
+                                    select.appendChild(option);
+                                }
                             }
                         }
                     }
@@ -266,57 +280,62 @@
                         if (this.readyState == 4 && this.status == 200) {
                             var users = JSON.parse(this.responseText);
                             if (users.error) {
-                                console.log(users.error);
-                            }
-                            let table_body = document.querySelector("#user_body");
-                            let table_head = document.querySelector("#user_head");
-                            //Number of users are the length of users array
-                            for (let i = 0; i < users.length; i++) {
-                                //Create one table row for each user
-                                let tr = document.createElement('tr');
-                                table_body.appendChild(tr);
-                                //Access all keys for a user
-                                for (key in users[i]) {
-                                    //Create table heads
-                                    if (i === 0) {
-                                        let th = document.createElement('th');
-                                            th.innerHTML = key;
-                                        table_head.appendChild(th);
-                                    }
-                                    //Fill table rows with table data
-                                    let td = document.createElement('td');
-                                    if (users[i][key] === 1) {
-                                        td.innerHTML = "Yes";
-                                    } else if (users[i][key] === 0) {
-                                        td.innerHTML = "No";
-                                    } else if (key === "special_rights") {
-                                        let button = document.createElement('button');
-                                            button.setAttribute('onclick',`changeRights(${users[i]["ssn"]})`);
-                                            button.setAttribute('class','change_rights');
-                                        td.innerHTML = users[i][key];
-                                        td.setAttribute('id',`spec_data_${users[i]["ssn"]}`);
-                                        button.innerHTML = "edit";
+                                if (users.error.token_expired) {
+                                    logOut();
+                                } else {
+                                    console.log(users.error);
+                                }
+                            } else {
+                                let table_body = document.querySelector("#user_body");
+                                let table_head = document.querySelector("#user_head");
+                                //Number of users are the length of users array
+                                for (let i = 0; i < users.length; i++) {
+                                    //Create one table row for each user
+                                    let tr = document.createElement('tr');
+                                    table_body.appendChild(tr);
+                                    //Access all keys for a user
+                                    for (key in users[i]) {
+                                        //Create table heads
+                                        if (i === 0) {
+                                            let th = document.createElement('th');
+                                                th.innerHTML = key;
+                                            table_head.appendChild(th);
+                                        }
+                                        //Fill table rows with table data
+                                        let td = document.createElement('td');
+                                        if (users[i][key] === 1) {
+                                            td.innerHTML = "Yes";
+                                        } else if (users[i][key] === 0) {
+                                            td.innerHTML = "No";
+                                        } else if (key === "special_rights") {
+                                            let button = document.createElement('button');
+                                                button.setAttribute('onclick',`changeRights(${users[i]["ssn"]})`);
+                                                button.setAttribute('class','change_rights');
+                                            td.innerHTML = users[i][key];
+                                            td.setAttribute('id',`spec_data_${users[i]["ssn"]}`);
+                                            button.innerHTML = "edit";
+                                            tr.appendChild(td);
+                                            td.appendChild(button);
+                                        } else {
+                                            td.innerHTML = users[i][key];
+                                        }
                                         tr.appendChild(td);
+                                    }
+                                    let td = document.createElement('td');
+                                    if (users[i]["ssn"]!=localStorage.getItem("ssn")) {
+
+                                        let button = document.createElement('button');
+                                            button.setAttribute('onclick',`removeUser(${users[i]["ssn"]})`);
+                                            button.setAttribute('class','remove_user');
+                                            button.innerHTML = "remove";
                                         td.appendChild(button);
-                                    } else {
-                                        td.innerHTML = users[i][key];
                                     }
                                     tr.appendChild(td);
                                 }
-                                let td = document.createElement('td');
-                                if (users[i]["ssn"]!=localStorage.getItem("ssn")) {
-
-                                    let button = document.createElement('button');
-                                        button.setAttribute('onclick',`removeUser(${users[i]["ssn"]})`);
-                                        button.setAttribute('class','remove_user');
-                                        button.innerHTML = "remove";
-                                    td.appendChild(button);
-                                }
-                                tr.appendChild(td);
+                                let th = document.createElement('th');
+                                    th.innerHTML = "Remove user";
+                                table_head.appendChild(th);
                             }
-                            let th = document.createElement('th');
-                                th.innerHTML = "Remove user";
-                            table_head.appendChild(th);
                         }
                     }
                     var ssn=localStorage.getItem("ssn")
@@ -334,9 +353,13 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 var response = JSON.parse(this.responseText);
                                 if(response.error) {
-                                    console.log(response.error);
-                                    window.alert("ERROR: " + response.error.message);
-                                    window.location.reload();
+                                    if (response.error.token_expired) {
+                                        logOut();
+                                    } else {
+                                        console.log(response.error);
+                                        window.alert("ERROR: " + response.error.message);
+                                        window.location.reload();
+                                    }
                                 } else {
                                     window.alert("The user was succesfully removed!");
                                     window.location.reload();
@@ -392,10 +415,15 @@
                         var xhttp = new XMLHttpRequest();
                         xhttp.open("POST","/set_user_rights",true);
                         xhttp.onload = function () {
-                            if(JSON.parse(this.responseText).error) {
-                                console.log(JSON.parse(this.responseText).error);
-                                window.alert(JSON.parse(this.responseText).error.message);
-                                window.location.reload();
+                            var response = JSON.parse(this.responseText);
+                            if(response.error) {
+                                if (response.error.token_expired) {
+                                    logOut();
+                                } else {
+                                    console.log(response.error);
+                                    window.alert(response.error.message);
+                                    window.location.reload();
+                                }
                             } else {
                                 window.location.reload();
                             }

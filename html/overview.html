@@ -105,32 +105,36 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var rooms = JSON.parse(this.responseText);
                      if (rooms.error) {
-                        console.log(rooms.error);
-                        return;
-                     }
-                     let overview = document.querySelector('#room_overview');
-                     for (let i = 0; i < rooms.length; i++) {
-                        let room_container = document.createElement('div');
-                           room_container.setAttribute('class','room_cont');
-                           overview.appendChild(room_container);
-                        let room = document.createElement('button');
-                           room.setAttribute('type', 'button');
-                           room.setAttribute('onclick', `getIns(${rooms[i].room_id})`);
-                           room.setAttribute('class','room');
-                           room.innerHTML = 'Room ' + rooms[i].room_id;
-                           room.addEventListener("click", function() {
-                              var current = document.getElementsByClassName("selected_room");
-                              if (current[0] != undefined) {
-                                 current[0].className = current[0].className.replace(" selected_room", "");
-                              }
-                              this.className += " selected_room";
-                           })
-                        room_container.appendChild(room);
-                        let instruments = document.createElement('div');
-                           instruments.setAttribute('id', `ins_${rooms[i].room_id}`);
-                           instruments.setAttribute('class','ins');
-                        room_container.appendChild(instruments);
-
+                        if (rooms.error.token_expired) {
+                           logOut();
+                        } else {
+                           console.log(rooms.error);
+                           return;
+                        }
+                     } else {
+                        let overview = document.querySelector('#room_overview');
+                        for (let i = 0; i < rooms.length; i++) {
+                           let room_container = document.createElement('div');
+                              room_container.setAttribute('class','room_cont');
+                              overview.appendChild(room_container);
+                           let room = document.createElement('button');
+                              room.setAttribute('type', 'button');
+                              room.setAttribute('onclick', `getIns(${rooms[i].room_id})`);
+                              room.setAttribute('class','room');
+                              room.innerHTML = 'Room ' + rooms[i].room_id;
+                              room.addEventListener("click", function() {
+                                 var current = document.getElementsByClassName("selected_room");
+                                 if (current[0] != undefined) {
+                                    current[0].className = current[0].className.replace(" selected_room", "");
+                                 }
+                                 this.className += " selected_room";
+                              })
+                           room_container.appendChild(room);
+                           let instruments = document.createElement('div');
+                              instruments.setAttribute('id', `ins_${rooms[i].room_id}`);
+                              instruments.setAttribute('class','ins');
+                           room_container.appendChild(instruments);
+                        }
                      }
                   }
                };
@@ -151,31 +155,36 @@
                   if (this.readyState == 4 && this.status == 200) {
                      var instrument = JSON.parse(this.responseText);
                      if (instrument.error) {
+                        if (instrument.error.token_expired) {
+                           logOut();
+                        } else {
                         console.log(instrument.error);
                         return;
-                     }
-                     for (let i = 0; i < instrument.length; i++) {
-                        let instruments = document.querySelector(`#ins_${room_id}`);
-                        let ins = document.createElement('button');
-                           ins.setAttribute('type', 'button');
-                           ins.setAttribute('class','ins_button');
-                           //Todays date
-                           var today = new Date();
-                           let current_year = today.getFullYear();
-                           let current_month = today.getMonth();
-                           let current_date = today.getDate();
-                           let current_weekday = today.getDay();
-                           //Set onclick funtion to calendar()
-                           ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].ins_id}, '${instrument[i].description}', ${room_id})`);
-                           ins.innerHTML = instrument[i].description;
-                           ins.addEventListener("click", function() {
-                              var current = document.getElementsByClassName("selected_ins");
-                              if (current[0] != undefined) {
-                                 current[0].className = current[0].className.replace(" selected_ins", "");
-                              }
-                              this.className += " selected_ins";
-                           })
-                        instruments.appendChild(ins);
+                        }
+                     } else {
+                        for (let i = 0; i < instrument.length; i++) {
+                           let instruments = document.querySelector(`#ins_${room_id}`);
+                           let ins = document.createElement('button');
+                              ins.setAttribute('type', 'button');
+                              ins.setAttribute('class','ins_button');
+                              //Todays date
+                              var today = new Date();
+                              let current_year = today.getFullYear();
+                              let current_month = today.getMonth();
+                              let current_date = today.getDate();
+                              let current_weekday = today.getDay();
+                              //Set onclick funtion to calendar()
+                              ins.setAttribute('onclick',`calendar(${current_year}, ${current_month}, ${current_date}, ${current_weekday}, ${instrument[i].ins_id}, '${instrument[i].description}', ${room_id})`);
+                              ins.innerHTML = instrument[i].description;
+                              ins.addEventListener("click", function() {
+                                 var current = document.getElementsByClassName("selected_ins");
+                                 if (current[0] != undefined) {
+                                    current[0].className = current[0].className.replace(" selected_ins", "");
+                                 }
+                                 this.className += " selected_ins";
+                              })
+                           instruments.appendChild(ins);
+                        }
                      }
                   }
                };
@@ -199,7 +208,7 @@
                let nmr_days = 32 - (new Date(year,month)).getDate();
                if (nmr_days === last_date) {
                   date = 1;
-                  month = (month+1) % 12;
+                  month = (month+1)%12;
                } else {
                   date = last_date+1;
                }
@@ -424,20 +433,24 @@
                   request.onload = function() {
                      var response = JSON.parse(this.responseText);
                      if (response.error) {
-                        calendar(year,month,date,weekday,insID,ins_desc,room_id);
-                        let schedule = document.querySelector('#schedule');
-                        let success = document.createElement('div');
-                        schedule.appendChild(success);
-                           success.setAttribute('class','success_message');
-                        let image = document.createElement('img');
-                           image.setAttribute('src','./unsuccessful_booking.png');
-                           image.setAttribute('width','50px');
-                           image.setAttribute('height','50px');
-                           image.setAttribute('class','success_image')
-                        success.appendChild(image);
-                        let message = document.createElement('p');
-                           message.innerHTML = response.error.message;
-                        success.appendChild(message);
+                        if (response.error.token_expired) {
+                           logOut();
+                        } else {
+                           calendar(year,month,date,weekday,insID,ins_desc,room_id);
+                           let schedule = document.querySelector('#schedule');
+                           let success = document.createElement('div');
+                           schedule.appendChild(success);
+                              success.setAttribute('class','success_message');
+                           let image = document.createElement('img');
+                              image.setAttribute('src','./unsuccessful_booking.png');
+                              image.setAttribute('width','50px');
+                              image.setAttribute('height','50px');
+                              image.setAttribute('class','success_image')
+                           success.appendChild(image);
+                           let message = document.createElement('p');
+                              message.innerHTML = response.error.message;
+                           success.appendChild(message);
+                        }
                      } else {
                         calendar(year,month,date,weekday,insID,ins_desc,room_id);
                         let schedule = document.querySelector('#schedule');
@@ -478,10 +491,6 @@
                };
 
             }
-
-
-
-
 
             getRooms();
 
