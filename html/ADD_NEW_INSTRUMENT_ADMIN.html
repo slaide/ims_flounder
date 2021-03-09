@@ -29,8 +29,30 @@
          <div id="email"></div>
      </nav>
 
-     <!--Relevant scripts to the page-->
-     <script>
+     <!--Form to add a new instrument-->
+     <div id="add_ins_div">
+         <form action="/add_instrument" method="POST" id="add_ins_form"> 
+            <br><h2>Please provide the following information:</h2>
+
+
+            <br><br><label for="serial">Serial number:</label>
+            <input type="text" name="serial">
+
+            <br><br><label for="room_id">Room ID:</label>
+            <input type="text" name="room_id">
+
+            <br><br><label for="description">Description:</label>
+            <input type="text" name="description">
+
+            <br><br><label for="proc_date">Procurement date:</label>
+            <input type="text" name="proc_date">
+
+            <br><input class="button" type="submit" value="Confirm">
+         </form>
+      </div>
+
+      <!--Scripts-->
+      <script>
          if (localStorage.getItem("main")==="1") {
                  let menu_list = document.querySelector('#menu_list');
                  let link = document.createElement('a');
@@ -45,9 +67,9 @@
             getSSN_getToken(form);
 
             function getSSN_getToken(form){
-               var input_SSN = documnet.createElement("input");
+               var input_SSN = document.createElement("input");
                input_SSN.setAttribute("type","hidden");
-               input_SSN.setAttribute("name","SSN");
+               input_SSN.setAttribute("name","ssn");
                input_SSN.setAttribute("value",`${localStorage.getItem("ssn")} `);
 
                form.appendChild(input_SSN);
@@ -66,11 +88,11 @@
             document.getElementById("email").innerHTML = email;
 
             //Listner for submit function and returns error text in the log if error occurs
-            document.querySelector("#add_user_form").addEventListener("submit", formSubmit);
+            document.querySelector("#add_ins_form").addEventListener("submit", formSubmit);
 
             function formSubmit(e) {
                         var xhttp = new XMLHttpRequest();
-                        xhttp.open("POST","#add_user_form",true);
+                        xhttp.open("POST","/add_instrument",true);
                         xhttp.onload = function () {
                             if(JSON.parse(this.responseText).error) {
                                 console.log(JSON.parse(this.responseText).error);
@@ -81,10 +103,10 @@
                         xhttp.onerror = function() {
                             window.alert("Request failed");
                         }
-                        xhttp.send($("#add_user_form").serialize());
+                        xhttp.send($("#add_ins_form").serialize());
                         e.preventDefault();
-                        document.querySelector("#add_user_form").removeEventListener("submit", formSubmit);
-                    } (edited) 
+                        document.querySelector("#add_ins_form").removeEventListener("submit", formSubmit);
+                    } 
 
          //Log out function
          function logOut() {
@@ -97,26 +119,5 @@
          }
      </script>
 
-     <!--Form to add a new instrument-->
-     <div id="add_ins_div">
-         <form action="/add_instrument" method="POST" id="add_ins_form"> 
-            <br><h2>Please provide the following information:</h2>
-
-
-            <br><br><label for="serial">Serial number:</label>
-            <input type="text" name="serial">
-
-            <br><br><label for="room_ID">Room ID:</label>
-            <input type="text" name="room_ID">
-
-            <br><br><label for="description">Description:</label>
-            <input type="text" name="description">
-
-            <br><br><label for="proc_date">Procurement date:</label>
-            <input type="text" name="proc_date">
-
-            <br><input class="button" type="submit" value="Confirm">
-         </form>
-      </div>
    </body>
 </html>
