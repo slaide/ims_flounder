@@ -368,7 +368,7 @@ const rooms={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="ssn token room_id area building_code capacity class"
+        const attributes="ssn token area building_code capacity class"
         const sorted_attributes=check_attributes(data,attributes,error_function)
         if(sorted_attributes){
 
