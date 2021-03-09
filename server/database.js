@@ -53,11 +53,18 @@ function create_global_connection_pool(){
             from booking
             join user on user.SSN=booking.SSN
             join instrument on instrument.Ins_ID=booking.Ins_ID
-            join room on room.Room_ID=instrument.Room_ID
+            join ins_locates on ins_locates.ins_id=instrument.ins_id
+            join room on room.Room_ID=ins_locates.Room_ID
             where timediff(booking.Start_Time,start_time)=0
+            and ins_locates.End_time_Date is null
             and user.Immunocompromised=1
             and not user.SSN=ssn #not be self
-            and room.Room_ID in (select instrument.Room_ID from instrument where instrument.Ins_ID=ins_id);
+            and room.Room_ID in (
+                select ins_locates.Room_ID 
+                from ins_locates 
+                where ins_locates.Ins_ID=ins_id 
+                and ins_locates.End_time_Date is null
+            );
 
             #query 3
             select @RoomCapacity := room.Capacity as RoomCapacity,
@@ -65,10 +72,15 @@ function create_global_connection_pool(){
                 @YouAreImmunoCompromised := (select user.Immunocompromised from user where user.SSN=ssn) as YouAreImmunoCompromised
             from booking join user on booking.SSN=user.SSN
             join instrument on booking.Ins_ID=instrument.Ins_ID
-            join room on instrument.Room_ID=room.Room_ID
-            where instrument.Room_ID in (
-                select instrument.Room_ID from instrument where instrument.Ins_ID=ins_id
+            join ins_locates on ins_locates.ins_id=instrument.ins_id
+            join room on ins_locates.Room_ID=room.Room_ID
+            where ins_locates.Room_ID in (
+                select ins_locates.Room_ID 
+                from ins_locates 
+                where ins_locates.Ins_ID=ins_id 
+                and ins_locates.End_time_Date is null
             )
+            and ins_locates.End_time_Date is null
             and timediff(booking.Start_Time,start_time)=0
             and not user.SSN=ssn;
 
@@ -401,8 +413,11 @@ const rooms={
 
                     if @Success=1 then
                         select @NumInstrumentsInRoom := count(*)
-                        from instrument
-                        where instrument.Room_ID = ${data.room_id}
+                        from ins_locates
+                        join instrument
+                        on instrument.ins_id=ins_locates.ins_id
+                        where ins_locates.Room_ID = ${data.room_id}
+                        and ins_locates.End_time_Date is null
                         and instrument.Exist=1;
 
                         if @NumInstrumentsInRoom=0 then
@@ -558,12 +573,8 @@ const instruments={
                 if(results[4][0].RoomExists!=1){
                     error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:sent_results})
                 }
-                if(results[5].affectedRows!=1){
+                if(results[5].affectedRows!=2){
                     error_function({source:"instruments.add",message:"did not insert instrument",fatal:false})
-                    return
-                }
-                if(results[6].affectedRows!=1){
-                    error_function({source:"instruments.add",message:"did not insert location",fatal:false})
                     return
                 }
                 success_function()
@@ -592,7 +603,7 @@ const instruments={
 
                         if @NumFutureBookings=0 then
                             update instrument set instrument.Exist=0 where instrument.Ins_ID=${data.ins_id};
-                            update ins_locates set ins_locates.End_time_Date=${utility.format_time(new Date())} where ins_locates.Ins_ID=${data.ins_id} and ins_locates.End_time_Date is null;
+                            update ins_locates set ins_locates.End_time_Date='${utility.format_time(new Date())}' where ins_locates.Ins_ID=${data.ins_id} and ins_locates.End_time_Date is null;
                         end if;
                     end if;
                 commit;
@@ -616,12 +627,8 @@ const instruments={
                     error_function({source:"instruments.remove",message:"instrument that is booked in the future cannot be removed",fatal:false,error:sent_results})
                     return
                 }
-                if(results[5].affectedRows!=1){
+                if(results[5].affectedRows!=2){
                     error_function({source:"instruments.remove",message:"did not remove instrument",fatal:false})
-                    return
-                }
-                if(results[6].affectedRows!=1){
-                    error_function({source:"instruments.remove",message:"did not remove instrument from room",fatal:false})
                     return
                 }
                 success_function()
@@ -1019,7 +1026,7 @@ const accounts={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance"
+        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance,ssn_user,token"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
             if(!"ABC".split("").includes(data.special_rights)){
@@ -1042,12 +1049,12 @@ const accounts={
 
                     if @Success=1 and @UserIsAdmin=1 and @EmailInUse=0 then
                         insert into user(${attributes},Exist)
-                        values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-1)}1);
+                        values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-3)}1);
                     end if;
                 commit;
             `
 
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes.slice(0,-2),(error,results,fields)=>{
                 if(error){
                     error_function({source:"accounts.add",message:error.sqlMessage,fatal:true,error:error})
                     return
