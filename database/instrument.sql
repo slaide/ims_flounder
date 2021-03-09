@@ -11,33 +11,27 @@ CREATE TABLE instrument (
   Description varchar(40) NOT NULL DEFAULT 'NOT NULL',
   Serial int NOT NULL,
   Proc_date date NOT NULL,
-  Room_ID int NOT NULL,
   Exist tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Room_ID, Exist) VALUES
-(1, 'Mass spec ', 6047, '2020-12-14', 2, 1),
-(2, 'Laser ', 5282, '2021-01-02', 3, 1),
-(3, 'Pipette 3000', 3940, '2020-12-30', 1, 1),
-(4, 'Pipette', 2016, '2021-01-24', 3, 1),
-(5, 'Mass spec 2000', 1244, '2021-01-24', 1, 1),
-(6, 'Workbench ', 5656, '2021-02-03', 2, 1),
-(7, 'Workbench ', 4096, '2020-12-01', 3, 1),
-(8, 'Workbench ', 2687, '2021-02-01', 1, 1),
-(9, 'Workbench ', 3487, '2020-12-14', 1, 1);
+INSERT INTO instrument (Ins_ID, Description, `Serial`, Proc_date, Exist) VALUES
+(1, 'Mass spec ', 6047, '2020-12-14', 1),
+(2, 'Laser ', 5282, '2021-01-02', 1),
+(3, 'Pipette 3000', 3940, '2020-12-30', 1),
+(4, 'Pipette', 2016, '2021-01-24', 1),
+(5, 'Mass spec 2000', 1244, '2021-01-24', 1),
+(6, 'Workbench ', 5656, '2021-02-03', 1),
+(7, 'Workbench ', 4096, '2020-12-01', 1),
+(8, 'Workbench ', 2687, '2021-02-01', 1),
+(9, 'Workbench ', 3487, '2020-12-14', 1);
 
 
 ALTER TABLE instrument
-  ADD PRIMARY KEY (Ins_ID),
-  ADD KEY Room_ID (Room_ID);
+  ADD PRIMARY KEY (Ins_ID);
 
 
 ALTER TABLE instrument
   MODIFY Ins_ID int NOT NULL AUTO_INCREMENT;
-
-
-ALTER TABLE instrument
-  ADD CONSTRAINT instrument_ibfk_1 FOREIGN KEY (Room_ID) REFERENCES room (Room_ID) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
