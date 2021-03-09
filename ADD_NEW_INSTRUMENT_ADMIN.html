@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="eng">
+   <head>
+      <!--Title of page and relevant CSS code-->
+      <title>Add new instrument</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="./reset.css">
+      <link rel="stylesheet" type="text/css" href="./flounder.css">
+      <link rel="stylesheet" type="text/css" href="./admin.css">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+   </head>
+
+   <body>
+
+      <!--Menue to navigate to the other pages-->
+      <nav class="menu">
+         <img src="./favicon.ico" width="256" height="256">
+         <ul id="menu_list">
+            <a href="./overview.html"><li>Book an instrument</li></a>
+            <a href="./my_schedule.html"><li>My Bookings</li></a>
+            <a href="./ADMIN_DEMO_2.html"><li>Administrator</li></a>         
+         </ul>
+
+         <!--Log out button-->
+         <a id="log_out" href="#" onclick="logOut()">Log out</a>
+         <div id="email"></div>
+     </nav>
+
+     <!--Relevant scripts to the page-->
+     <script>
+         if (localStorage.getItem("main")==="1") {
+                 let menu_list = document.querySelector('#menu_list');
+                 let link = document.createElement('a');
+         link.setAttribute('href','maintenance.html');
+         menu_list.appendChild(link);
+         let li = document.createElement('li');
+             li.innerHTML = "Maintenance";
+             link.appendChild(li);
+         }
+            var form = document.querySelector("#add_ins_form");
+
+            getSSN_getToken(form);
+
+            function getSSN_getToken(form){
+               var input_SSN = documnet.createElement("input");
+               input_SSN.setAttribute("type","hidden");
+               input_SSN.setAttribute("name","ssn");
+               input_SSN.setAttribute("value",`${localStorage.getItem("ssn")} `);
+
+               form.appendChild(input_SSN);
+
+               var input_token = document.createElement("input");
+               input_token.setAttribute("type","hidden");
+               input_token.setAttribute("name","token");
+               input_token.setAttribute("value",`${localStorage.getItem("token")} `);
+
+               form.appendChild(input_token);
+
+            }
+
+            //To display the e-mail of current user 
+            var email = localStorage.getItem("email");
+            document.getElementById("email").innerHTML = email;
+
+            //Listner for submit function and returns error text in the log if error occurs
+            document.querySelector("#add_user_form").addEventListener("submit", formSubmit);
+
+            function formSubmit(e) {
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.open("POST","#add_user_form",true);
+                        xhttp.onload = function () {
+                            if(JSON.parse(this.responseText).error) {
+                                console.log(JSON.parse(this.responseText).error);
+                            } else {
+                            window.location.href = "ADMIN_DEMO_2.html";
+                            }
+                        }
+                        xhttp.onerror = function() {
+                            window.alert("Request failed");
+                        }
+                        xhttp.send($("#add_user_form").serialize());
+                        e.preventDefault();
+                        document.querySelector("#add_user_form").removeEventListener("submit", formSubmit);
+                    } (edited) 
+
+         //Log out function
+         function logOut() {
+             localStorage.removeItem("ssn");
+             localStorage.removeItem("email");
+             localStorage.removeItem("admin");
+             localStorage.removeItem("main");
+             localStorage.removeItem("token");
+             window.location.replace("index.html");
+         }
+     </script>
+
+     <!--Form to add a new instrument-->
+     <div id="add_ins_div">
+         <form action="/add_instrument" method="POST" id="add_ins_form"> 
+            <br><h2>Please provide the following information:</h2>
+
+
+            <br><br><label for="serial">Serial number:</label>
+            <input type="text" name="serial">
+
+            <br><br><label for="room_ID">Room ID:</label>
+            <input type="text" name="room_ID">
+
+            <br><br><label for="description">Description:</label>
+            <input type="text" name="description">
+
+            <br><br><label for="proc_date">Procurement date:</label>
+            <input type="text" name="proc_date">
+
+            <br><input class="button" type="submit" value="Confirm">
+         </form>
+      </div>
+   </body>
+</html>
