@@ -29,56 +29,6 @@
             <div id="email"></div>
         </nav>
 
-        <!--Scripts for the pages-->
-
-        <script>
-            if (localStorage.getItem("main")==="1") {
-                    let menu_list = document.querySelector('#menu_list');
-                    let link = document.createElement('a');
-            link.setAttribute('href','maintenance.html');
-            menu_list.appendChild(link);
-            let li = document.createElement('li');
-                li.innerHTML = "Maintenance";
-                link.appendChild(li);
-            }
-
-            //To display the e-mail of current user 
-            var email = localStorage.getItem("email");
-            document.getElementById("email").innerHTML = email;
-
-            //Listner for submit function and returns error text in the log if error occurs
-            document.querySelector("#add_user_form").addEventListener("submit", formSubmit);
-
-            function formSubmit(e) {
-                        var xhttp = new XMLHttpRequest();
-                        xhttp.open("POST","#add_user_form",true);
-                        xhttp.onload = function () {
-                            if(JSON.parse(this.responseText).error) {
-                                console.log(JSON.parse(this.responseText).error);
-                            } else {
-                            window.location.href = "ADMIN_DEMO_2.html";
-                            }
-                        }
-                        xhttp.onerror = function() {
-                            window.alert("Request failed");
-                        }
-                        xhttp.send($("#add_user_form").serialize());
-                        e.preventDefault();
-                        document.querySelector("#add_user_form").removeEventListener("submit", formSubmit);
-                    } (edited) 
-
-
-            //Log out function
-            function logOut() {
-                localStorage.removeItem("ssn");
-                localStorage.removeItem("email");
-                localStorage.removeItem("admin");
-                localStorage.removeItem("main");
-             localStorage.removeItem("token");
-                window.location.replace("index.html");
-            }
-        </script>
-
         <!--Form to add the new user-->
         <div id="add_user_div">
           <form action="/add_user" method="POST" id="add_user_form"> 
@@ -138,6 +88,76 @@
 
           </form>
       </div>
+
+
+      <!--Scripts-->
+      <script>
+        if (localStorage.getItem("main")==="1") {
+                let menu_list = document.querySelector('#menu_list');
+                let link = document.createElement('a');
+        link.setAttribute('href','maintenance.html');
+        menu_list.appendChild(link);
+        let li = document.createElement('li');
+            li.innerHTML = "Maintenance";
+            link.appendChild(li);
+        }
+           var form = document.querySelector("#add_room_form");
+
+           getSSN_getToken(form);
+
+           function getSSN_getToken(form){
+              var input_SSN = document.createElement("input");
+              input_SSN.setAttribute("type","hidden");
+              input_SSN.setAttribute("name","ssn");
+              input_SSN.setAttribute("value",`${localStorage.getItem("ssn")} `);
+
+              form.appendChild(input_SSN);
+
+              var input_token = document.createElement("input");
+              input_token.setAttribute("type","hidden");
+              input_token.setAttribute("name","token");
+              input_token.setAttribute("value",`${localStorage.getItem("token")} `);
+
+              form.appendChild(input_token);
+
+           }
+
+           //To display the e-mail of current user 
+           var email = localStorage.getItem("email");
+           document.getElementById("email").innerHTML = email;
+
+           //Listner for submit function and returns error text in the log if error occurs
+           document.querySelector("#add_user_form").addEventListener("submit", formSubmit);
+
+           function formSubmit(e) {
+                       var xhttp = new XMLHttpRequest();
+                       xhttp.open("POST","/add_user",true);
+                       xhttp.onload = function () {
+                           if(JSON.parse(this.responseText).error) {
+                               console.log(JSON.parse(this.responseText).error);
+                           } else {
+                           window.location.href = "ADMIN_DEMO_2.html";
+                           }
+                       }
+                       xhttp.onerror = function() {
+                           window.alert("Request failed");
+                       }
+                       xhttp.send($("#add_user_form").serialize());
+                       e.preventDefault();
+                       document.querySelector("#add_user_form").removeEventListener("submit", formSubmit);
+                   } 
+
+        //Log out function
+        function logOut() {
+            localStorage.removeItem("ssn");
+            localStorage.removeItem("email");
+            localStorage.removeItem("admin");
+            localStorage.removeItem("main");
+            localStorage.removeItem("token");
+            window.location.replace("index.html");
+        }
+        
+    </script>
     </body>
 
 </html>
