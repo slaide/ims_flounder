@@ -346,7 +346,7 @@ const rooms={
                 }
                 const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.get",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"rooms.get",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
 
@@ -378,7 +378,7 @@ const rooms={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.add",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"rooms.add",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3].affectedRows!=1){
@@ -420,7 +420,7 @@ const rooms={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.remove",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"rooms.remove",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].NumInstrumentsInRoom!=0){
@@ -461,7 +461,7 @@ const rooms={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"rooms.get_admin",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"rooms.get_admin",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -504,7 +504,7 @@ const instruments={
                 }
                 const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.get",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"instruments.get",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
 
@@ -548,7 +548,7 @@ const instruments={
                 }
                 const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.add",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"instruments.add",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -605,7 +605,7 @@ const instruments={
                 }
                 const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.remove",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"instruments.remove",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -659,7 +659,7 @@ const instruments={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"instruments.get_admin",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"instruments.get_admin",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -701,7 +701,7 @@ const bookings={
                 }
                 const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"bookings.remove",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"bookings.remove",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3].affectedRows!=1){
@@ -815,7 +815,7 @@ function timeslot_available(data,error_function,insert_data=false,success_functi
                 error_function({source:"timeslot_available.database_query",message:error_message,error:error,fatal:true})
             }
             if(results[2][0].Success!=1){
-                error_function({source:"timeslot_available.database_query",message:"token is invalid",fatal:false,error:results})
+                error_function({source:"timeslot_available.database_query",message:"token is invalid",token_expired:true,fatal:false,error:results})
                 return
             }
 
@@ -879,7 +879,7 @@ const personal_schedule={
                 }
                 const sent_results=[results[2]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"personal_schedule.get",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"personal_schedule.get",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
 
@@ -919,7 +919,7 @@ const maintenance={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"maintenance.get",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"maintenance.get",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsMaintenance!=1){
@@ -959,7 +959,7 @@ const maintenance={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"maintenance.add",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"maintenance.add",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsMaintenance!=1){
@@ -1005,7 +1005,7 @@ const accounts={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.get",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"accounts.get",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -1054,7 +1054,7 @@ const accounts={
                 }
                 const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.add",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"accounts.add",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].EmailInUse!=0){
@@ -1104,7 +1104,7 @@ const accounts={
                 }
                 const sent_results=[results[2],results[3],results[4]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.remove",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"accounts.remove",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
@@ -1155,7 +1155,7 @@ const accounts={
                 }
                 const sent_results=[results[2],results[3]]
                 if(results[2][0].Success!=1){
-                    error_function({source:"accounts.set_special_rights",message:"token is invalid",fatal:false,error:sent_results})
+                    error_function({source:"accounts.set_special_rights",message:"token is invalid",token_expired:true,fatal:false,error:sent_results})
                     return
                 }
                 if(results[3][0].UserIsAdmin!=1){
