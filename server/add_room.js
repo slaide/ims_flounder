@@ -11,6 +11,31 @@ const fs=require("fs")
  */
 function add_room(req,res){
     utility.parse_data(req,(data)=>{
+        if(!utility.isNumeric(data.ssn)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"ssn is not a number",fatal:false}}))
+        }
+        if(!utility.isNumeric(data.room_id)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"room_id is not a number",fatal:false}}))
+        }
+        if(!utility.isNumeric(data.area)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"area is not a number",fatal:false}}))
+        }
+        if(!utility.isNumeric(data.capacity)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"capacity is not a number",fatal:false}}))
+        }
+        if(!utility.isDate(data.date_time)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"invalid date_time",fatal:false}}))
+        }
+        if(!("ABC").split("").includes(data.class)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"invalid date_time",fatal:false}}))
+        }
+
         database.rooms.add(data,(error)=>{
             if(error.fatal) throw error;
             
