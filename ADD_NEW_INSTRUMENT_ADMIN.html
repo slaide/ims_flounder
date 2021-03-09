@@ -45,7 +45,7 @@
             getSSN_getToken(form);
 
             function getSSN_getToken(form){
-               var input_SSN = documnet.createElement("input");
+               var input_SSN = document.createElement("input");
                input_SSN.setAttribute("type","hidden");
                input_SSN.setAttribute("name","ssn");
                input_SSN.setAttribute("value",`${localStorage.getItem("ssn")} `);
