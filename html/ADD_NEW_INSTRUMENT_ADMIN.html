@@ -40,7 +40,26 @@
              li.innerHTML = "Maintenance";
              link.appendChild(li);
          }
+            var form = document.querySelector("#add_ins_form");
 
+            getSSN_getToken(form);
+
+            function getSSN_getToken(form){
+               var input_SSN = documnet.createElement("input");
+               input_SSN.setAttribute("type","hidden");
+               input_SSN.setAttribute("name","SSN");
+               input_SSN.setAttribute("value",`${localStorage.getItem("ssn")} `);
+
+               form.appendChild(input_SSN);
+
+               var input_token = document.createElement("input");
+               input_token.setAttribute("type","hidden");
+               input_token.setAttribute("name","token");
+               input_token.setAttribute("value",`${localStorage.getItem("token")} `);
+
+               form.appendChild(input_token);
+
+            }
 
             //To display the e-mail of current user 
             var email = localStorage.getItem("email");
