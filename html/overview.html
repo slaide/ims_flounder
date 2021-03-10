@@ -231,8 +231,6 @@
 
             //Showing calender
             function calendar(year,month,date,weekday,insID,ins_desc,room_id) {
-               console.log(date);
-               console.log(weekday);
                $("#info_text").empty();
                $("tbody").empty();
                $("thead").empty();
@@ -276,11 +274,9 @@
                            week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                         } else if (date < 7) {
                            if (weekday - i >= date) {
-                              console.log("hello");
                               week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+(i-weekday+date))];
                               th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+(i-weekday+date)) + '/' + month;
                            } else {
-                              console.log("pop");
                               week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                               th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                            }
