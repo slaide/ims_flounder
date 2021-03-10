@@ -378,12 +378,12 @@ const rooms={
                     select @Success as Success;
 
                     if @Success=1 then
-                        insert into room(${attributes.replace(/\ /gi,",")}, Exist) values (${'?,'.repeat(sorted_attributes.length)}1)
+                        insert into room(area,building_code,capacity,class, Exist) values (?,?,?,?,1);
                     end if;
                 commit;
             `
 
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes.slice(2),(error,results,fields)=>{
                 if(error){
                     error_function({source:"rooms.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -549,14 +549,14 @@ const instruments={
                         and room.Exist=1;
 
                         if @RoomExists = 1 then
-                            insert into instrument(${attributes.replace(/\ /gi,",")},Exist) values (?,?,?,?,?,?,1);
+                            insert into instrument(description,serial,proc_date,Exist) values (?,?,?,1);
                             insert into ins_locates(Start_time_Date,Room_ID,Ins_ID) values('${now_time}',${data.room_id},LAST_INSERT_ID());
                         end if;
                     end if;
                 commit;
             `
 
-            connection.query(query,sorted_attributes,(error,results,fields)=>{
+            connection.query(query,sorted_attributes.slice(2),(error,results,fields)=>{
                 if(error){
                     error_function({source:"instruments.add",message:error.sqlMessage,fatal:true,error:error})
                     return
@@ -1026,7 +1026,7 @@ const accounts={
     },
     //TODO testing
     add:function(data,error_function,success_function){
-        const attributes="password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance,ssn_user,token"
+        const attributes="password,ssn_user,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance,ssn,token"
         const sorted_attributes=check_attributes(data,attributes,error_function,delim=",")
         if(sorted_attributes){
             if(!"ABC".split("").includes(data.special_rights)){

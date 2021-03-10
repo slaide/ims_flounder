@@ -13,26 +13,32 @@ function add_user(req,res){
         if(!utility.isNumeric(data.ssn)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"ssn is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.ssn_user)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"ssn_user is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.admin)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"admin is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.immunocompromised)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"immunocompromised is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.maintenance)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"maintenance is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.phone_number)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_user",message:"phone_number is not a number",fatal:false}}))
+            return
         }
 
         database.accounts.add(data,(error)=>{

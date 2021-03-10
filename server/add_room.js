@@ -14,26 +14,22 @@ function add_room(req,res){
         if(!utility.isNumeric(data.ssn)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_room",message:"ssn is not a number",fatal:false}}))
-        }
-        if(!utility.isNumeric(data.room_id)){
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({error:{source:"add_room",message:"room_id is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.area)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_room",message:"area is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.capacity)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_room",message:"capacity is not a number",fatal:false}}))
-        }
-        if(!utility.isDate(data.date_time)){
-            res.writeHeader(200,utility.content.json)
-            res.end(JSON.stringify({error:{source:"add_room",message:"invalid date_time",fatal:false}}))
+            return
         }
         if(!("ABC").split("").includes(data.class)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_room",message:"invalid date_time",fatal:false}}))
+            return
         }
 
         database.rooms.add(data,(error)=>{
@@ -43,7 +39,8 @@ function add_room(req,res){
             res.end(JSON.stringify({error:error}))
 
         },(results)=>{
-            res.end(fs.readFileSync("../html/ADMIN_DEMO_2.html",utility.encoding.utf8))
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({success:"added room"}))
         })
     })
 }

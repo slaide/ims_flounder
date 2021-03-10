@@ -146,7 +146,7 @@ module.exports.format_time=format_time
  */
 function remove_special_chars(obj){
     var ret_obj={}
-    const special_chars=/[;\"'`&,$#<>?!/~%*]/gi //allow : and - for time stuff
+    const special_chars=/[;\\\"'`&,$#<>?!~%*]/gi //allow : and - for time stuff
     for(const key of Object.keys(obj)){
         obj[key]=`${obj[key]}`
         const new_key=key.replace(special_chars,"")

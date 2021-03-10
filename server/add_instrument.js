@@ -14,18 +14,23 @@ function add_instrument(req,res){
         if(!utility.isNumeric(data.ssn)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_instrument",message:"ssn is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.serial)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_instrument",message:"serial number is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.room_id)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_instrument",message:"room_id is not a number",fatal:false}}))
+            return
         }
         if(!utility.isDate(data.proc_date)){
+            console.log(data.proc_date)
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_instrument",message:"invalid proc_date",fatal:false}}))
+            return
         }
 
         database.instruments.add(data,(error)=>{
@@ -35,8 +40,8 @@ function add_instrument(req,res){
             res.end(JSON.stringify({error:error}))
 
         },(results)=>{
-            res.writeHeader(200,utility.content.html)
-            res.end(fs.readFileSync("../html/ADMIN_DEMO_2.html",utility.encoding.utf8))
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({success:"added instrument"}))
         })
     })
 }

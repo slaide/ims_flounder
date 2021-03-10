@@ -14,14 +14,17 @@ function add_maintenance(req,res){
         if(!utility.isNumeric(data.ssn)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_maintenance",message:"ssn is not a number",fatal:false}}))
+            return
         }
         if(!utility.isNumeric(data.ins_id)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_maintenance",message:"ins_id is not a number",fatal:false}}))
+            return
         }
         if(!utility.isDate(data.date_time)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_maintenance",message:"invalid date_time",fatal:false}}))
+            return
         }
         
         database.maintenance.add(data,(error)=>{
