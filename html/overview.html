@@ -231,6 +231,8 @@
 
             //Showing calender
             function calendar(year,month,date,weekday,insID,ins_desc,room_id) {
+               console.log(date);
+               console.log(weekday);
                $("#info_text").empty();
                $("tbody").empty();
                $("thead").empty();
@@ -257,8 +259,6 @@
                   let tr = document.createElement('tr');
                   //For new month
                   let k = 1;
-                  //For last month
-                  let p = 0;
                   //Date object
                   let today = new Date();
                   //Loop for table columns, one for each day of the month
@@ -271,15 +271,16 @@
                      if (j == 0) {
                         let th = document.createElement('th');
                         //If the date is in the days of the month, display date
-                        if (parseInt(date+(i-weekday)) <= daysInMonth && date >= 7) {
+                        if (date >= 7 && parseInt(date+(i-weekday)) <= daysInMonth) {
                            th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                            week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                         } else if (date < 7) {
                            if (weekday - i >= date) {
-                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+p)];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+p) + '/' + month;
-                              p = p-1;
+                              console.log("hello");
+                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+(i-weekday+date))];
+                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+(i-weekday+date)) + '/' + month;
                            } else {
+                              console.log("pop");
                               week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                               th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                            }
@@ -294,42 +295,41 @@
                         }
                         thead.appendChild(th);
                      }
-                     //Alter the time slots (no time slots for sunday and saturday)
-                        //Date for time slot
-                        let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
-                        //Start time for time slot
-                        let start_ = addZero(7+j) + ':00:00';
-                        //HttpRequest for checking available timeslots
-                        //Dont know if it works
-                        var xhttp = new XMLHttpRequest();
-                        xhttp.open("POST", "/check_timeslot_available", true);
-                        //Is it possile to have variables in the function..? Or is it unnecessary
-                        xhttp.onreadystatechange = function() {
-                           if (this.readyState == 4 && this.status == 200) {
-                              var available = JSON.parse(this.responseText);
-                              let today = new Date();
-                              //Mark non-available slots
-                              if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
-                                 slotButton.className += " non-available";
-                                 slotButton.disabled = "disabled";
-                              } else {
-                                 slotButton.addEventListener("click", function() {
-                                    var current = document.getElementsByClassName("active");
-                                    if (current[0] != undefined) {
-                                       current[0].className = current[0].className.replace(" active", "");
-                                    }
-                                    this.className += " active";
-                                 })
-                                 slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${room_id})`);
-                              }
+                     //Date for time slot
+                     let booking_date = week_dates[i][0] + "-" + addZero(week_dates[i][1]+1) + "-" + addZero(week_dates[i][2]);
+                     //Start time for time slot
+                     let start_ = addZero(7+j) + ':00:00';
+                     //HttpRequest for checking available timeslots
+                     //Dont know if it works
+                     var xhttp = new XMLHttpRequest();
+                     xhttp.open("POST", "/check_timeslot_available", true);
+                     //Is it possile to have variables in the function..? Or is it unnecessary
+                     xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                           var available = JSON.parse(this.responseText);
+                           let today = new Date();
+                           //Mark non-available slots
+                           if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
+                              slotButton.className += " non-available";
+                              slotButton.disabled = "disabled";
+                           } else {
+                              slotButton.addEventListener("click", function() {
+                                 var current = document.getElementsByClassName("active");
+                                 if (current[0] != undefined) {
+                                    current[0].className = current[0].className.replace(" active", "");
+                                 }
+                                 this.className += " active";
+                              })
+                              slotButton.setAttribute('onclick',`show_BookingForm(${year}, ${month}, ${date}, ${weekday}, ${7+j}, '${booking_date}', ${insID}, '${ins_desc}', ${room_id})`);
                            }
                         }
-                        let start_timeslot = booking_date + ' ' + start_;
-                        var ssn = localStorage.getItem("ssn");
-                        var token = localStorage.getItem("token");
-                        xhttp.send(JSON.stringify({'ssn': ssn, token:token, "ins_id": insID, "start_time": start_timeslot}));
-                        slotButton.innerHTML = addZero(7+j) + ':00';
-                        td.appendChild(slotButton);
+                     }
+                     let start_timeslot = booking_date + ' ' + start_;
+                     var ssn = localStorage.getItem("ssn");
+                     var token = localStorage.getItem("token");
+                     xhttp.send(JSON.stringify({'ssn': ssn, token:token, "ins_id": insID, "start_time": start_timeslot}));
+                     slotButton.innerHTML = addZero(7+j) + ':00';
+                     td.appendChild(slotButton);
                      
                   }
                   tbody.appendChild(tr);
