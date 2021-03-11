@@ -372,7 +372,7 @@ h1{
 
 #maintenance_form h1, h2 {
    font-size: 1rem;
-   text-transform: capitalize;
+   text-transform: lowercase;
    font-weight: 500;
    margin: 0;
    padding: 0;
@@ -417,6 +417,10 @@ h1{
    font-family: 'Poppins','Helvetica',sans-serif;
 }
 
+#maintenance_form input[type=submit] {
+   margin-bottom: 1.2rem;
+}
+
 #notes_table {
    margin: auto;
    width: 90%;
@@ -441,6 +445,10 @@ h1{
    background-color: #f1fcfa;
 }
 
+#error_date {
+   color: red;
+}
+
 /*email in navigation menu*/
 #email {
    font-size: 0.8rem;
@@ -449,9 +457,7 @@ h1{
    margin-top: 1.3rem;
 }
 
-#error_date {
-   color: red;
-}
+
 
 
 
