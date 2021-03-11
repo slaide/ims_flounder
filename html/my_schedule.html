@@ -39,7 +39,7 @@
          </div>
               <script>
 
-               //SSN from storage
+               //SSN and email from storage
                var SSN = localStorage.getItem("ssn");
                var email = localStorage.getItem("email");
 
@@ -82,6 +82,9 @@
 
                         //Error handling
                         if (bookings.error) {
+                           if (response.error.token_expired) {
+                               logOut();
+                           }
                            console.log("an error occured on the server:", bookings.error);
                            return;
                         }
