@@ -68,6 +68,31 @@
                 window.location.replace("index.html");
             }
 
+          function sort_drop_down(){
+            var drop_down, switching, i, x, y, shouldSwitch;
+            drop_down = document.getElementById('instrument_menu');
+            switching = true;
+            
+            while (switching) {
+              switching = false;              
+              for (i=1; i < (drop_down.length-2); i++) {
+                shouldSwitch = false;
+                x = drop_down[i].innerHTML;
+                y = drop_down[i+1].innerHTML;
+                x = x.match(/\d+/)[0];
+                y = y.match(/\d+/)[0];
+                if (x<y) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+              if (shouldSwitch) {
+                drop_down[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                switching = true;
+              }
+            }
+          }
+
 
          function getRooms() {
             var xhttp = new XMLHttpRequest();
@@ -94,6 +119,7 @@
           var token = localStorage.getItem("token");
           var ssn = localStorage.getItem("ssn");
           xhttp.send(JSON.stringify({'ssn': ssn,token:token}));
+          setTimeout(sort_drop_down, 100);
          }
 
          function populateMenu(room_id) {
