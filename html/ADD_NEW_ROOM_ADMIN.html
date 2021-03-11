@@ -99,12 +99,18 @@
                        var xhttp = new XMLHttpRequest();
                        xhttp.open("POST","/add_room",true);
                        xhttp.onload = function () {
-                           if(JSON.parse(this.responseText).error) {
-                               console.log(JSON.parse(this.responseText).error);
+                        if(JSON.parse(this.responseText).error) {
+                             if(JSON.parse(this.responseText).error.token_expired){
+                               logOut();
+                             } else {
+                              console.log(JSON.parse(this.responseText).error);
+                              window.alert("ERROR: " + JSON.parse(this.responseText).error.message);
+                              window.location.reload(); 
+                               }
                            } else {
                            window.location.href = "ADMIN_DEMO_2.html";
                            }
-                       }
+                    }
                        xhttp.onerror = function() {
                            window.alert("Request failed");
                        }

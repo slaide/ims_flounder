@@ -139,6 +139,7 @@
                              } else {
                               console.log(JSON.parse(this.responseText).error);
                               window.alert("ERROR: " + JSON.parse(this.responseText).error.message);
+                              window.location.reload(); 
                                }
                            } else {
                            window.location.href = "ADMIN_DEMO_2.html";
