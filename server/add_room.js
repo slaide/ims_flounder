@@ -21,6 +21,11 @@ function add_room(req,res){
             res.end(JSON.stringify({error:{source:"add_room",message:"area is not a number",fatal:false}}))
             return
         }
+        if(!utility.isNumeric(data.building_code)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_room",message:"building code is not a number",fatal:false}}))
+            return
+        }
         if(!utility.isNumeric(data.capacity)){
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_room",message:"capacity is not a number",fatal:false}}))
