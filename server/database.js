@@ -412,7 +412,7 @@ const rooms={
                     select @Success as Success;
 
                     if @Success=1 then
-                        select @NumInstrumentsInRoom := count(*)
+                        select @NumInstrumentsInRoom := count(*) as NumInstrumentsInRoom
                         from ins_locates
                         join instrument
                         on instrument.ins_id=ins_locates.ins_id

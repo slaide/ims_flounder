@@ -31,6 +31,11 @@ function add_instrument(req,res){
             res.end(JSON.stringify({error:{source:"add_instrument",message:"invalid proc_date",fatal:false}}))
             return
         }
+        if(!(data.description.length>1)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_instrument",message:"instrument description needs to have at least 2 letters",fatal:false}}))
+            return
+        }
 
         database.instruments.add(data,(error)=>{
             if(error.fatal) throw error;
