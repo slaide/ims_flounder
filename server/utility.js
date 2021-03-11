@@ -201,8 +201,8 @@ module.exports.get_log_for_level=function(get_log_level){
 
     var get_log_level=log_levels[get_log_level]
 
-    for(log of log_messages[get_log_level]){
-        console.log(`oldlog: ${log.time} ${get_log_level}: ${log.message}`)
+    for(log_message of log_messages[get_log_level]){
+        console.log(`oldlog: ${log_message.time} ${get_log_level}: ${log_message.message}`)
     }
 
     log("end log output","important")

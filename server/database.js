@@ -572,6 +572,7 @@ const instruments={
                 }
                 if(results[4][0].RoomExists!=1){
                     error_function({source:"instruments.add",message:"room does not exist",fatal:false,error:sent_results})
+                    return
                 }
                 if(results[5].affectedRows!=2){
                     error_function({source:"instruments.add",message:"did not insert instrument",fatal:false})
@@ -1048,7 +1049,7 @@ const accounts={
                     where user.SSN=${data.ssn};
 
                     if @Success=1 and @UserIsAdmin=1 and @EmailInUse=0 then
-                        insert into user(${attributes},Exist)
+                        insert into user(password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance,Exist)
                         values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-3)}1);
                     end if;
                 commit;

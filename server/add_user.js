@@ -40,6 +40,21 @@ function add_user(req,res){
             res.end(JSON.stringify({error:{source:"add_user",message:"phone_number is not a number",fatal:false}}))
             return
         }
+        if(!(data.first_name.length>0)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_user",message:"first needs to have at least 1 letter",fatal:false}}))
+            return
+        }
+        if(!(data.last_name.length>2)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_user",message:"last name needs to have at least 2 letters",fatal:false}}))
+            return
+        }
+        if(!(data.password.length>5)){
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({error:{source:"add_user",message:"password needs to have at least 6 letters",fatal:false}}))
+            return
+        }
 
         database.accounts.add(data,(error)=>{
             if(error.fatal) throw error;

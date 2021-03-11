@@ -27,7 +27,6 @@ function add_instrument(req,res){
             return
         }
         if(!utility.isDate(data.proc_date)){
-            console.log(data.proc_date)
             res.writeHeader(200,utility.content.json)
             res.end(JSON.stringify({error:{source:"add_instrument",message:"invalid proc_date",fatal:false}}))
             return
