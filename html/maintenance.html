@@ -185,6 +185,7 @@
           see_notes_div.appendChild(table_notes);
           //test_print();//Remove when show_mantenance is working
           show_maintenance(ins_id);
+          
           //add_maintenance(ins_id);
         }
 
@@ -247,6 +248,57 @@
           var token = localStorage.getItem("token");
           var ssn = localStorage.getItem("ssn");
           xhttp.send(JSON.stringify({'ins_id': ins_id,'ssn': ssn,token:token}));
+          setTimeout(sort_table, 100);
+        }
+
+        function compare_date(date1, date2) {
+          if(date1.substring(0,4)>date2.substring(0,4)){
+            return true;
+          } else if(date1.substring(0,4)<date2.substring(0,4)){
+            return false;
+          } else if(date1.substring(5,7)>date2.substring(5,7)){
+            return true;
+          } else if(date1.substring(5,7)<date2.substring(5,7)){
+            return false;
+          } else if(date1.substring(8,10)>date2.substring(8,10)){
+            return true;
+          } else if(date1.substring(8,10)<date2.substring(8,10)){
+            return false;
+          } else if(date1.substring(11,13)>date2.substring(11,13)){
+            return true;
+          } else if(date1.substring(11,13)<date2.substring(11,13)){
+            return false;
+          } else if(date1.substring(14,16)<date2.substring(14,16)){
+            return true;
+          } else if(date1.substring(14,16)<date2.substring(14,16)){
+            return false;
+          }
+          return false;
+        }
+
+        function sort_table() {
+          var table, rows, switching, i, x, y, shouldSwitch;
+          table = document.getElementById('notes_table');
+          switching = true;
+          
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i=1; i < (rows.length-1); i++) {
+//              alert("go: " + i);
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("td")[0];
+              y = rows[i+1].getElementsByTagName("td")[0];
+              if (compare_date(x.innerHTML, y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+              switching = true;
+            }
+          }
         }
 
         function add_maintenance(ins_id) {
