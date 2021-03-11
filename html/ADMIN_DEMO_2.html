@@ -129,10 +129,15 @@
                                     let remove_container = document.querySelector(".remove_room");
                                     let message = document.createElement('p');
                                     request.onload = function () {
-                                        if (JSON.parse(this.responseText).error) {
-                                            console.log(JSON.parse(this.responseText).error);
-                                            window.alert("ERROR: "+JSON.parse(this.responseText).error.message);
-                                            window.location.reload();
+                                        var response = JSON.parse(this.responseText);
+                                        if (response.error) {
+                                            if (response.error.token_expired) {
+                                                logOut();
+                                            } else {
+                                                console.log(response.error);
+                                                window.alert("ERROR: " + response.error.message);
+                                                window.location.reload();
+                                            }
                                         } else {
                                             var click_ok = window.confirm("Are you sure you want to remove this room?");
                                             if(click_ok) {
