@@ -63,8 +63,8 @@ function add_user(req,res){
             res.end(JSON.stringify({error:error}))
 
         },(results)=>{
-            res.writeHeader(200,utility.content.html)
-            res.end(fs.readFileSync("../html/ADMIN_DEMO_2.html",utility.encoding.utf8))
+            res.writeHeader(200,utility.content.json)
+            res.end(JSON.stringify({success:"user added"}))
         })
     })
 }

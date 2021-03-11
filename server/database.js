@@ -1044,6 +1044,10 @@ const accounts={
                     from user
                     where user.Email='${data.email}';
 
+                    select @SSNInUse := count(*) as SSNInUse
+                    from user
+                    where user.ssn='${data.ssn_user}';
+
                     select @UserIsAdmin := user.Admin as UserIsAdmin
                     from user
                     where user.SSN=${data.ssn};
@@ -1069,11 +1073,15 @@ const accounts={
                     error_function({source:"accounts.add",message:"email is already in use",fatal:false,error:sent_results})
                     return
                 }
-                if(results[4][0].UserIsAdmin!=1){
+                if(results[4][0].SSNInUse!=0){
+                    error_function({source:"accounts.add",message:"ssn is already in use",fatal:false,error:sent_results})
+                    return
+                }
+                if(results[5][0].UserIsAdmin!=1){
                     error_function({source:"accounts.add",message:"user is not an admin",fatal:false,error:sent_results})
                     return
                 }
-                if(results[5].affectedRows!=1){
+                if(results[6].affectedRows!=1){
                     error_function({source:"accounts.add",message:"did not insert",fatal:true})
                     return
                 }
