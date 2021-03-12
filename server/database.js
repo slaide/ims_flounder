@@ -1054,7 +1054,7 @@ const accounts={
 
                     if @Success=1 and @UserIsAdmin=1 and @EmailInUse=0 then
                         insert into user(password,ssn,first_name,last_name,admin,phone_number,email,special_rights,immunocompromised,maintenance,Exist)
-                        values (SHA2(512,?), ${'?,'.repeat(sorted_attributes.length-3)}1);
+                        values (SHA2(?,512), ${'?,'.repeat(sorted_attributes.length-3)}1);
                     end if;
                 commit;
             `
