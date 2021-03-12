@@ -354,7 +354,7 @@
                   previous_week.setAttribute('onclick',`previous(${year_first},${month_sun},${first_date},${insID},'${ins_desc}',${room_id})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
-                  change.appendChild(previous_week);
+                  
                let next_week = document.createElement('button');
                   next_week.setAttribute('class','change_week');
                   let year_last = week_dates[6][0];
@@ -363,13 +363,16 @@
                   next_week.setAttribute('onclick',`next(${year_last},${month_sat},${last_date},${insID},'${ins_desc}',${room_id})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
-                  change.appendChild(next_week);
+                  
                
-                  //Display year
-                  let year_disp = document.createElement('p');
-                     year_disp.setAttribute('id','year');
-                     year_disp.innerHTML = year_first;
-                     change.appendChild(year_disp);
+               //Display year
+               let year_disp = document.createElement('p');
+                  year_disp.setAttribute('id','year');
+                  year_disp.innerHTML = year_first;
+                  change.appendChild(year_disp);
+                  change.appendChild(next_week);
+                  change.appendChild(previous_week);
+                  
 
                }
 

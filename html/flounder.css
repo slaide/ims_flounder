@@ -185,6 +185,17 @@ h1{
 #info_text {
    padding: 0.6rem;
    margin-bottom: 0.6rem;
+   background-color: #f1fcfa;
+   width: 40%;
+   margin: auto;
+   border-radius: 10px;
+}
+
+#change_buttons {
+   width: 800px;
+   padding: 0.7rem;
+   margin: auto;
+   text-align: left;
 }
 
 .change_week {
@@ -193,13 +204,24 @@ h1{
    background-color:#413d3e;
    color: #ffffff;
    padding: 0.3rem;
-   margin: 0.2rem;
+   height: 100%;
+   float: right;
+   display: inline;
+   margin: 0 0.2rem;
+}
+
+#year {
+   font-size: 1.2rem;
+   font-weight: 600;
+   display: inline-block;
+   padding: 0.5rem 0 0 0.5rem;
 }
 
 #ins_table {
    margin-left: auto;
    margin-right: auto;
-   margin-top: 1rem;
+   margin-top: 0.4rem;
+   width: 800px;
 }
 
 #date {
