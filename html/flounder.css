@@ -199,7 +199,7 @@ h1{
 }
 
 .change_week {
-   width: 75px;
+   width: 90px;
    border: none;
    background-color:#413d3e;
    color: #ffffff;
@@ -208,6 +208,36 @@ h1{
    float: right;
    display: inline;
    margin: 0 0.2rem;
+}
+
+.change_week:hover {
+   background-color: #262223;
+}
+
+#next {
+   width: 65px;
+}
+
+.arrow {
+   width: 7px;
+   height: 7px;
+   margin: 0.2rem;
+   margin-top: 0.25rem;
+   border: solid #f1fcfa;
+   border-width: 0 3px 3px 0;
+   display: inline-block;
+}
+
+.next_arrow {
+   float: right;
+   display: inline;
+   transform: rotate(-45deg);
+}
+
+.previous_arrow {
+   float: left;
+   display: inline;
+   transform: rotate(135deg);
 }
 
 #year {
