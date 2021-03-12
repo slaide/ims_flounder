@@ -209,10 +209,10 @@
                if (nmr_days === last_date) {
                   date = 1;
                   month = (month+1)%12;
+                  year = (month === 11) ? year + 1 : year;
                } else {
                   date = last_date+1;
                }
-               year = (month === 11) ? year + 1 : year;
                calendar(year,month,date,0,insID,ins_desc,room_id);
             }
 
@@ -222,7 +222,7 @@
                let date = 0;
                if (first_date === 1) {
                   date = 32 - (new Date(year,month-1)).getDate();
-                  month = month-1;
+                  month = (month-1)%12;
                } else {
                   date = first_date-1;
                }
@@ -274,15 +274,25 @@
                            week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                         } else if (date < 7) {
                            if (weekday - i >= date) {
-                              week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+(i-weekday+date))];
-                              th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+(i-weekday+date)) + '/' + month;
+                              if (month == 0) {
+                                 week_dates[i] = [year-1,11,parseInt(daysInPreviousMonth+(i-weekday+date))];
+                                 th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+(i-weekday+date)) + '/' + 12;
+                              } else {
+                                 week_dates[i] = [year,month-1,parseInt(daysInPreviousMonth+(i-weekday+date))];
+                                 th.innerHTML = day_arr[i] + ' ' + parseInt(daysInPreviousMonth+(i-weekday+date)) + '/' + month;
+                              }
                            } else {
                               week_dates[i] = [year,month,parseInt(date+(i-weekday))];
                               th.innerHTML = day_arr[i] + ' ' + parseInt(date+(i-weekday)) + '/' + parseInt(month+1);
                            }
                         } else {
-                           th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(month+2);
-                           week_dates[i] = [year,month+1,k];
+                           if (month == 11) {
+                              week_dates[i] = [year+1,0,k];
+                              th.innerHTML = day_arr[i] + ' ' + k + '/' + 1;
+                           } else {
+                              th.innerHTML = day_arr[i] + ' ' + k + '/' + parseInt(month+2);
+                              week_dates[i] = [year,month+1,k];
+                           }
                            k = k+1;
                         }
                         //Mark todays date
@@ -305,7 +315,7 @@
                            var available = JSON.parse(this.responseText);
                            let today = new Date();
                            //Mark non-available slots
-                           if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0])) {
+                           if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || week_dates[i][0] < today.getFullYear()) {
                               slotButton.className += " non-available";
                               slotButton.disabled = "disabled";
                            } else {
