@@ -218,11 +218,14 @@
 
             //Change to next week
             function previous(year,month,first_date,insID,ins_desc,room_id) {
-               year = (month === 0) ? year - 1 : year;
                let date = 0;
                if (first_date === 1) {
                   date = 32 - (new Date(year,month-1)).getDate();
                   month = (month-1)%12;
+                  if (month === 0) {
+                     year = year -1;
+                  }
+
                } else {
                   date = first_date-1;
                }
@@ -315,7 +318,7 @@
                            var available = JSON.parse(this.responseText);
                            let today = new Date();
                            //Mark non-available slots
-                           if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth()) || today.getMonth() > week_dates[i][1] || (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || week_dates[i][0] < today.getFullYear()) {
+                           if (available.error || (week_dates[i][2] < today.getDate() && week_dates[i][1] === today.getMonth() && week_dates[i][0] === today.getFullYear()) || (today.getMonth() > week_dates[i][1] && today.getFullYear()=== week_dates[i][0])|| (today.getHours() > 7+j && today.getDate() === week_dates[i][2] && today.getMonth() === week_dates[i][1] && today.getFullYear() === week_dates[i][0]) || week_dates[i][0] < today.getFullYear()) {
                               slotButton.className += " non-available";
                               slotButton.disabled = "disabled";
                            } else {
@@ -345,22 +348,32 @@
                let change = document.querySelector('#change_buttons');
                let previous_week = document.createElement('button');
                   previous_week.setAttribute('class','change_week');
+                  let year_first = week_dates[0][0]
                   let first_date = week_dates[0][2];
                   let month_sun = week_dates[0][1];
-                  previous_week.setAttribute('onclick',`previous(${year},${month_sun},${first_date},${insID},'${ins_desc}',${room_id})`)
+                  previous_week.setAttribute('onclick',`previous(${year_first},${month_sun},${first_date},${insID},'${ins_desc}',${room_id})`)
                   previous_week.setAttribute('id','next');
                   previous_week.innerHTML = "Previous";
                   change.appendChild(previous_week);
                let next_week = document.createElement('button');
                   next_week.setAttribute('class','change_week');
+                  let year_last = week_dates[6][0];
                   let last_date = week_dates[6][2];
                   let month_sat = week_dates[6][1];
-                  next_week.setAttribute('onclick',`next(${year},${month_sat},${last_date},${insID},'${ins_desc}',${room_id})`);
+                  next_week.setAttribute('onclick',`next(${year_last},${month_sat},${last_date},${insID},'${ins_desc}',${room_id})`);
                   next_week.setAttribute("id","previous");
                   next_week.innerHTML = "Next";
                   change.appendChild(next_week);
+               
+                  //Display year
+                  let year_disp = document.createElement('p');
+                     year_disp.setAttribute('id','year');
+                     year_disp.innerHTML = year_first;
+                     change.appendChild(year_disp);
 
                }
+
+
 
             //slotID is the start time
             function show_BookingForm(year,month,date,weekday,slotID,booking_date,insID,ins_desc,room_id) {
