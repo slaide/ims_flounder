@@ -87,7 +87,7 @@
                 }
               }
               if (shouldSwitch) {
-                drop_down[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                drop_down[i].insertBefore(drop_down[i+1], drop_down[i]);
                 switching = true;
               }
             }
