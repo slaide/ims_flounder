@@ -52,7 +52,7 @@
       function send_hashed_password(){
          sha512(document.getElementById("password_form").value).then(
             hashed_password=>{
-               const x=Array.prototype.map.call(new Uint8Array(hashed_password), c=>c.toString(16)).join('');
+               const x=Array.prototype.map.call(new Uint8Array(hashed_password), c=>c.toString(16).padStart(2,"0")).join('');
 
                var xhttp=new XMLHttpRequest()
                xhttp.open("POST","/login",true)
