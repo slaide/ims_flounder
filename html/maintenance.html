@@ -31,7 +31,7 @@
         </div>
       </div>
       <div id="maintenance_overview">
-        <h1>Maintenance overview</h1>
+        <h1>Maintenance entries</h1>
         <div id="see_notes">
         </div>
       </div>
@@ -156,7 +156,7 @@
           form_div.innerHTML = "";
           let form_title = document.createElement('h1');
           form_title.setAttribute('id', 'form_title');
-          form_title.innerHTML = "Make new instrument maintenance";
+          form_title.innerHTML = "New maintenance entry";
           let form_main = document.createElement("form");
           form_main.setAttribute('id', 'maintenance_form');
           let arg_str = 'javascript:add_maintenance(' + ins_id.toString() + ');'
